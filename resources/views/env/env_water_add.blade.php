@@ -72,8 +72,7 @@ $count_service = StaticController::count_service();
                         </div>
 
                         <div class="card-body shadow-lg">
-                            <form class="custom-validation" action="{{ route('land.land_index_save') }}" method="POST"
-                            id="insert_landForm" enctype="multipart/form-data">
+                            <form class="custom-validation" action="{{ route('env.env_water_save') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}">
                             <div class="row">
@@ -89,28 +88,35 @@ $count_service = StaticController::count_service();
     
                                         <div class="row">
                                             <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_number">วันที่บันทึก :</label>
+                                                <label for="water_date">วันที่บันทึก :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="water_date" type="text"
+                                                    <input id="water_date" type="date"
                                                         class="form-control form-control-sm" name="water_date">
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="article_name">ผู้บันทึก :</label>
+                                                <label for="water_user">ผู้บันทึก :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="water_user" type="text" 
-                                                        class="form-control form-control-sm" name="water_user">                                                        
+                                                    {{-- <input id="water_user" type="text" 
+                                                        class="form-control form-control-sm" name="water_user"> --}}
+                                                        <select id="water_user" name="water_user"
+                                                        class="form-control form-control-sm" style="width: 100%">
+                                                        <option value="">--เลือก--</option>
+                                                        @foreach ($users as $ue)                                               
+                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
     
                                         <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_no">สถานที่เก็บตัวอย่าง :</label>
+                                                <label for="water_location">สถานที่เก็บตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -119,7 +125,7 @@ $count_service = StaticController::count_service();
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="land_explore_page">ลักษณะตัวอย่าง :</label>
+                                                <label for="water_group_excample">ลักษณะตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -131,20 +137,20 @@ $count_service = StaticController::count_service();
                                         
                                         <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_no">วันที่รับตัวอย่าง :</label>
+                                                <label for="parameter_list_normal">วันที่รับตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_normal" type="text"
+                                                    <input id="parameter_list_normal" type="date"
                                                         class="form-control form-control-sm" name="parameter_list_normal">
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="land_explore_page">วันที่วิเคราะห์ตัวอย่าง :</label>
+                                                <label for="parameter_list_user_analysis_results">วันที่วิเคราะห์ตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_user_analysis_results" type="text"
+                                                    <input id="parameter_list_user_analysis_results" type="date"
                                                         class="form-control form-control-sm" name="parameter_list_user_analysis_results">
                                                 </div>
                                             </div>                                           
@@ -152,16 +158,23 @@ $count_service = StaticController::count_service();
 
                                         <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_no">ผู้วิเคราะห์ตัวอย่าง :</label>
+                                                <label for="parameter_list_normal">ผู้วิเคราะห์ตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_normal" type="text"
-                                                        class="form-control form-control-sm" name="parameter_list_normal">
+                                                    {{-- <input id="parameter_list_normal" type="text"
+                                                        class="form-control form-control-sm" name="parameter_list_normal"> --}}
+                                                        <select id="water_user" name="water_user"
+                                                        class="form-control form-control-sm" style="width: 100%">
+                                                        <option value="">--เลือก--</option>
+                                                        @foreach ($users as $ue)                                               
+                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="land_explore_page">หมายเหตุ :</label>
+                                                <label for="water_comment">หมายเหตุ :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
