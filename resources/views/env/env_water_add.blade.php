@@ -283,7 +283,6 @@ $count_service = StaticController::count_service();
                             </div>
                         </div>
                         </form>
-
                     
                 </div>
             </div>
