@@ -103,7 +103,7 @@ $count_service = StaticController::count_service();
                                                 <div class="form-group">
                                                     {{-- <input id="water_user" type="text" 
                                                         class="form-control form-control-sm" name="water_user"> --}}
-                                                        <select id="water_user" name="water_user"
+                                                        <select id="water_user1" name="water_user"
                                                         class="form-control form-control-sm" style="width: 100%">
                                                         <option value="">--เลือก--</option>
                                                         @foreach ($users as $ue)                                               
@@ -164,7 +164,7 @@ $count_service = StaticController::count_service();
                                                 <div class="form-group">
                                                     {{-- <input id="parameter_list_normal" type="text"
                                                         class="form-control form-control-sm" name="parameter_list_normal"> --}}
-                                                        <select id="water_user" name="water_user"
+                                                        <select id="water_user2" name="water_user"
                                                         class="form-control form-control-sm" style="width: 100%">
                                                         <option value="">--เลือก--</option>
                                                         @foreach ($users as $ue)                                               
@@ -293,7 +293,38 @@ $count_service = StaticController::count_service();
 </div>
 
 
+@endsection
+@section('footer')
+<script>
+    
+    $(document).ready(function() {
+        // $("#overlay").fadeIn(300);　
 
+        $('#datepicker').datepicker({
+            format: 'yyyy-mm-dd'
+        });
+        $('#datepicker2').datepicker({
+            format: 'yyyy-mm-dd'
+        });
 
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+        });
+        // ช่องค้นหาชื่อ
+        $('#water_user1').select2({
+                placeholder: "--เลือก--",
+                allowClear: true
+            });
+        // ช่องค้นหาชื่อ
+            $('#water_user2').select2({
+            placeholder: "--เลือก--",
+            allowClear: true
+        }); 
+       
+       
+    });
+</script>
 
 @endsection
