@@ -86,19 +86,19 @@ $count_service = StaticController::count_service();
                                             <input type="hidden" id="article_typeid" name="article_typeid" class="form-control" value="2"/>
                                             <input type="hidden" id="article_groupid" name="article_groupid" class="form-control" value="3"/>
                                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
-    
+                                            
                                         <div class="row">
-                                            <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_number">วันที่บันทึก :</label>
-                                            </div>
-                                            <div class="col-md-4">
+                                                <div class="col-md-2 text-end">
+                                                    <label for="water_date">วันที่บันทึก :</label>
+                                                </div>
+                                                <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="water_date" type="text"
+                                                    <input id="water_date" type="date"
                                                         class="form-control form-control-sm" name="water_date">
                                                 </div>
-                                            </div>
+                                                </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="article_name">ผู้บันทึก :</label>
+                                                <label for="water_user">ผู้บันทึก :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -107,10 +107,10 @@ $count_service = StaticController::count_service();
                                                 </div>
                                             </div>
                                         </div>
-    
-                                        <div class="row mt-3">
+
+                                            <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_no">สถานที่เก็บตัวอย่าง :</label>
+                                                <label for="water_location">สถานที่เก็บตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -119,7 +119,7 @@ $count_service = StaticController::count_service();
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="land_explore_page">ลักษณะตัวอย่าง :</label>
+                                                <label for="water_group_excample">ลักษณะตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -131,7 +131,7 @@ $count_service = StaticController::count_service();
                                         
                                         <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_no">วันที่รับตัวอย่าง :</label>
+                                                <label for="parameter_list_normal">วันที่รับตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -140,7 +140,7 @@ $count_service = StaticController::count_service();
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="land_explore_page">วันที่วิเคราะห์ตัวอย่าง :</label>
+                                                <label for="parameter_list_user_analysis_results">วันที่วิเคราะห์ตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -152,7 +152,7 @@ $count_service = StaticController::count_service();
 
                                         <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_no">ผู้วิเคราะห์ตัวอย่าง :</label>
+                                                <label for="parameter_list_normal">ผู้วิเคราะห์ตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -161,7 +161,7 @@ $count_service = StaticController::count_service();
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="land_explore_page">หมายเหตุ :</label>
+                                                <label for="water_comment">หมายเหตุ :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
