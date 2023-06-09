@@ -41,6 +41,8 @@
            .is-hide{
            display:none;
            }
+
+      
 </style>
 <?php
 use Illuminate\Support\Facades\DB;
