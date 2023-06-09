@@ -41,8 +41,6 @@
            .is-hide{
            display:none;
            }
-
-      
 </style>
 <?php
 use Illuminate\Support\Facades\DB;
@@ -152,7 +150,6 @@ $count_service = StaticController::count_service();
                             </div>
                         </div>
                         </form>
-
                     
                 </div>
             </div>
