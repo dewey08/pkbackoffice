@@ -317,6 +317,7 @@ $count_service = StaticController::count_service();
                 placeholder: "--เลือก--",
                 allowClear: true
             });
+            
         // ช่องค้นหาชื่อ
             $('#water_user2').select2({
             placeholder: "--เลือก--",
