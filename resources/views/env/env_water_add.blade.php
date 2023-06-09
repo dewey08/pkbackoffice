@@ -72,8 +72,7 @@ $count_service = StaticController::count_service();
                         </div>
 
                         <div class="card-body shadow-lg">
-                            <form class="custom-validation" action="{{ route('land.land_index_save') }}" method="POST"
-                            id="insert_landForm" enctype="multipart/form-data">
+                            <form class="custom-validation" action="{{ route('env.env_water_save') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}">
                             <div class="row">
@@ -88,10 +87,17 @@ $count_service = StaticController::count_service();
                                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
                                             
                                         <div class="row">
+<<<<<<< HEAD
                                                 <div class="col-md-2 text-end">
                                                     <label for="water_date">วันที่บันทึก :</label>
                                                 </div>
                                                 <div class="col-md-4">
+=======
+                                            <div class="col-md-2 text-end">
+                                                <label for="water_date">วันที่บันทึก :</label>
+                                            </div>
+                                            <div class="col-md-4">
+>>>>>>> c6bb75398d10d68f59948495f97bc69c912a17a6
                                                 <div class="form-group">
                                                     <input id="water_date" type="date"
                                                         class="form-control form-control-sm" name="water_date">
@@ -102,8 +108,15 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="water_user" type="text" 
-                                                        class="form-control form-control-sm" name="water_user">                                                        
+                                                    {{-- <input id="water_user" type="text" 
+                                                        class="form-control form-control-sm" name="water_user"> --}}
+                                                        <select id="water_user" name="water_user"
+                                                        class="form-control form-control-sm" style="width: 100%">
+                                                        <option value="">--เลือก--</option>
+                                                        @foreach ($users as $ue)                                               
+                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -135,7 +148,7 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_normal" type="text"
+                                                    <input id="parameter_list_normal" type="date"
                                                         class="form-control form-control-sm" name="parameter_list_normal">
                                                 </div>
                                             </div>
@@ -144,7 +157,7 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_user_analysis_results" type="text"
+                                                    <input id="parameter_list_user_analysis_results" type="date"
                                                         class="form-control form-control-sm" name="parameter_list_user_analysis_results">
                                                 </div>
                                             </div>                                           
@@ -156,8 +169,15 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_normal" type="text"
-                                                        class="form-control form-control-sm" name="parameter_list_normal">
+                                                    {{-- <input id="parameter_list_normal" type="text"
+                                                        class="form-control form-control-sm" name="parameter_list_normal"> --}}
+                                                        <select id="water_user" name="water_user"
+                                                        class="form-control form-control-sm" style="width: 100%">
+                                                        <option value="">--เลือก--</option>
+                                                        @foreach ($users as $ue)                                               
+                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">

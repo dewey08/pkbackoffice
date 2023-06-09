@@ -118,8 +118,8 @@ class EnvController extends Controller
 
     public function env_water_add (Request $request)
     {
-        $startdate = $request->startdate;
-        $enddate = $request->enddate;
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
         $iduser = Auth::user()->id;
         $data['users'] = User::get();
         $data['leave_month'] = DB::table('leave_month')->get();
@@ -137,30 +137,16 @@ class EnvController extends Controller
          
 
         return view('env.env_water_add', $data,[
-            'start'           => $startdate,
-            'end'             => $enddate, 
+            'start'           => $datestart,
+            'end'             => $dateend, 
             'dataparameters'  => $data_parameter, 
         ]);
     }
 
     public function env_water_save (Request $request)
     {
-
-        // $datenow = date('Y-m-d H:m:s');
-        // Env_parameter_list::insert([
-        //     'parameter_list_name'                   => $request->parameter_list_name,
-        //     'parameter_list_unit'                   => $request->parameter_list_unit,
-        //     'parameter_list_normal'                 => $request->parameter_list_normal,
-        //     'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results,
-        //     'created_at'                            => $datenow
-        // ]);
-        // $data_parameter_list = DB::table('env_parameter_list')->get();
-    
-        // return redirect()->route('env.env_water_parameter');
-
-
-        $startdate = $request->startdate;
-        $enddate = $request->enddate;
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
         $iduser = Auth::user()->id;
         $data['users'] = User::get();
         $data['leave_month'] = DB::table('leave_month')->get();
@@ -178,8 +164,8 @@ class EnvController extends Controller
          
 
         return view('env.env_water_save', $data,[
-            'start'           => $startdate,
-            'end'             => $enddate, 
+            'start'           => $datestart,
+            'end'             => $dateend, 
             'dataparameters'  => $data_parameter, 
         ]);
     }
