@@ -16,8 +16,8 @@ class Env_trash_type extends Authenticatable
     protected $primaryKey = 'trash_type_id';
     // public $timestamps = false;  
     protected $fillable = [
-        'trash_type_name'
-        // 'water_user',
+        'trash_type_name',
+        'trash_type_name_unit'
         // 'water_location',
         // 'water_group_excample',
         // 'parameter_list_normal',

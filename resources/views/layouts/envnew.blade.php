@@ -209,7 +209,7 @@
                                 <span>ระบบบริหารจัดการขยะ</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('') }}">รายละเอียดข้อมูลขยะ</a></li>
+                                <li><a href="{{ url('env_trash') }}">รายละเอียดข้อมูลขยะ</a></li>
                                 <li><a href="{{ url('') }}">รายงาน</a></li>
                                 <li><a href="{{ url('env_trash_parameter') }}">ตั้งค่าประเภทขยะ</a></li>
                                 {{-- <li><a href="{{ url('time_index_day') }}">เวลาเข้า-ออก (รายวัน)</a></li> --}}
