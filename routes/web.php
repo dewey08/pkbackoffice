@@ -1757,8 +1757,10 @@ Route::match(['get','post'],'env_water_datetime',[App\Http\Controllers\EnvContro
 
 //ขยะ
 //ตั้งค่าประเภทขยะ
-Route::match(['get','post'],'env_trash_type',[App\Http\Controllers\EnvController::class, 'env_trash_type'])->name('env.env_trash_type');//หน้าหลักแสดงข้อมูล
-Route::match(['get','post'],'env_trash_type_add',[App\Http\Controllers\EnvController::class, 'env_trash_type_add'])->name('env.env_trash_type_add');//เพิ่ม
-Route::match(['get','post'],'env_trash_type_edit',[App\Http\Controllers\EnvController::class, 'env_trash_type_edit'])->name('env.env_trash_type_edit');//แก้ไข
+Route::match(['get','post'],'env_trash_parameter',[App\Http\Controllers\EnvController::class, 'env_trash_parameter'])->name('env.env_trash_parameter');//หน้าหลักแสดงข้อมูล
+Route::match(['get','post'],'env_trash_parameter_add',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_add'])->name('env.env_trash_parameter_add');//เพิ่ม
+Route::match(['get','post'],'env_trash_parameter_save',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_save'])->name('env.env_trash_parameter_save');//บันทึก
+Route::match(['get','post'],'env_trash_parameter_edit',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_edit'])->name('env.env_trash_parameter_edit');//แก้ไข
+
 
 });

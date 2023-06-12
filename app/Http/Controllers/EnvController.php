@@ -63,8 +63,11 @@ use App\Models\P4p_work;
 use App\Models\P4p_workset;
 use App\Models\P4p_workgroupset_unit;
 use App\Models\P4p_workgroupset;
+use App\Models\Env_trash_type;
 
 use App\Models\Env_parameter_list;
+use App\Models\Env_trash_parameter;
+
 use Auth;
 
 class EnvController extends Controller
@@ -308,5 +311,68 @@ class EnvController extends Controller
         return redirect()->back();
     }
 
+//ระบบขยะติดเชื้อ
 
+    public function env_trash_parameter (Request $request) //หน้าตั้งค่าประเภทขยะ
+    {
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+ 
+        $data_parameter_list = DB::table('env_trash_type')->get();
+         
+
+        return view('env.env_trash_parameter', $data,[
+            'startdate' => $datestart,
+            'enddate' => $dateend,
+            'dataparameterlist' => $data_parameter_list, 
+        ]);
+    }
+
+    public function env_trash_parameter_add (Request $request)
+    {
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+
+        $acc_debtors = DB::select('
+            SELECT count(*) as I from users u
+            left join p4p_workload l on l.p4p_workload_user=u.id
+            group by u.dep_subsubtrueid;
+        ');
+
+        $data_parameter = DB::table('env_trash_type')->get();
+         
+
+        return view('env.env_trash_parameter_add', $data,[
+            'startdate'        => $datestart,
+            'enddate'          => $dateend, 
+            'dataparameters'  => $data_parameter, 
+        ]);
+    }
+
+    public function env_trash_parameter_save (Request $request)
+    {  
+        $datenow = date('Y-m-d H:m:s');
+
+        Env_trash_type::insert([
+            // 'trash_type_id'                   => $request->trash_type_id,
+            'trash_type_name'                   => $request->trash_type_name,
+            'trash_type_name_unit'              => $request->trash_type_name_unit,
+            // 'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results,
+            'created_at'                            => $datenow
+        ]);
+        $data_parameter_list = DB::table('env_trash_type')->get();
+    
+        return redirect()->route('env.env_trash_parameter');
+
+    }
 }

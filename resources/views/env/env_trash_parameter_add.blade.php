@@ -63,7 +63,7 @@ $count_service = StaticController::count_service();
                         <div class="card-header">
                             <div class="d-flex">
                                 <div class="">
-                                    <label for="">เพิ่มข้อมูลพารามิเตอร์ </label>
+                                    <label for="">เพิ่มประเภทขยะติดเชื้อ</label>
                                 </div>
                                 <div class="ms-auto">
     
@@ -72,7 +72,7 @@ $count_service = StaticController::count_service();
                         </div>
 
                         <div class="card-body shadow-lg">
-                            <form class="custom-validation" action="{{ route('env.env_water_parameter_save') }}" method="POST" enctype="multipart/form-data">
+                            <form class="custom-validation" action="{{ route('env.env_trash_parameter_save') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}">
                             <div class="row">
@@ -88,12 +88,12 @@ $count_service = StaticController::count_service();
     
                                         <div class="row">
                                             <div class="col-md-2 text-end">
-                                                <label for="land_tonnage_number">รายการพารามิเตอร์ :</label>
+                                                <label for="land_tonnage_number">ประเภทขยะติดเชื้อ :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_name" type="text"
-                                                        class="form-control form-control-sm" name="parameter_list_name">
+                                                    <input id="trash_type_name" type="text"
+                                                        class="form-control form-control-sm" name="trash_type_name">
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
@@ -101,13 +101,13 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_unit" type="text" 
-                                                        class="form-control form-control-sm" name="parameter_list_unit">                                                        
+                                                    <input id="trash_type_name_unit" type="text" 
+                                                        class="form-control form-control-sm" name="trash_type_name_unit">                                                        
                                                 </div>
                                             </div>
                                         </div>
     
-                                        <div class="row mt-3">
+                                        {{-- <div class="row mt-3">
                                             <div class="col-md-2 text-end">
                                                 <label for="land_tonnage_no">ค่ามาตรฐาน :</label>
                                             </div>
@@ -126,7 +126,7 @@ $count_service = StaticController::count_service();
                                                         class="form-control form-control-sm" name="parameter_list_user_analysis_results">
                                                 </div>
                                             </div>
-                                        </div>   
+                                        </div>    --}}
   
     
                                     </div>
@@ -142,7 +142,7 @@ $count_service = StaticController::count_service();
                                         บันทึกข้อมูล
                                     </button>
     
-                                    <a href="{{ url('env_water_parameter') }}" class="btn btn-danger btn-sm">
+                                    <a href="{{ url('env_trash_parameter') }}" class="btn btn-danger btn-sm">
                                         <i class="fa-solid fa-xmark me-2"></i>
                                         ยกเลิก
                                     </a>
