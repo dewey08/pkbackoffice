@@ -294,5 +294,24 @@ class EnvController extends Controller
         return redirect()->back();
     }
 
+    public function env_trash_type (Request $request)
+    {
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+ 
+        $data_parameter_list = DB::table('env_parameter_list')->get();
+         
+
+        return view('env.env_trash_type', $data,[
+            'startdate' => $datestart,
+            'enddate' => $dateend,
+            'dataparameterlist' => $data_parameter_list, 
+        ]);
+    }
 
 }

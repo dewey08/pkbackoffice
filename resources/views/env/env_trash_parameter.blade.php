@@ -80,11 +80,11 @@ if (Auth::check()) {
 
         <div class="main-card mb-3 card">
             <div class="card-header">
-                รายการพารามิเตอร์
+                รายการประเภทขยะติดเชื้อ
                 
                 <div class="btn-actions-pane-right">
                     <div class="nav">
-                        <a href="{{ url('env_water_parameter_add') }}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">เพิ่มข้อมูล</a>
+                        <a href="{{ url('env_trash_parameter_add') }}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">เพิ่มข้อมูล</a>
                         {{-- <a href="{{ url('time_nurs_depsub') }}" class="btn-pill btn-wide me-1 ms-1  btn btn-outline-alternate btn-sm">กลุ่มงาน/ฝ่าย</a>
                         <a href="{{ url('time_nurs_depsubsub') }}" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">หน่วยงาน</a> --}}
                     </div>
@@ -103,10 +103,10 @@ if (Auth::check()) {
                                     <thead>
                                         <tr>
                                             <th>ลำดับ</th> 
-                                            <th>ชื่อพารามิเตอร์</th>
+                                            <th>ประเภทขยะติดเชื้อ</th>
                                             <th>หน่วย</th>
-                                            <th>วิธีวิเคราะห์</th> 
-                                            <th>ค่ามาตรฐาน</th>
+                                            {{-- <th>วิธีวิเคราะห์</th> 
+                                            <th>ค่ามาตรฐาน</th> --}}
                                             <th>ตั้งค่า</th> 
                                         </tr>
                                     </thead>
@@ -115,12 +115,13 @@ if (Auth::check()) {
                                         $date = date('Y');
                                         ?>
                                         @foreach ($dataparameterlist as $item)
-                                            <tr id="sid{{ $item->parameter_list_id }}">
+                                            <tr id="sid{{ $item->trash_type_id }}">
                                                 <td class="text-center" width="4%">{{ $i++ }}</td>
-                                                <td class="p-2" width="18%">{{ $item->parameter_list_name }} </td>
-                                                <td class="p-2" width="5%">{{ $item->parameter_list_unit }}</td>
+                                                <td class="p-2" width="18%">{{ $item->trash_type_name }} </td>
+                                                <td class="p-2" width="5%">{{ $item->trash_type_name_unit }}</td>
+                                                {{-- <td class="p-2" width="5%">{{ $item->trash_type_name_unit }}</td>
                                                 <td class="p-2" width="13%">{{ $item->parameter_list_user_analysis_results }}</td>
-                                                <td class="p-2" width="10%">{{ $item->parameter_list_normal }}</td>
+                                                <td class="p-2" width="10%">{{ $item->parameter_list_normal }}</td> --}}
                                                 {{-- <td class="p-2" width="17%">{{ $item->parameter_list_normal }}</td> --}}
                                                 <td class="text-center" width="7%">
     
@@ -152,7 +153,7 @@ if (Auth::check()) {
                                                         </button>
                                                         <div class="dropdown-menu">
                                                             <a class="dropdown-item text-warning"
-                                                                href="{{ url('env_water_parameter_edit/' . $item->parameter_list_id) }}"
+                                                                href="{{ url('env_trash_parameter_edit/' . $item->trash_type_id) }}"
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="แก้ไข">
                                                                 <i class="fa-solid fa-pen-to-square me-2"></i>
@@ -161,7 +162,7 @@ if (Auth::check()) {
                                                             </a>
     
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-danger" href="{{url('env_water_parameter_delete/'.$item->parameter_list_id)}}"
+                                                            <a class="dropdown-item text-danger" href="{{url('env_water_parameter_delete/'.$item->trash_type_id)}}"
                                                              
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="ลบ">

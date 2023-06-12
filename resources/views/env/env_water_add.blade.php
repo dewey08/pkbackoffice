@@ -85,24 +85,17 @@ $count_service = StaticController::count_service();
                                             <input type="hidden" id="article_typeid" name="article_typeid" class="form-control" value="2"/>
                                             <input type="hidden" id="article_groupid" name="article_groupid" class="form-control" value="3"/>
                                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
-                                            
+    
                                         <div class="row">
-<<<<<<< HEAD
-                                                <div class="col-md-2 text-end">
-                                                    <label for="water_date">วันที่บันทึก :</label>
-                                                </div>
-                                                <div class="col-md-4">
-=======
                                             <div class="col-md-2 text-end">
                                                 <label for="water_date">วันที่บันทึก :</label>
                                             </div>
                                             <div class="col-md-4">
->>>>>>> c6bb75398d10d68f59948495f97bc69c912a17a6
                                                 <div class="form-group">
                                                     <input id="water_date" type="date"
                                                         class="form-control form-control-sm" name="water_date">
                                                 </div>
-                                                </div>
+                                            </div>
                                             <div class="col-md-2 text-end">
                                                 <label for="water_user">ผู้บันทึก :</label>
                                             </div>
@@ -120,8 +113,8 @@ $count_service = StaticController::count_service();
                                                 </div>
                                             </div>
                                         </div>
-
-                                            <div class="row mt-3">
+    
+                                        <div class="row mt-3">
                                             <div class="col-md-2 text-end">
                                                 <label for="water_location">สถานที่เก็บตัวอย่าง :</label>
                                             </div>
@@ -290,7 +283,6 @@ $count_service = StaticController::count_service();
                             </div>
                         </div>
                         </form>
-
                     
                 </div>
             </div>
@@ -324,7 +316,6 @@ $count_service = StaticController::count_service();
                 placeholder: "--เลือก--",
                 allowClear: true
             });
-            
         // ช่องค้นหาชื่อ
             $('#water_user2').select2({
             placeholder: "--เลือก--",
