@@ -315,25 +315,93 @@ class EnvController extends Controller
 
     public function env_trash (Request $request)
     {
-    $datestart = $request->startdate;
-    $dateend = $request->enddate;
-    $iduser = Auth::user()->id;
-    $data['users'] = User::get();
-    $data['leave_month'] = DB::table('leave_month')->get();
-    $data['users_group'] = DB::table('users_group')->get();
-    $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
-    $acc_debtors = DB::select('
-        SELECT count(*) as I from users u
-        left join p4p_workload l on l.p4p_workload_user=u.id
-        group by u.dep_subsubtrueid;
-    ');
-     
+        $acc_debtors = DB::select('
+            SELECT count(*) as I from users u
+            left join p4p_workload l on l.p4p_workload_user=u.id
+            group by u.dep_subsubtrueid;
+        ');
+         
 
-    return view('env.env_trash', $data,[
-        'startdate' => $datestart,
-        'enddate' => $dateend, 
-    ]);
+        return view('env.env_trash', $data,[
+            'startdate' => $datestart,
+            'enddate' => $dateend, 
+        ]);
+    }
+
+    public function env_trash_add (Request $request)
+    {
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+
+        $acc_debtors = DB::select('
+            SELECT count(*) as I from users u
+            left join p4p_workload l on l.p4p_workload_user=u.id
+            group by u.dep_subsubtrueid;
+        ');
+
+
+        $data_parameter = DB::table('env_parameter_list')->get();
+         
+
+        return view('env.env_trash_add', $data,[
+            'start'           => $startdate,
+            'end'             => $enddate, 
+            'dataparameters'  => $data_parameter, 
+        ]);
+    }
+
+    public function env_trash_save (Request $request)
+    {
+
+        // $datenow = date('Y-m-d H:m:s');
+        // Env_parameter_list::insert([
+        //     'parameter_list_name'                   => $request->parameter_list_name,
+        //     'parameter_list_unit'                   => $request->parameter_list_unit,
+        //     'parameter_list_normal'                 => $request->parameter_list_normal,
+        //     'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results,
+        //     'created_at'                            => $datenow
+        // ]);
+        // $data_parameter_list = DB::table('env_parameter_list')->get();
+    
+        // return redirect()->route('env.env_water_parameter');
+
+
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+
+        $acc_debtors = DB::select('
+            SELECT count(*) as I from users u
+            left join p4p_workload l on l.p4p_workload_user=u.id
+            group by u.dep_subsubtrueid;
+        ');
+
+
+        $data_parameter = DB::table('env_trash_type')->get();
+         
+
+        return view('env.env_trash_save', $data,[
+            'start'           => $startdate,
+            'end'             => $enddate, 
+            'dataparameters'  => $data_parameter, 
+        ]);
     }
 
     public function env_trash_parameter (Request $request) //หน้าตั้งค่าประเภทขยะ
@@ -439,4 +507,14 @@ class EnvController extends Controller
         //     'dataparameterlist' => $data_parameter_list, 
         // ]);
     }
+
+    public function env_trash_parameter_delete (Request $request,$id)
+    {
+       $del = Env_trash_type::find($id);  
+       $del->delete(); 
+
+        return redirect()->back();
+    }
+
+
 }
