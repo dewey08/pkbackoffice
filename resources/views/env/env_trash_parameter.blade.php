@@ -42,6 +42,7 @@
            display:none;
            }
 </style>
+
 <script>
     function TypeAdmin() {
         window.location.href = '{{ route('index') }}';
@@ -64,7 +65,7 @@ if (Auth::check()) {
     $newweek = date('Y-m-d', strtotime($datenow . ' -1 week')); //ย้อนหลัง 1 สัปดาห์  
     $newDate = date('Y-m-d', strtotime($datenow . ' -1 months')); //ย้อนหลัง 1 เดือน 
 ?>
-  
+
 <div class="tabs-animation">
     
         <div class="row text-center">  
@@ -77,7 +78,7 @@ if (Auth::check()) {
         </div> 
 
        
-
+    
         <div class="main-card mb-3 card">
             <div class="card-header">
                 รายการประเภทขยะติดเชื้อ
@@ -102,12 +103,10 @@ if (Auth::check()) {
                                 <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="example2">
                                     <thead>
                                         <tr>
-                                            <th>ลำดับ</th> 
-                                            <th>ประเภทขยะติดเชื้อ</th>
-                                            <th>หน่วย</th>
-                                            {{-- <th>วิธีวิเคราะห์</th> 
-                                            <th>ค่ามาตรฐาน</th> --}}
-                                            <th>ตั้งค่า</th> 
+                                            <th class="text-center">ลำดับ</th> 
+                                            <th class="text-center">ประเภทขยะติดเชื้อ</th>
+                                            <th class="text-center">หน่วย</th>
+                                            <th class="text-center">ตั้งค่า</th> 
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -115,15 +114,11 @@ if (Auth::check()) {
                                         $date = date('Y');
                                         ?>
                                         @foreach ($dataparameterlist as $item)
-                                            <tr id="sid{{ $item->trash_type_id }}">
+                                            <tr id="sid{{ $item->trash_set_id }}">
                                                 <td class="text-center" width="4%">{{ $i++ }}</td>
-                                                <td class="p-2" width="18%">{{ $item->trash_type_name }} </td>
-                                                <td class="p-2" width="4%">{{ $item->trash_type_name_unit }}</td>
-                                                {{-- <td class="p-2" width="5%">{{ $item->trash_type_name_unit }}</td>
-                                                <td class="p-2" width="13%">{{ $item->parameter_list_user_analysis_results }}</td>
-                                                <td class="p-2" width="10%">{{ $item->parameter_list_normal }}</td> --}}
-                                                {{-- <td class="p-2" width="17%">{{ $item->parameter_list_normal }}</td> --}}
-                                                <td class="text-center" width="4%">
+                                                <td class="p-2" width="18%">{{ $item->trash_set_name }} </td>
+                                                <td class="text-center" width="5%">{{ $item->trash_set_unit }}</td>
+                                                <td class="text-center" width="7%">
     
                                                     {{-- <div class="dropdown">
                                                         <button class="dropdown-toggle btn btn-sm text-secondary" href="#" id="dropdownMenuLink" data-mdb-toggle="dropdown" aria-expanded="false" >
@@ -153,7 +148,7 @@ if (Auth::check()) {
                                                         </button>
                                                         <div class="dropdown-menu">
                                                             <a class="dropdown-item text-warning"
-                                                                href="{{ url('env_trash_parameter_edit/' . $item->trash_type_id) }}"
+                                                                href="{{ url('env_trash_parameter_edit/' . $item->trash_set_id) }}"
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="แก้ไข">
                                                                 <i class="fa-solid fa-pen-to-square me-2"></i>
@@ -162,7 +157,7 @@ if (Auth::check()) {
                                                             </a>
     
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->trash_type_id)}}"
+                                                            <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->trash_set_id)}}"
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="ลบ">
                                                                 <i class="fa-solid fa-trash-can me-2 mb-1"></i>

@@ -63,7 +63,7 @@ use App\Models\P4p_work;
 use App\Models\P4p_workset;
 use App\Models\P4p_workgroupset_unit;
 use App\Models\P4p_workgroupset;
-use App\Models\Env_trash_type;
+use App\Models\Env_trash_set;
 
 use App\Models\Env_parameter_list;
 use App\Models\Env_trash_parameter;
@@ -352,15 +352,48 @@ class EnvController extends Controller
             group by u.dep_subsubtrueid;
         ');
 
-
-        $data_parameter = DB::table('env_parameter_list')->get();
+        // $infoper = DB::table('hrd_person')->get();
+        $trash = DB::table('env_trash')->get();
+        // $trash_type = DB::table('env_trash_type')->get();
+        $trash_sup = DB::table('products_vendor')->get(); //บริษัท
+        $trash_set = DB::table('env_trash_type')->get(); 
+        // $data_parameter = DB::table('env_parameter_list')->get();
          
+        $maxnum = Env_trash::max('trash_bill_on');
+        if($maxnum != '' ||  $maxnum != null){
+         $refmax = Env_trash::where('trash_bill_on','=',$maxnum)->first();
 
-        return view('env.env_trash_add', $data,[
-            'start'           => $startdate,
-            'end'             => $enddate, 
-            'dataparameters'  => $data_parameter, 
+         if($refmax->trash_bill_on != '' ||  $refmax->trash_bill_on != null){
+         $maxpo = substr($refmax->trash_bill_on, -2)+1;
+         }else{
+         $maxref = 1;
+         }
+         $refe = str_pad($maxpo, 5, "0", STR_PAD_LEFT);
+         }else{
+        $refe = '00001';
+         }
+         $billNo = 'TRA'.'-'.$refe;
+
+        return view('env.env_trash_add',[
+            'budgets' =>  $budget,
+            'displaydate_bigen'=> $displaydate_bigen,
+            'displaydate_end'=> $displaydate_end,
+            'status_check'=> $status,
+            // 'search'=> $search,
+            // 'year_id'=>$year_id,
+            'infopers'=>$infoper,
+            'trashs'=>$trash,
+            'trash_types'=>$trash_type,
+            'trash_sups'=>$trash_sup,
+            'trash_sets'=>$trash_set,
+            'billNos'=>$billNo,
         ]);
+
+        // return view('env.env_trash_add', $data,[
+        //     'start'           => $startdate,
+        //     'end'             => $enddate, 
+        //     'dataparameters'  => $data_parameter, 
+        // ]);
     }
 
     public function env_trash_save (Request $request)
@@ -404,7 +437,9 @@ class EnvController extends Controller
         ]);
     }
 
-    public function env_trash_parameter (Request $request) //หน้าตั้งค่าประเภทขยะ
+//**************************************************************หน้าตั้งค่าประเภทขยะ*********************************************
+
+    public function env_trash_parameter (Request $request) 
     {
         $datestart = $request->startdate;
         $dateend = $request->enddate;
@@ -414,7 +449,7 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
  
-        $data_parameter_list = DB::table('env_trash_type')->get();
+        $data_parameter_list = DB::table('env_trash_set')->get();
          
 
         return view('env.env_trash_parameter', $data,[
@@ -440,7 +475,7 @@ class EnvController extends Controller
             group by u.dep_subsubtrueid;
         ');
 
-        $data_parameter = DB::table('env_trash_type')->get();
+        $data_parameter = DB::table('env_trash_set')->get();
          
 
         return view('env.env_trash_parameter_add', $data,[
@@ -460,7 +495,7 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
  
-        $data_edit = DB::table('env_trash_type')->where('trash_type_id','=',$id)->first();
+        $data_edit = DB::table('env_trash_set')->where('trash_set_id','=',$id)->first();
 
         return view('env.env_trash_parameter_edit', $data,[
             'startdate'        => $datestart,
@@ -473,14 +508,13 @@ class EnvController extends Controller
     {  
         $datenow = date('Y-m-d H:m:s');
 
-        Env_trash_type::insert([
+        Env_trash_set::insert([
             // 'trash_type_id'                   => $request->trash_type_id,
-            'trash_type_name'                   => $request->trash_type_name,
-            'trash_type_name_unit'              => $request->trash_type_name_unit,
-            // 'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results,
+            'trash_set_name'                   => $request->trash_set_name,
+            'trash_set_unit'                   => $request->trash_set_unit,
             'created_at'                            => $datenow
         ]);
-        $data_parameter_list = DB::table('env_trash_type')->get();
+        $data_parameter_list = DB::table('env_trash_set')->get();
     
         return redirect()->route('env.env_trash_parameter');
 
@@ -489,12 +523,12 @@ class EnvController extends Controller
     public function env_trash_parameter_update  (Request $request)
     { 
         $datenow = date('Y-m-d H:m:s');
-        $id = $request->trash_type_id;
+        $id = $request->trash_set_id;
         // DB::table('env_parameter_list')->where('parameter_list_id','=',$id)
-        Env_trash_type::where('trash_type_id','=',$id)
+        Env_trash_set::where('trash_set_id','=',$id)
         ->update([
-            'trash_type_name'                       => $request->trash_type_name,
-            'trash_type_name_unit'                  => $request->trash_type_name_unit,
+            'trash_set_name'                       => $request->trash_set_name,
+            'trash_set_unit'                       => $request->trash_set_unit,
             // 'parameter_list_normal'                 => $request->parameter_list_normal,
             // 'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results, 
             'updated_at'                            => $datenow
@@ -510,7 +544,7 @@ class EnvController extends Controller
 
     public function env_trash_parameter_delete (Request $request,$id)
     {
-       $del = Env_trash_type::find($id);  
+       $del = Env_trash_set::find($id);  
        $del->delete(); 
 
         return redirect()->back();

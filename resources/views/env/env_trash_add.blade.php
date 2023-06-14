@@ -63,7 +63,7 @@ $count_service = StaticController::count_service();
                         <div class="card-header">
                             <div class="d-flex">
                                 <div class="">
-                                    <label for="">เพิ่มข้อมูลผลวิเคราะห์คุณภาพน้ำทิ้ง </label>
+                                    <label for="">เพิ่มข้อมูลขยะ </label>
                                 </div>
                                 <div class="ms-auto">
     
@@ -74,21 +74,27 @@ $count_service = StaticController::count_service();
                         <div class="card-body shadow-lg">
                             <form class="custom-validation" action="{{ route('env.env_trash_save') }}" method="POST" enctype="multipart/form-data">
                             @csrf
+                            
                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}">
-                            <div class="row">
-
-                           
-                                    <div class="col-md-12">
-    
+                            
+                            <div class="row">                           
+                                    <div class="col-md-12">    
                                         <!-- <input type="hidden" id="article_decline_id" name="article_decline_id" class="form-control" value="6"/>
                                             <input type="hidden" id="article_categoryid" name="article_categoryid" class="form-control" value="26"/>
                                             <input type="hidden" id="article_typeid" name="article_typeid" class="form-control" value="2"/>
                                             <input type="hidden" id="article_groupid" name="article_groupid" class="form-control" value="3"/>
                                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
     
-                                        <div class="row">
-                                            <div class="col-md-2 text-end">
-                                                <label for="water_date">วันที่บันทึก :</label>
+                                        <div class="row push text-left">
+                                            <div class="col-md-2">
+                                                <label>TRASH NO :</label>
+                                            </div>                                            
+                                            <div class="col-lg-2">              
+                                                {{-- <input value="{{$billNos}}" name="trash_bill_on" id="trash_bill_on"  class="form-control input-lg fo13" > --}}
+                                            </div> 
+
+                                            <div class="col-md-2 ">
+                                                <label>วันที่บันทึก :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -96,33 +102,27 @@ $count_service = StaticController::count_service();
                                                         class="form-control form-control-sm" name="water_date">
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 text-end">
-                                                <label for="water_user">ผู้บันทึก :</label>
+
+                                            <div class="col-md-2 ">
+                                                <label>เวลาบันทึก :</label>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="form-group">
-                                                    {{-- <input id="water_user" type="text" 
-                                                        class="form-control form-control-sm" name="water_user"> --}}
-                                                        <select id="water_user1" name="water_user"
-                                                        class="form-control form-control-sm" style="width: 100%">
-                                                        <option value="">--เลือก--</option>
-                                                        @foreach ($users as $ue)                                               
-                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                                <input  name="trash_time" id="trash_time" class="js-masked-time form-control fo13" required>
                                             </div>
                                         </div>
     
                                         <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="water_location">สถานที่เก็บตัวอย่าง :</label>
+                                                <label">บริษัท :</label>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input id="water_location" type="text"
-                                                        class="form-control form-control-sm" name="water_location">
-                                                </div>
+                                                <select id="trash_sub" name="trash_sub"
+                                                        class="form-control form-control-sm" style="width: 100%">
+                                                        <option value="">--เลือก--</option>
+                                                        @foreach ($trash_sub as $trash_sub)                                               
+                                                            <option value="{{ $trash_sub->vendor_id }}"> {{ $trash_sub->vendor_name }} </option>                                             
+                                                        @endforeach
+                                                    </select>
                                             </div>
                                             <div class="col-md-2 text-end">
                                                 <label for="water_group_excample">ลักษณะตัวอย่าง :</label>
@@ -317,7 +317,7 @@ $count_service = StaticController::count_service();
                 allowClear: true
             });
         // ช่องค้นหาชื่อ
-            $('#water_user2').select2({
+            $('#trash_sub').select2({
             placeholder: "--เลือก--",
             allowClear: true
         }); 
