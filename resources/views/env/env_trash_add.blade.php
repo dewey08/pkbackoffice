@@ -73,116 +73,131 @@ $count_service = StaticController::count_service();
 
                         <div class="card-body shadow-lg">
                             <form class="custom-validation" action="{{ route('env.env_trash_save') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            
-                            <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}">
-                            
-                            <div class="row">                           
-                                    <div class="col-md-12">    
-                                        <!-- <input type="hidden" id="article_decline_id" name="article_decline_id" class="form-control" value="6"/>
-                                            <input type="hidden" id="article_categoryid" name="article_categoryid" class="form-control" value="26"/>
-                                            <input type="hidden" id="article_typeid" name="article_typeid" class="form-control" value="2"/>
-                                            <input type="hidden" id="article_groupid" name="article_groupid" class="form-control" value="3"/>
-                                            <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
-    
-                                        <div class="row push text-left">
-                                            <div class="col-md-2">
-                                                <label>TRASH NO :</label>
-                                            </div>                                            
-                                            <div class="col-lg-2">              
-                                                {{-- <input value="{{$billNos}}" name="trash_bill_on" id="trash_bill_on"  class="form-control input-lg fo13" > --}}
-                                            </div> 
+                                @csrf
+                                <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}">
+                                <div class="row">
+                               
+                                        <div class="col-md-12">        
+                                            <!-- <input type="hidden" id="article_decline_id" name="article_decline_id" class="form-control" value="6"/>
+                                                <input type="hidden" id="article_categoryid" name="article_categoryid" class="form-control" value="26"/>
+                                                <input type="hidden" id="article_typeid" name="article_typeid" class="form-control" value="2"/>
+                                                <input type="hidden" id="article_groupid" name="article_groupid" class="form-control" value="3"/>
+                                                <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
+        
+                                            <div class="row">
+                                                <div class="col-md-1 text-end">
+                                                    <label for="trash_bill_on">TRASH_NO :</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <input id="trash_bill_on" type="date" class="form-control form-control-sm" name="trash_bill_on">
+                                                    </div>
+                                                </div>
 
-                                            <div class="col-md-2 ">
-                                                <label>วันที่บันทึก :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input id="water_date" type="date"
-                                                        class="form-control form-control-sm" name="water_date">
+                                                <div class="col-md-1 text-end">
+                                                    <label for="trash_date">วันที่บันทึก :</label>
                                                 </div>
-                                            </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <div class="form-group">
+                                                            <input id="trash_date" type="date"
+                                                                class="form-control form-control-sm" name="trash_date">
+                                                        </div>
+                                                        {{-- <select id="water_user1" name="water_user" class="form-control form-control-sm" style="width: 100%">
+                                                            <option value="">--เลือก--</option>
+                                                            @foreach ($users as $ue)                                               
+                                                                <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
+                                                            @endforeach
+                                                        </select> --}}
+                                                    </div>
+                                                </div>
 
-                                            <div class="col-md-2 ">
-                                                <label>เวลาบันทึก :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <input  name="trash_time" id="trash_time" class="js-masked-time form-control fo13" required>
-                                            </div>
-                                        </div>
-    
-                                        <div class="row mt-3">
-                                            <div class="col-md-2 text-end">
-                                                <label">บริษัท :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <select id="trash_sub" name="trash_sub"
-                                                        class="form-control form-control-sm" style="width: 100%">
-                                                        <option value="">--เลือก--</option>
-                                                        @foreach ($trash_sub as $trash_sub)                                               
-                                                            <option value="{{ $trash_sub->vendor_id }}"> {{ $trash_sub->vendor_name }} </option>                                             
-                                                        @endforeach
-                                                    </select>
-                                            </div>
-                                            <div class="col-md-2 text-end">
-                                                <label for="water_group_excample">ลักษณะตัวอย่าง :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input id="water_group_excample" type="text"
-                                                        class="form-control form-control-sm" name="water_group_excample">
+                                                <div class="col-md-1 text-end">
+                                                    <label for="trash_time">เวลาบันทึก :</label>
                                                 </div>
-                                            </div>                                           
-                                        </div>
-                                        
-                                        <div class="row mt-3">
-                                            <div class="col-md-2 text-end">
-                                                <label for="parameter_list_normal">วันที่รับตัวอย่าง :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input id="parameter_list_normal" type="date"
-                                                        class="form-control form-control-sm" name="parameter_list_normal">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <input type="time" id="time_save_trash" name="time_save_trash" class="form-control" placeholder=""/>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 text-end">
-                                                <label for="parameter_list_user_analysis_results">วันที่วิเคราะห์ตัวอย่าง :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input id="parameter_list_user_analysis_results" type="date"
-                                                        class="form-control form-control-sm" name="parameter_list_user_analysis_results">
+        
+                                            <div class="row mt-2">
+                                                {{-- <div class="col-md-2 text-end">
+                                                    <label for="trash_time">เวลาบันทึก :</label>
                                                 </div>
-                                            </div>                                           
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <div class="col-md-2 text-end">
-                                                <label for="parameter_list_normal">ผู้วิเคราะห์ตัวอย่าง :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    {{-- <input id="parameter_list_normal" type="text"
-                                                        class="form-control form-control-sm" name="parameter_list_normal"> --}}
-                                                        <select id="water_user2" name="water_user"
-                                                        class="form-control form-control-sm" style="width: 100%">
-                                                        <option value="">--เลือก--</option>
-                                                        @foreach ($users as $ue)                                               
-                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
-                                                        @endforeach
-                                                    </select>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <input id="trash_time" type="text"
+                                                            class="form-control form-control-sm" name="trash_time">
+                                                    </div>
+                                                </div> --}}
+                                                
+                                                <div class="col-md-1 text-end">
+                                                    <label for="trash_sub">บริษัท :</label>
                                                 </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        {{-- <input id="trash_sub" type="text"
+                                                            class="form-control form-control-sm" name="trash_sub"> --}}
+                                                            <select id="trash_sub" name="trash_sub"
+                                                                    class="form-control form-control-sm" style="width: 100%">
+                                                                    <option value="">--เลือก--</option>
+                                                                    @foreach ($products_vendor as $vendor)                                               
+                                                                        <option value="{{ $vendor->vendor_id }}" selected> {{ $vendor->vendor_name }} </option>                                             
+                                                                    @endforeach
+                                                            </select>
+                                                    </div>
+                                                </div> 
+                                                
+                                                {{-- <div class="row mt-1"> --}}
+                                                    <div class="col-md-1 text-end">
+                                                        <label for="trash_user">ผู้บันทึกข้อมูล :</label>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            {{-- <input id="trash_user" type="date"
+                                                                class="form-control form-control-sm" name="trash_user"> --}}
+                                                                <select id="water_user2" name="trash_user"
+                                                                    class="form-control form-control-sm" style="width: 100%">
+                                                                    <option value="">--เลือก--</option>
+                                                                    @foreach ($users as $ue)                                               
+                                                                        <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
+                                                                    @endforeach
+                                                                </select>
+                                                        </div>
+                                                    </div>
+                                                {{-- </div> --}}
                                             </div>
-                                            <div class="col-md-2 text-end">
-                                                <label for="water_comment">หมายเหตุ :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input id="water_comment" type="text"
-                                                        class="form-control form-control-sm" name="water_comment">
+                                            
+                                              
+                                            <div class="row mt-3">
+                                                {{-- <div class="col-md-2 text-end">
+                                                    <label for="parameter_list_normal">ผู้วิเคราะห์ตัวอย่าง :</label>
+                                                </div> --}}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        {{-- <input id="parameter_list_normal" type="text"
+                                                            class="form-control form-control-sm" name="parameter_list_normal"> --}}
+                                                        {{-- <select id="water_user2" name="water_user"
+                                                            class="form-control form-control-sm" style="width: 100%">
+                                                            <option value="">--เลือก--</option>
+                                                            @foreach ($users as $ue)                                               
+                                                                <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
+                                                            @endforeach
+                                                        </select> --}}
+                                                    </div>
                                                 </div>
-                                            </div>                                           
-                                        </div>
+                                                {{-- <div class="col-md-2 text-end">
+                                                    <label for="water_comment">หมายเหตุ :</label>
+                                                </div> --}}
+                                                <div class="col-md-4">
+                                                    {{-- <div class="form-group">
+                                                        <input id="water_comment" type="text"
+                                                            class="form-control form-control-sm" name="water_comment">
+                                                    </div> --}}
+                                                </div>                                           
+                                            </div>
 
                                         {{-- <div class="row push">
                                             <div class="col-sm-2 ">
@@ -224,7 +239,7 @@ $count_service = StaticController::count_service();
                                         </div> --}}
 
                                     <div class="row">
-                                        <label for="">รายการพารามิเตอร์</label>
+                                        <label for="">รายการขยะ</label>
                                         <div class="col-md-12">
                                             {{-- @foreach ($dataparameters as $item)
                                                 <p>{{$item->parameter_list_name}}</p>
@@ -233,11 +248,11 @@ $count_service = StaticController::count_service();
                                                 <thead style="background-color: #BDFBC9;">
                                                     <tr height="40">
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;font-family: 'Kanit', sans-serif;font-size: 13px;" width="3%">ลำดับ</td>
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">รายการพารามิเตอร์</th>
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="7%">หน่วย</th> 
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">ผลการวิเคราะห์</th> 
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th> 
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="15%">ค่ามาตรฐาน</th>                                            
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">ประเภทขยะ</th>
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="7%">ปริมาณ</th> 
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">หน่วย</th> 
+                                                        {{-- <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th> 
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="15%">ค่ามาตรฐาน</th>                                             --}}
                                                     </tr>
                                                 </thead>
                                                 <tbody class="tbody">
@@ -247,13 +262,13 @@ $count_service = StaticController::count_service();
                                                     <tr height="20">                                             
                                                         <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
                                                         <td>
-                                                            <input type="hidden" value="{{ $items->parameter_list_id }}" name="parameter_list_id[]" id="parameter_list_id[]" class="form-control input-sm fo13" >
-                                                            <input value="{{ $items->parameter_list_name }}" name="" id="" class="form-control input-sm fo13" readonly>
+                                                            <input type="hidden" value="{{ $items->trash_set_id }}" name="trash_set_id[]" id="trash_set_id[]" class="form-control input-sm fo13" >
+                                                            <input value="{{ $items->trash_set_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>                                
-                                                        <td><input value="{{ $items->parameter_list_unit }}" name="parameter_list_unit[]" id="parameter_list_unit[]" class="form-control input-sm fo13" readonly></td>
-                                                        <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
+                                                        <td><input value="{{ $items->trash_set_unit }}" name="trash_set_unit[]" id="trash_set_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                        {{-- <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
                                                         <td><input value="{{ $items->parameter_list_user_analysis_results }}" name="parameter_list_user_analysis_results[]" id="parameter_list_user_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
-                                                        <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td> --}}
                                                     </tr>
                                                     @endforeach 
                                                 </tbody>
@@ -275,7 +290,7 @@ $count_service = StaticController::count_service();
                                         บันทึกข้อมูล
                                     </button>
     
-                                    <a href="{{ url('env_water') }}" class="btn btn-danger btn-sm">
+                                    <a href="{{ url('env_trash') }}" class="btn btn-danger btn-sm">
                                         <i class="fa-solid fa-xmark me-2"></i>
                                         ยกเลิก
                                     </a>
@@ -312,7 +327,7 @@ $count_service = StaticController::count_service();
                 }
         });
         // ช่องค้นหาชื่อ
-        $('#water_user1').select2({
+        $('#water_user2').select2({
                 placeholder: "--เลือก--",
                 allowClear: true
             });

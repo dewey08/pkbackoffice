@@ -323,23 +323,30 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
-        $acc_debtors = DB::select('
-            SELECT count(*) as I from users u
-            left join p4p_workload l on l.p4p_workload_user=u.id
-            group by u.dep_subsubtrueid;
-        ');
-         
+        $trash = DB::table('env_trash')->leftjoin('hrd_person','env_trash.trash_user','=','hrd_person.ID')
+            ->leftjoin('env_trash_type','env_trash.trash_user','=','env_trash_type.trash_type_id')
+            ->leftjoin('products_vendor','env_trash.trash_sub','=','products_vendor.vendor_id');
 
-        return view('env.env_trash', $data,[
+        $trash_type = DB::table('env_trash_type') ->get();
+        
+        // $acc_debtors = DB::select('SELECT count(*) as I from users u
+        //     left join p4p_workload l on l.p4p_workload_user=u.id
+        //     group by u.dep_subsubtrueid;
+        // ');
+         
+        return view('env.env_trash',[
             'startdate' => $datestart,
-            'enddate' => $dateend, 
+            'enddate' => $dateend,
+            'trashs'=>$trash,
+            'trash_type'=>$trash_type,
+
         ]);
     }
 
     public function env_trash_add (Request $request)
     {
-        $startdate = $request->startdate;
-        $enddate = $request->enddate;
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
         $iduser = Auth::user()->id;
         $data['users'] = User::get();
         $data['leave_month'] = DB::table('leave_month')->get();
@@ -352,89 +359,59 @@ class EnvController extends Controller
             group by u.dep_subsubtrueid;
         ');
 
-        // $infoper = DB::table('hrd_person')->get();
-        $trash = DB::table('env_trash')->get();
-        // $trash_type = DB::table('env_trash_type')->get();
-        $trash_sup = DB::table('products_vendor')->get(); //บริษัท
-        $trash_set = DB::table('env_trash_type')->get(); 
-        // $data_parameter = DB::table('env_parameter_list')->get();
+        $data_parameter = DB::table('env_trash')->get();
+        $data['products_vendor'] = Products_vendor::get();
+
+        // $maxnum = Env_trash::max('TRASH_BILL_NO');
+        // if($maxnum != '' ||  $maxnum != null){
+        //  $refmax = Env_trash::where('TRASH_BILL_NO','=',$maxnum)->first();
+
+        //  if($refmax->TRASH_BILL_NO != '' ||  $refmax->TRASH_BILL_NO != null){
+        //  $maxpo = substr($refmax->TRASH_BILL_NO, -2)+1;
+        //  }else{
+        //  $maxref = 1;
+        //  }
+        //  $refe = str_pad($maxpo, 5, "0", STR_PAD_LEFT);
+        //  }else{
+        // $refe = '00001';
+        //  }
+        //  $billNo = 'TRA'.'-'.$refe;
          
-        $maxnum = Env_trash::max('trash_bill_on');
-        if($maxnum != '' ||  $maxnum != null){
-         $refmax = Env_trash::where('trash_bill_on','=',$maxnum)->first();
 
-         if($refmax->trash_bill_on != '' ||  $refmax->trash_bill_on != null){
-         $maxpo = substr($refmax->trash_bill_on, -2)+1;
-         }else{
-         $maxref = 1;
-         }
-         $refe = str_pad($maxpo, 5, "0", STR_PAD_LEFT);
-         }else{
-        $refe = '00001';
-         }
-         $billNo = 'TRA'.'-'.$refe;
-
-        return view('env.env_trash_add',[
-            'budgets' =>  $budget,
-            'displaydate_bigen'=> $displaydate_bigen,
-            'displaydate_end'=> $displaydate_end,
-            'status_check'=> $status,
-            // 'search'=> $search,
-            // 'year_id'=>$year_id,
-            'infopers'=>$infoper,
-            'trashs'=>$trash,
-            'trash_types'=>$trash_type,
-            'trash_sups'=>$trash_sup,
-            'trash_sets'=>$trash_set,
-            'billNos'=>$billNo,
+        return view('env.env_trash_add', $data,[
+            'startdate'        => $datestart,
+            'enddate'          => $dateend, 
+            'dataparameters'   => $data_parameter, 
+            // 'billNos'          => $billNo,
         ]);
 
-        // return view('env.env_trash_add', $data,[
-        //     'start'           => $startdate,
-        //     'end'             => $enddate, 
-        //     'dataparameters'  => $data_parameter, 
-        // ]);
     }
 
     public function env_trash_save (Request $request)
     {
+        // $startdate = $request->startdate;
+        // $enddate = $request->enddate;
+        // $iduser = Auth::user()->id;
+        // $data['users'] = User::get();
+        // $data['leave_month'] = DB::table('leave_month')->get();
+        // $data['users_group'] = DB::table('users_group')->get();
+        // $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
-        // $datenow = date('Y-m-d H:m:s');
-        // Env_parameter_list::insert([
-        //     'parameter_list_name'                   => $request->parameter_list_name,
-        //     'parameter_list_unit'                   => $request->parameter_list_unit,
-        //     'parameter_list_normal'                 => $request->parameter_list_normal,
-        //     'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results,
-        //     'created_at'                            => $datenow
-        // ]);
-        // $data_parameter_list = DB::table('env_parameter_list')->get();
-    
-        // return redirect()->route('env.env_water_parameter');
-
-
-        $startdate = $request->startdate;
-        $enddate = $request->enddate;
-        $iduser = Auth::user()->id;
-        $data['users'] = User::get();
-        $data['leave_month'] = DB::table('leave_month')->get();
-        $data['users_group'] = DB::table('users_group')->get();
-        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
-
-        $acc_debtors = DB::select('
-            SELECT count(*) as I from users u
-            left join p4p_workload l on l.p4p_workload_user=u.id
-            group by u.dep_subsubtrueid;
-        ');
+        // $acc_debtors = DB::select('
+        //     SELECT count(*) as I from users u
+        //     left join p4p_workload l on l.p4p_workload_user=u.id
+        //     group by u.dep_subsubtrueid;
+        // ');
 
 
-        $data_parameter = DB::table('env_trash_type')->get();
+        // $data_parameter = DB::table('env_trash_type')->get();
          
 
-        return view('env.env_trash_save', $data,[
-            'start'           => $startdate,
-            'end'             => $enddate, 
-            'dataparameters'  => $data_parameter, 
-        ]);
+        // return view('env.env_trash_save', $data,[
+        //     'start'           => $startdate,
+        //     'end'             => $enddate, 
+        //     'dataparameters'  => $data_parameter, 
+        // ]);
     }
 
 //**************************************************************หน้าตั้งค่าประเภทขยะ*********************************************

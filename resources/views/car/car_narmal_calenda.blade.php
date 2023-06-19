@@ -314,7 +314,6 @@
                                     <div class="col-md-3 mt-2"> 
                                         <div class="form-group"> 
                                                 <input type="time" id="car_service_drive_gotime" name="car_service_drive_gotime" class="form-control" placeholder=""/>                                                 
-                                            
                                         </div>
                                     </div>
                                     <div class="col-md-3 mt-2">

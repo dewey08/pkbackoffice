@@ -90,10 +90,12 @@ if (Auth::check()) {
                     </div>
                 </div>
             </div>
+           
             <div class="card-body">
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-eg2-0" role="tabpanel">
-                        <p> 
+                        <p>
+                             
                             <form action="{{ route('env.env_trash') }}" method="POST">
                                 @csrf
                                 <div class="row">
@@ -137,14 +139,15 @@ if (Auth::check()) {
                                 <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="example2">
                                     <thead>
                                         <tr>
-                                            <th>ลำดับ</th> 
-                                            <th>TRASH NO</th>
-                                            <th>วันที่บันทึก</th>
-                                            <th>เวลา</th> 
-                                            <th>บริษัท</th>
-                                            <th>ขยะติดเชื้อ(kg)</th> 
-                                            <th>ผู้บันทึก</th>
-                                            <th>คำสั่ง</th> 
+                                            <th class="text-center"width="5%">ลำดับ</th> 
+                                            <th class="text-center"width="10%">TRASH NO</th>
+                                            <th class="text-center"width="10%">วันที่บันทึก</th>
+                                            <th class="text-center"width="8%">เวลา</th> 
+                                            <th class="text-center"width="20%">บริษัท</th>
+                                            <th class="text-center"width="8%">ขยะติดเชื้อ(kg)</th>
+                                            <th class="text-center"width="8%">ขยะทั่วไป(kg)</th>  
+                                            <th class="text-center"width="12%">ผู้บันทึก</th>
+                                            <th class="text-center"width="6%">คำสั่ง</th> 
                                           
                                         </tr>
                                     </thead>

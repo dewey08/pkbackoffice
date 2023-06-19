@@ -18,11 +18,7 @@ class Env_trash_set extends Authenticatable
     protected $fillable = [
         'trash_set_name',
         'trash_set_unit'
-        // 'water_location',
-        // 'water_group_excample',
-        // 'parameter_list_normal',
-        // 'parameter_list_user_analysis_results'
-       
+              
     ];
 
   
