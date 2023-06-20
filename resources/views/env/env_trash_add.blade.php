@@ -46,6 +46,8 @@
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\SuppliesController;
 use App\Http\Controllers\StaticController;
+
+
 $refnumber = SuppliesController::refnumber();
 $count_product = StaticController::count_product();
 $count_service = StaticController::count_service();
@@ -90,7 +92,7 @@ $count_service = StaticController::count_service();
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <input id="trash_bill_on" type="date" class="form-control form-control-sm" name="trash_bill_on">
+                                                        <input value="{{$billNos}}" name="trash_bill_on" id="trash_bill_on"  class="form-control input-lg fo13" >                                                        
                                                     </div>
                                                 </div>
 
