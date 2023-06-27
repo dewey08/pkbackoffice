@@ -13,6 +13,15 @@ class Env_trash extends Model
 {
     protected $table = 'env_trash';
     protected $primaryKey = 'trash_id';
-    public $timestamps = false;
+    // public $timestamps = false;
+    protected $fillable = [
+        'trash_bill_on',
+        'trash_date',
+        'trash_time',
+        'trash_user',
+        'trash_sub'
+        // 'parameter_list_user_analysis_results'
+        
+    ];
 
 }
