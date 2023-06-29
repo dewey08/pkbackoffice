@@ -1,4 +1,4 @@
-@extends('layouts.plan')
+@extends('layouts.plannew')
 @section('title','PK-BACKOFFice || Plan')
 @section('content')
 <script>
@@ -31,7 +31,7 @@ $pos = strrpos($url, '/') + 1;
      use Illuminate\Support\Facades\DB; 
  ?>
   <div class="container-fluid">
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-xl-12">                    
                 <div class="row">
                     <div class="col">
@@ -48,14 +48,24 @@ $pos = strrpos($url, '/') + 1;
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="row mt-3">
             <div class="col-xl-12">
-                <div class="card">                     
+                <div class="card"> 
+                    <div class="card-header ">
+                        ยุทธศาสตร์                      
+                        <div class="btn-actions-pane-right">
+                            <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-sm btn-outline-info"
+                                    data-bs-toggle="modal" data-bs-target="#insertdata">
+                                    <i class="fa-solid fa-folder-plus text-info me-2"></i>
+                                    เพิ่มยุทธศาสตร์
+                            </button> 
+                        </div>                        
+                    </div>                     
                     <div class="card-body py-0 px-2 mt-2"> 
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-sm myTable" style="width: 100%;" id="example"> 
+                            <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="example">
                                 <thead>                                           
                                     <tr>
                                         <th width="5%" class="text-center">ลำดับ</th>
@@ -90,10 +100,10 @@ $pos = strrpos($url, '/') + 1;
                                                         </button>
                                                         <a class="dropdown-item menu" href="{{url('plan_taget/'.$item->plan_strategic_id)}}"
                                                             data-bs-toggle="tooltip" data-bs-placement="left"
-                                                            title="เพิ่มเป้าประสงค์และKPI">
+                                                            title="เพิ่มวัตถุประสงค์และKPI">
                                                             <i class="fa-solid fa-square-plus ms-2 me-2" style="font-size:13px;color: rgb(22, 76, 251)"></i>
                                                             <label for=""  
-                                                                style="font-size:13px;color: rgb(22, 76, 251)">เพิ่มเป้าประสงค์และKPI</label>
+                                                                style="font-size:13px;color: rgb(22, 76, 251)">เพิ่มวัตถุประสงค์และKPI</label>
                                                         </a>
 
                                                         {{-- <a class="dropdown-item text-danger" href="javascript:void(0)"
@@ -177,13 +187,13 @@ $pos = strrpos($url, '/') + 1;
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-6 mt-3">
-                                                                <label for="">เริ่มต้นปีงบประมาณ</label>
+                                                                <label for="">ปี่ที่เริ่ม</label>
                                                                 <div class="form-group">
                                                                     <input id="editplan_strategic_startyear" class="form-control form-control-sm" name="plan_strategic_startyear" value="{{$item->plan_strategic_startyear}}">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 mt-3">
-                                                                <label for="">สิ้นสุดปีงบประมาณ</label>
+                                                                <label for="">ปีที่สิ้นสุด</label>
                                                                 <div class="form-group">
                                                                     <input id="editplan_strategic_endyear" class="form-control form-control-sm" name="plan_strategic_endyear" value="{{$item->plan_strategic_endyear}}">
                                                                 </div>
@@ -257,13 +267,13 @@ $pos = strrpos($url, '/') + 1;
                     </div>
                     <div class="row">
                         <div class="col-md-6 mt-3">
-                            <label for="">เริ่มต้นปีงบประมาณ</label>
+                            <label for="">ปี่ที่เริ่ม</label>
                             <div class="form-group">
                                 <input id="plan_strategic_startyear" class="form-control form-control-sm" name="plan_strategic_startyear">
                             </div>
                         </div>
                         <div class="col-md-6 mt-3">
-                            <label for="">สิ้นสุดปีงบประมาณ</label>
+                            <label for="">ปีที่สิ้นสุด</label>
                             <div class="form-group">
                                 <input id="plan_strategic_endyear" class="form-control form-control-sm" name="plan_strategic_endyear">
                             </div>

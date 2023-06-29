@@ -425,9 +425,9 @@
                                         </a>
                                     </li>
                                     {{-- <li>
-                                        <a href="{{ url('authen/checkauthen_autospsch') }}" target="_blank">
+                                        <a href="{{ url('sit_pullacc_auto') }}" target="_blank">
                                             <i class="metismenu-icon"></i>
-                                            Authen Report สปสช
+                                            Pull Account Auto
                                         </a>
                                     </li> --}}
                                     {{-- <li>

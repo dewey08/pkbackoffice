@@ -1,6 +1,6 @@
-@extends('layouts.user')
-@section('title','PK-BACKOFFice || ช้อมูลการจองห้องประชุม')
-
+@extends('layouts.userdashboard')
+@section('title', 'PK-BACKOFFICE || ช้อมูลการจองห้องประชุม')
+  
 
 <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet" />
 
@@ -22,49 +22,90 @@
   $pos = strrpos($url, '/') + 1;
 
   date_default_timezone_set("Asia/Bangkok");
-  $date =  date('Y-m-d');
-
-
-  
+  $datenow = date('Y-m-d');
+    $yy = date('Y') + 543;
+    $mo = date('m');
+    $newweek = date('Y-m-d', strtotime($datenow . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+    $newDate = date('Y-m-d', strtotime($datenow . ' -1 months')); //ย้อนหลัง 1 เดือน
+ 
   ?>
-  <style>
-    .btn{
-       font-size:15px;
-     }
-  </style>
-<div class="container-fluid" >
+<style>
+    #button{
+           display:block;
+           margin:20px auto;
+           padding:30px 30px;
+           background-color:#eee;
+           border:solid #ccc 1px;
+           cursor: pointer;
+           }
+           #overlay{	
+           position: fixed;
+           top: 0;
+           z-index: 100;
+           width: 100%;
+           height:100%;
+           display: none;
+           background: rgba(0,0,0,0.6);
+           }
+           .cv-spinner {
+           height: 100%;
+           display: flex;
+           justify-content: center;
+           align-items: center;  
+           }
+           .spinner {
+           width: 250px;
+           height: 250px;
+           border: 10px #ddd solid;
+           border-top: 10px #1fdab1 solid;
+           border-radius: 50%;
+           animation: sp-anime 0.8s infinite linear;
+           }
+           @keyframes sp-anime {
+           100% { 
+               transform: rotate(390deg); 
+           }
+           }
+           .is-hide{
+           display:none;
+           }
+</style>
+{{-- <div class="container-fluid" >
   <div class="px-0 py-0 mb-2">
     <div class="d-flex flex-wrap justify-content-center">  
       <a class="col-4 col-lg-auto mb-2 mb-lg-0 me-lg-auto text-white me-2"></a>
     
-      <div class="text-end">
-        {{-- <a href="{{url('user_meetting/meetting_dashboard')}}" class="btn btn-light btn-sm text-dark me-2">dashboard</a> --}}
+      <div class="text-end"> 
         <a href="{{url('user_meetting/meetting_calenda')}}" class="btn btn-light btn-sm text-dark me-2">ปฎิทิน</a>
         <a href="{{url('user_meetting/meetting_index')}}" class="btn btn-light btn-sm text-dark me-2">ช้อมูลการจองห้องประชุม</a> 
         <a href="#" class="btn btn-info btn-sm text-white me-2">จองห้องประชุม</a> 
       </div>
     </div>
-  </div>
-    <div class="row justify-content-center">
+  </div> --}}
+  <div class="tabs-animation">
+    
+    <div class="row text-center">  
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner">
+                    
+                </div>
+            </div>
+        </div>
+          
+    </div> 
+    <div class="row">
         <div class="col-md-12">
-            <div class="card shadow-lg">
+            <div class="main-card mb-3 card shadow-lg">
               {{-- {{$building_level_room->room_name}}    --}}
               <div class="card-header">
-                <div class="row">
-                  <div class="col"> 
-                    บันทึกขอใช้ห้องประชุม วันที่ {{dateThaifromFull($date)}} <label for="" style="color: rgb(255, 0, 0)">  {{$dataedits->room_name}}</label> 
-                  </div>
-                  <div class="col-1">
-                  </div>
-                  <div class="col">
-                    {{-- <label for="" style="color: rgb(255, 0, 0)">  {{$dataedits->room_name}}</label>  --}}
-                  </div>
+                บันทึกขอใช้ห้องประชุม วันที่ {{dateThaifromFull($datenow)}}   <label for="" class="mt-2 ms-5" style="color: rgb(255, 0, 0)">  {{$dataedits->room_name}}</label> 
+                <div class="btn-actions-pane-right">
                 </div>
               </div>
                 <div class="card-body"> 
-                    <form class="custom-validation" action="{{ route('meetting.meetting_choose_linesave') }}" id="insert_chooselinesaveForm" method="POST" enctype="multipart/form-data">
-                        {{-- id="insert_chooselinesaveForm" enctype="multipart/form-data"> --}}
-                        @csrf
+                    <form action="{{ route('meetting.meetting_choose_linesave') }}" method="POST" enctype="multipart/form-data">
+                         @csrf
 
 
                     <div class="row">
@@ -134,7 +175,12 @@
                                       <select name="meetting_year" id="meetting_year" class="form-control" style="width: 100%;">
                                           <option value="" selected>--เลือก--</option> 
                                           @foreach ($budget_year as $year)
-                                              <option value="{{ $year->leave_year_id }}">{{ $year->leave_year_id}}</option>
+                                          @if ($yy == $year->leave_year_id)
+                                            <option value="{{ $year->leave_year_id }}" selected>{{ $year->leave_year_id}}</option>
+                                          @else
+                                            <option value="{{ $year->leave_year_id }}">{{ $year->leave_year_id}}</option>
+                                          @endif
+                                              
                                           @endforeach                   
                                       </select>
                                     </div>
@@ -273,7 +319,7 @@
                          
                     </div>     
                     <div class="row mt-3 mb-5">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="card-header shadow">
                                 <label for="">อุปกรณ์ที่ต้องการ </label>
                             </div> 
@@ -296,8 +342,8 @@
                                                     <td>
                                                         <select name="MEETTINGLIST_ID[]" id="MEETTING_LIST_ID0" class="form-control form-control-sm" style="width: 100%;">
                                                             <option value="" selected>--รายการอุปกรณ์--</option> 
-                                                            @foreach ($building_room_list as $list)
-                                                                <option value="{{ $list -> room_list_id }}">{{ $list->room_list_name}}</option>
+                                                            @foreach ($meeting_list as $list)
+                                                                <option value="{{ $list ->meeting_list_id }}" selected>{{ $list->meeting_list_name}}</option>
                                                             @endforeach                   
                                                         </select>
                                                     </td>                                                                               
@@ -315,7 +361,7 @@
                             </div>  
                         </div>
 
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="card-header shadow">
                                 <label for="">รายการอาหาร </label>
                             </div> 
@@ -350,18 +396,19 @@
                                     </table>
                                 </div> 
                             </div>  
-                        </div>
+                        </div> --}}
                     </div>
                         
                     <div class="card-footer">
                         <div class="col-md-12 text-end"> 
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary btn-sm">
-                                    {{-- <button type="submit" id="saveBtn" class="btn btn-primary btn-sm"> --}}
-                                    บันทึกข้อมูล
+                                <button type="submit" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary">
+                                    {{-- <button type="button" id="Save_choose" class="btn btn-primary btn-sm"> --}}
+                                        <i class="pe-7s-diskette btn-icon-wrapper"></i>
+                                        บันทึกข้อมูล
                                 </button> 
-                                <a href="{{url('user_meetting/meetting_add/'.Auth::user()->id)}}" class="btn btn-danger btn-sm">
-                                    ยกเลิก
+                                <a href="{{url('user_meetting/meetting_add/'.Auth::user()->id)}}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-danger">
+                                    <i class="pe-7s-close btn-icon-wrapper"></i>ยกเลิก
                                 </a>
                             </div>                   
                         </div>   

@@ -365,9 +365,15 @@ public function meettingroom_index_toolsave(Request $request)
         $add = new Building_room_list();
         $add->room_list_name = $request->input('room_list_name'); 
         $add->room_list_qty = $request->input('room_list_qty'); 
-        $add->room_id = $request->input('room_id');     
- 
+        $add->room_id = $request->input('room_id'); 
         $add->save();    
+
+        $add2 = new Meeting_list();
+        $add2->meeting_list_name = $request->input('room_list_name'); 
+        $add2->meeting_list_qty = $request->input('room_list_qty'); 
+        $add2->room_id = $request->input('room_id'); 
+        $add2->save();
+
         return response()->json([
             'status'     => '200'
             ]);
@@ -398,8 +404,8 @@ public function meettingroom_check(Request $request)
 
     $data['q'] = $request->query('q');
     $data['year'] = $request->query('year');
-    $data['start'] = $request->query('start');
-    $data['end'] = $request->query('end');
+    $startdate = $request->query('startdate');
+    $enddate = $request->query('enddate');
     $datastatus = $request->query('meeting_status_code');
     $data['meeting_status'] = Meeting_status::orderBy('meeting_status_id','ASC')->get();
 
@@ -439,7 +445,7 @@ public function meettingroom_check(Request $request)
             ->orderBy('meeting_service.meeting_id','DESC');
             $data['meeting_service'] = $query->get();
 
-        }elseif ($data['start'] != null || $data['end'] != null){
+        }elseif ($data['startdate'] != null || $data['enddate'] != null){
             $query = Meeting_service::select('meeting_service.*','meeting_status.*')
             ->join('meeting_status','meeting_status.meeting_status_code','=','meeting_service.meetting_status')         
             ->where(function ($query) use ($data){
@@ -451,7 +457,7 @@ public function meettingroom_check(Request $request)
                 $query->orwhere('meeting_status_code','like','%'.$data['q'].'%');
             })
             ->where('meetting_status','=',$datastatus) 
-            ->WhereBetween('meeting_date_begin',[$data['start'],$data['end']])  
+            ->WhereBetween('meeting_date_begin',[$data['startdate'],$data['enddate']])  
             ->orderBy('meeting_date_begin','DESC')
             ->orderBy('meeting_service.meeting_id','DESC');
             $data['meeting_service'] = $query->get();
@@ -526,8 +532,10 @@ public function meettingroom_check(Request $request)
     }
 
     return view('meetting.meettingroom_check',$data,[
-        'datastatus'  => $datastatus,
-        'events' => $event
+        'datastatus'        => $datastatus,
+        'events'            => $event,
+        'startdate'         =>  $startdate,
+        'enddate'           =>  $enddate,
     ]);
 }
 

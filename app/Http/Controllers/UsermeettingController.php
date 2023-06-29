@@ -103,9 +103,18 @@ public function meetting_dashboard(Request $request)
     $data['status'] = Status::get();
     return view('user_meetting.meetting_dashboard',$data);
 }
+public function meetting_choose_cancel(Request $request, $id)
+{
+    $update = Meeting_service::find($id);
+    $update->meetting_status = 'CANCEL';
+    $update->save();
+    return response()->json(['status' => '200']);
+}
 
 public function meetting_index(Request $request)
 {   
+    $startdate = $request->startdate;
+    $enddate = $request->enddate; 
     // $data['q'] = $request->query('q');
     // $query = User::select('users.*')
     // ->where(function ($query) use ($data){
@@ -117,10 +126,38 @@ public function meetting_index(Request $request)
     // });
     // $data['users'] = $query->orderBy('id','DESC')->get();
     $idsubtrue = Auth::user()->dep_subsubtrueid;
+    $datenow = date('Y-m-d');
+    $yy = date('Y') + 543;
+    $mo = date('m');
+    $newweek = date('Y-m-d', strtotime($datenow . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+    $newDate = date('Y-m-d', strtotime($datenow . ' -1 months')); //ย้อนหลัง 1 เดือน
+    $featureDate = date('Y-m-d', strtotime($datenow . ' +1 months')); //ล่วงหน้า 1 เดือน
     // dd($idsubtrue);
-    $data['meeting_service'] = Meeting_service::where('meeting_debsubsubtrue_id','=',$idsubtrue)->get();
+    if ($startdate == '') {
+        // $data['meeting_service'] = Meeting_service::where('meeting_debsubsubtrue_id','=',$idsubtrue)->get();
+        $data['meeting_service'] = DB::connection('mysql')->select(' 
+            SELECT *
+            FROM meeting_service         
+            WHERE meeting_date_begin BETWEEN "'.$newDate.'" and "'.$featureDate.'" 
+            AND meeting_debsubsubtrue_id = "'.$idsubtrue.'"      
+        ');
+    } else {
+        
+        // $data['meeting_service'] = Meeting_service::where('meeting_debsubsubtrue_id','=',$idsubtrue)->where('meeting_date_begin','=',)->get();
+        $data['meeting_service'] = DB::connection('mysql')->select(' 
+                SELECT *
+                FROM meeting_service                
+                WHERE meeting_date_begin BETWEEN "'.$startdate.'" and "'.$enddate.'" 
+                AND meeting_debsubsubtrue_id = "'.$idsubtrue.'"      
+            ');
+    }
+    
+    
 
-    return view('user_meetting.meetting_index',$data);
+    return view('user_meetting.meetting_index',$data,[
+        'startdate'        => $startdate,
+        'enddate'          => $enddate, 
+    ]);
 }
 public function meetting_add(Request $request,$iduser)
 {   
@@ -147,7 +184,7 @@ public function meetting_choose(Request $request,$id)
     ->get(); 
     $data['building_room_list'] = Building_room_list::get();
     $data['food_list'] = Food_list::get();
-    $data['meeting_list'] = Meeting_list::get();
+    $data['meeting_list'] = Meeting_list::where('room_id','=',$id)->get();
     $data['meeting_objective'] = Meeting_objective::get();
     $data['budget_year'] = Budget_year::orderBy('leave_year_id','DESC')->get();
   
@@ -161,7 +198,9 @@ public function meetting_choose(Request $request,$id)
             if ($meetting->meetting_status == 'REQUEST') {
                 $color = '#F48506';
             }elseif ($meetting->meetting_status == 'ALLOCATE') {
-                $color = '#592DF7';           
+                $color = '#592DF7';    
+            }elseif ($meetting->meetting_status == 'CANCEL') {
+                $color = '#ff0707';       
             } else {
                 $color = '#0AC58D';
             }    
@@ -192,7 +231,9 @@ public function meetting_choose(Request $request,$id)
             if ($meetting->meetting_status == 'REQUEST') {
                 $color = '#F48506';
             }elseif ($meetting->meetting_status == 'ALLOCATE') {
-                $color = '#592DF7';           
+                $color = '#592DF7';     
+            }elseif ($meetting->meetting_status == 'CANCEL') {
+                $color = '#ff0707';       
             } else {
                 $color = '#0AC58D';
             }  
@@ -380,7 +421,7 @@ public function meetting_calenda(Request $request)
     $data['budget_year'] = Budget_year::orderBy('leave_year_id','DESC')->get();
 
     $event = array();
-    $meettings = Meeting_service::all();
+    $meettings = Meeting_service::where('meetting_status','<>','CANCEL')->get();
     $data['building_level_room'] = Building_level_room::where('room_type','!=','1')->get();
 
     // $data['building_level_room'] = Building_level_room::leftJoin('meeting_service','building_level_room.room_id','=','meeting_service.room_id')
@@ -630,7 +671,7 @@ public function meetting_calenda_add(Request $request ,$id)
 
     $event = array();
     // $meettings = Meeting_service::all();
-    $meettings = Meeting_service::where('room_id','=',$id)->get();
+    $meettings = Meeting_service::where('room_id','=',$id)->where('meetting_status','<>','CANCEL')->get();
     $data['building_level_room'] = Building_level_room::where('room_type','!=','1')->get();
     // $data['building_level_room'] = Building_level_room::leftJoin('meeting_service','building_level_room.room_id','=','meeting_service.room_id')
     // ->where('room_type','!=','1')->get();
@@ -659,8 +700,8 @@ public function meetting_calenda_add(Request $request ,$id)
             'id' => $meetting->meeting_id,
             'title' => $showtitle,
             'start' => $meetting->meeting_date_begin,
-            'end' => $NewendDate,
-            // 'end' => $meetting->meeting_date_end,
+            // 'end' => $NewendDate,
+            'end' => $meetting->meeting_date_end,
             'color' => $color
         ];
     }
@@ -809,117 +850,167 @@ public function meetting_choose_save(Request $request)
 
 public function meetting_choose_linesave(Request $request)
 {
-    // return $request->all();
-
-        $title = $request->meetting_title;
+    // function dateDiff($date)
+    // {
+    //     $mydate= date("Y-m-d H:i:s");
+    //     $theDiff="";
+    //     //echo $mydate;//2014-06-06 21:35:55
+    //     $datetime1 = date_create($date);
+    //     $datetime2 = date_create($mydate);
+    //     $interval = date_diff($datetime1, $datetime2);
+    //     //echo $interval->format('%s Seconds %i Minutes %h Hours %d days %m Months %y Year    Ago')."<br>";
+    //     $min=$interval->format('%i');
+    //     $sec=$interval->format('%s');
+    //     $hour=$interval->format('%h');
+    //     $mon=$interval->format('%m');
+    //     $day=$interval->format('%d');
+    //     $year=$interval->format('%y');
+    //     if($interval->format('%i%h%d%m%y')=="00000") {
+    //         //echo $interval->format('%i%h%d%m%y')."<br>";
+    //         return $sec." Seconds";
+    //     } else if($interval->format('%h%d%m%y')=="0000"){
+    //         return $min." Minutes";
+    //     } else if($interval->format('%d%m%y')=="000"){
+    //         return $hour." Hours";
+    //     } else if($interval->format('%m%y')=="00"){
+    //         return $day." Days";
+    //     } else if($interval->format('%y')=="0"){
+    //         return $mon." Months";
+    //     } else{
+    //         return $year." Years";
+    //     }    
+    // }
+    // return $request->all(); 
         $startdate = $request->meeting_date_begin;
         $enddate = $request->meeting_date_end;
-        $starttime = $request->meeting_time_begin;
-        $endtime = $request->meeting_time_end;   
-        $status = $request->status;
-        $year = $request->meetting_year;
-        $target = $request->meetting_target;
-        $qty = $request->meetting_person_qty;
-        $obj = $request->meeting_objective_id;
-        $tel = $request->meeting_tel;
-        $iduser = $request->userid;
-        $idroom = $request->room_id; 
-        $date =  date('Y-m-d');
+      
+        // $start = date($startdate);
+        // $end = strtotime($enddate);
+        // $date = date('d');
+        // dd($date);
+        // $start = strtotime($startdate);
+        // $end = strtotime($enddate);
+        // $tot_ = $end - $start; 
 
-        $add = new Meeting_service();
-        $add->meetting_title = $title; 
-        $add->meetting_status = $status;
-        $add->meeting_date_begin = $startdate;
-        $add->meeting_date_end = $enddate; 
-        $add->meeting_time_begin = $starttime;
-        $add->meeting_time_end = $endtime;
-        $add->meetting_year = $year;
-        $add->meetting_target = $target;
-        $add->meetting_person_qty = $qty;
-        $add->meeting_tel = $tel;  
-        $add->meeting_date_save = $date; 
-
-        if ($idroom != '') {
-            $rosave = DB::table('building_level_room')->where('room_id','=',$idroom)->first();
-            $add->room_id = $rosave->room_id; 
-            $add->room_name = $rosave->room_name; 
-        }else{
-            $add->room_id = '';
-            $add->room_name = '';
-        }
+        $start = date_create($startdate);
+        $end = date_create($enddate);
         
-        if ($obj != '') {
-            $objsave = DB::table('meeting_objective')->where('meeting_objective_id','=',$obj)->first();
-            $add->meeting_objective_id = $objsave->meeting_objective_id; 
-            $add->meeting_objective_name = $objsave->meeting_objective_name; 
-        }else{
-            $add->meeting_objective_id = '';
-            $add->meeting_objective_name = '';
+        $tot_ = date_diff($end,$start);
+        // $day = $tot_->format('%d')+1;
+        $day = $tot_->format('%d');
+        // $tot_ = ($end - $start) / 2400;
+          // $tot_ = ($end - $start) / 1800;
+        // $tot = number_format($tot_,2);
+        // dd($day);
+        // $countdateold =   round(abs(strtotime(date('Y-m-d')) - strtotime($calculater->nextdate))/60/60/24)+1;
+
+        $i =   round(abs(strtotime($startdate) - strtotime($enddate))/60/60/24)+1; //นับวัน 
+        // dd($countdate);
+        $datestart = date ("Y-m-d", strtotime($startdate)-1);  //ลบออก 1 วัน เช่น 2022-08-22  -1 == 2022-08-21
+        $dateend = date ("Y-m-d", strtotime($enddate)-1);
+        while (strtotime($datestart) <= strtotime($dateend)) { 
+            $datestart = date ("Y-m-d", strtotime("+1 days", strtotime($datestart))); // loop +1 วัน เอาเฉพาะวันที่ เช่น 2022-08-22
+ 
+                    $title = $request->meetting_title;
+                    $starttime = $request->meeting_time_begin;
+                    $endtime = $request->meeting_time_end;   
+                    $status = $request->status;
+                    $year = $request->meetting_year;
+                    $target = $request->meetting_target;
+                    $qty = $request->meetting_person_qty;
+                    $obj = $request->meeting_objective_id;
+                    $tel = $request->meeting_tel;
+                    $iduser = $request->userid;
+                    $idroom = $request->room_id; 
+                    $date =  date('Y-m-d');
+
+                    $add = new Meeting_service();
+                    $add->meetting_title = $title; 
+                    $add->meetting_status = $status;
+
+                    $add->meeting_date_begin = $datestart;
+                    $add->meeting_date_end = $datestart;
+
+                    $add->meeting_time_begin = $starttime;
+                    $add->meeting_time_end = $endtime;
+                    $add->meetting_year = $year;
+                    $add->meetting_target = $target;
+                    $add->meetting_person_qty = $qty;
+                    $add->meeting_tel = $tel;  
+                    $add->meeting_date_save = $date; 
+
+                    if ($idroom != '') {
+                        $rosave = DB::table('building_level_room')->where('room_id','=',$idroom)->first();
+                        $add->room_id = $rosave->room_id; 
+                        $add->room_name = $rosave->room_name; 
+                    }else{
+                        $add->room_id = '';
+                        $add->room_name = '';
+                    }
+                    
+                    if ($obj != '') {
+                        $objsave = DB::table('meeting_objective')->where('meeting_objective_id','=',$obj)->first();
+                        $add->meeting_objective_id = $objsave->meeting_objective_id; 
+                        $add->meeting_objective_name = $objsave->meeting_objective_name; 
+                    }else{
+                        $add->meeting_objective_id = '';
+                        $add->meeting_objective_name = '';
+                    }
+
+                    if ($iduser != '') {
+                        $usersave = DB::table('users')->where('id','=',$iduser)->first();
+                        $add->meeting_user_id = $usersave->id; 
+                        $add->meeting_user_name = $usersave->fname.' '.$usersave->lname; 
+                        $add->meeting_debsubsubtrue_id = $usersave->dep_subsubtrueid; 
+                        $add->meeting_debsubsubtrue_name = $usersave->dep_subsubtruename; 
+                    }else{
+                        $add->meeting_user_id = '';
+                        $add->meeting_user_name = '';
+                        $add->meeting_debsubsubtrue_id = '';
+                        $add->meeting_debsubsubtrue_name = '';
+                    }    
+                    $add->save(); 
+                    
+                    $idservice = Meeting_service::max('meeting_id'); 
+                    if ($request->MEETTINGLIST_ID != '' || $request->MEETTINGLIST_ID != null) {
+                        $MEETTINGLIST_ID    = $request->MEETTINGLIST_ID;
+                        $MEETTINGLIST_QTY = $request->MEETTINGLIST_QTY;
+                        $number = count($MEETTINGLIST_ID);
+                        $count  = 0;
+                        for ($count = 0; $count < $number; $count++) {
+                            $infolist = DB::table('meeting_list')->where('meeting_list_id', '=', $MEETTINGLIST_ID[$count])->first();
+                            $add_2                    = new Meeting_service_list();
+                            $add_2->meeting_id        = $idservice;
+                            $add_2->meeting_list_id   = $infolist->meeting_list_id;
+                            $add_2->meeting_list_name   = $infolist->meeting_list_name;
+                            $add_2->meeting_service_list_qty  = $MEETTINGLIST_QTY[$count];
+                            $add_2->save();
+
+                        }
+                    }
         }
+        // if ($request->FOOD_LIST_ID != '' || $request->FOOD_LIST_ID != null) {
 
-        if ($iduser != '') {
-            $usersave = DB::table('users')->where('id','=',$iduser)->first();
-            $add->meeting_user_id = $usersave->id; 
-            $add->meeting_user_name = $usersave->fname.' '.$usersave->lname; 
-            $add->meeting_debsubsubtrue_id = $usersave->dep_subsubtrueid; 
-            $add->meeting_debsubsubtrue_name = $usersave->dep_subsubtruename; 
-        }else{
-            $add->meeting_user_id = '';
-            $add->meeting_user_name = '';
-            $add->meeting_debsubsubtrue_id = '';
-            $add->meeting_debsubsubtrue_name = '';
-        }    
-        $add->save(); 
-        
-            $idservice = Meeting_service::max('meeting_id');
+        //     $FOOD_LIST_ID    = $request->FOOD_LIST_ID;
+        //     $FOOD_LIST_QTY = $request->FOOD_LIST_QTY;
 
-        // $aa = $request->MEETTINGLIST_ID;
-        // dd($aa);
-        if ($request->MEETTINGLIST_ID != '' || $request->MEETTINGLIST_ID != null) {
+        //     $number2 = count($FOOD_LIST_ID);
+        //     $count_2  = 0;
+        //     for ($count_2 = 0; $count_2 < $number2; $count_2++) {
 
-            $MEETTINGLIST_ID    = $request->MEETTINGLIST_ID;
-            $MEETTINGLIST_QTY = $request->MEETTINGLIST_QTY;
+        //         $foodid = $FOOD_LIST_ID[$count_2];
 
-            $number = count($MEETTINGLIST_ID);
-            $count  = 0;
-            for ($count = 0; $count < $number; $count++) {
+        //         $infofood = DB::table('food_list')->where('food_list_id', '=', $foodid)->first();
 
-                $listid = $MEETTINGLIST_ID[$count];
+        //         $add_2                    = new Meeting_service_food();
+        //         $add_2->meeting_id        = $idservice;
+        //         $add_2->food_list_id   = $infofood->food_list_id;
+        //         $add_2->food_list_name   = $infofood->food_list_name;
+        //         $add_2->meeting_service_food_qty  = $FOOD_LIST_QTY[$count_2];
+        //         $add_2->save();
 
-                $infolist = DB::table('meeting_list')->where('meeting_list_id', '=', $listid)->first();
-
-                $add_2                    = new Meeting_service_list();
-                $add_2->meeting_id        = $idservice;
-                $add_2->meeting_list_id   = $infolist->meeting_list_id;
-                $add_2->meeting_list_name   = $infolist->meeting_list_name;
-                $add_2->meeting_service_list_qty  = $MEETTINGLIST_QTY[$count];
-                $add_2->save();
-
-            }
-        }
-
-        if ($request->FOOD_LIST_ID != '' || $request->FOOD_LIST_ID != null) {
-
-            $FOOD_LIST_ID    = $request->FOOD_LIST_ID;
-            $FOOD_LIST_QTY = $request->FOOD_LIST_QTY;
-
-            $number2 = count($FOOD_LIST_ID);
-            $count_2  = 0;
-            for ($count_2 = 0; $count_2 < $number2; $count_2++) {
-
-                $foodid = $FOOD_LIST_ID[$count_2];
-
-                $infofood = DB::table('food_list')->where('food_list_id', '=', $foodid)->first();
-
-                $add_2                    = new Meeting_service_food();
-                $add_2->meeting_id        = $idservice;
-                $add_2->food_list_id   = $infofood->food_list_id;
-                $add_2->food_list_name   = $infofood->food_list_name;
-                $add_2->meeting_service_food_qty  = $FOOD_LIST_QTY[$count_2];
-                $add_2->save();
-
-            }
-        }
+        //     }
+        // }
         
             function DateThailine($strDate)
                 {
@@ -971,9 +1062,7 @@ public function meetting_choose_linesave(Request $request)
             echo "status : ".$result_['status']; echo "message : ". $result_['message']; }
             curl_close( $chOne );
                         
-    return redirect()->route('meetting.meetting_index',[
-                'status'     => '200',     
-    ]); 
+    return redirect()->route('meetting.meetting_index'); 
 
 }
 
@@ -1004,7 +1093,9 @@ public function meetting_choose_edit(Request $request,$id)
         if ($meetting->meetting_status == 'REQUEST') {
             $color = '#F48506';
         }elseif ($meetting->meetting_status == 'ALLOCATE') {
-            $color = '#592DF7';           
+            $color = '#592DF7';   
+        }elseif ($meetting->meetting_status == 'CANCEL') {
+            $color = '#ff0707';         
         } else {
             $color = '#0AC58D';
         }   
@@ -1113,9 +1204,9 @@ public function meetting_choose_lineupdate(Request $request)
             $count  = 0;
             for ($count = 0; $count < $number; $count++) {
 
-                $listid = $MEETTINGLIST_ID[$count];
+                // $listid = $MEETTINGLIST_ID[$count];
 
-                $infolist = DB::table('meeting_list')->where('meeting_list_id', '=', $listid)->first();
+                $infolist = DB::table('meeting_list')->where('meeting_list_id', '=', $MEETTINGLIST_ID[$count])->first();
 
                 $add_2                    = new Meeting_service_list();
                 $add_2->meeting_id        = $idmeetser;
@@ -1127,34 +1218,32 @@ public function meetting_choose_lineupdate(Request $request)
             }
         }
 
-        Meeting_service_food::where('meeting_id','=',$idmeetser)->delete();
-        if ($request->FOOD_LIST_ID != '' || $request->FOOD_LIST_ID != null) {
+        // Meeting_service_food::where('meeting_id','=',$idmeetser)->delete();
+        // if ($request->FOOD_LIST_ID != '' || $request->FOOD_LIST_ID != null) {
 
-            $FOOD_LIST_ID    = $request->FOOD_LIST_ID;
-            $FOOD_LIST_QTY = $request->FOOD_LIST_QTY;
+        //     $FOOD_LIST_ID    = $request->FOOD_LIST_ID;
+        //     $FOOD_LIST_QTY = $request->FOOD_LIST_QTY;
 
-            $number2 = count($FOOD_LIST_ID);
-            $count_2  = 0;
-            for ($count_2 = 0; $count_2 < $number2; $count_2++) {
+        //     $number2 = count($FOOD_LIST_ID);
+        //     $count_2  = 0;
+        //     for ($count_2 = 0; $count_2 < $number2; $count_2++) {
 
-                $foodid = $FOOD_LIST_ID[$count_2];
+        //         $foodid = $FOOD_LIST_ID[$count_2];
 
-                $infofood = DB::table('food_list')->where('food_list_id', '=', $foodid)->first();
+        //         $infofood = DB::table('food_list')->where('food_list_id', '=', $foodid)->first();
 
-                $add_2                    = new Meeting_service_food();
-                $add_2->meeting_id        = $idmeetser;
-                $add_2->food_list_id   = $infofood->food_list_id;
-                $add_2->food_list_name   = $infofood->food_list_name;
-                $add_2->meeting_service_food_qty  = $FOOD_LIST_QTY[$count_2];
-                $add_2->save();
+        //         $add_2                    = new Meeting_service_food();
+        //         $add_2->meeting_id        = $idmeetser;
+        //         $add_2->food_list_id   = $infofood->food_list_id;
+        //         $add_2->food_list_name   = $infofood->food_list_name;
+        //         $add_2->meeting_service_food_qty  = $FOOD_LIST_QTY[$count_2];
+        //         $add_2->save();
 
-            }
-        }
+        //     }
+        // }
                   
                         
-    return redirect()->route('meetting.meetting_index',[
-                'status'     => '200',     
-    ]); 
+    return redirect()->route('meetting.meetting_index'); 
 
 }
 

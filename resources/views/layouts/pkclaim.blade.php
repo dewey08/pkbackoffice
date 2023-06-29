@@ -48,8 +48,8 @@
    <!-- select2 -->
     <link rel="stylesheet" href="{{asset('asset/js/plugins/select2/css/select2.min.css')}}">
    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   <link rel="stylesheet"
-   href="{{ asset('disacc/vendors/pixeden-stroke-7-icon-master/pe-icon-7-stroke/dist/pe-icon-7-stroke.css') }}">
+   <link rel="stylesheet" href="{{ asset('disacc/vendors/pixeden-stroke-7-icon-master/pe-icon-7-stroke/dist/pe-icon-7-stroke.css') }}">
+   <link href="{{ asset('acccph/styles/css/base.css') }}" rel="stylesheet">
 <!-- Plugins css -->
 {{-- <link href="assets/libs/dropzone/min/dropzone.min.css" rel="stylesheet" type="text/css" /> --}}
 </head>
@@ -191,11 +191,21 @@
                             </a> 
                         </li> 
                         <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="fa-solid fa-file-pen text-danger"></i>
+                                <span>FS EClaim</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('fs_eclaim') }}">Fs Eclaim & Hos</a></li>
+                            </ul>
+                        </li>
+                        <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect"> 
                                 <i class="fa-solid fa-file-invoice-dollar text-danger"></i>
                                 <span>Claim</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true"> 
+                                <li><a href="{{ url('sixteendata') }}">ส่งออก 16 แฟ้ม</a></li>
                                 <li><a href="javascript: void(0);" class="has-arrow">KTB</a>
                                     <ul class="sub-menu" aria-expanded="true">
                                         {{-- <li><a href="{{ url('anc_Pregnancy_test') }}">การทดสอบการตั้งครรภ์ (Pregnancy test)</a></li> --}}
@@ -522,8 +532,10 @@
 
     <!-- App js -->
     <script src="{{ asset('pkclaim/js/app.js') }}"></script>
-    <link href="{{ asset('acccph/styles/css/base.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('acccph/styles/css/base.css') }}" rel="stylesheet"> --}}
     
+    <script src="{{ asset('assets/jquery-tabledit/jquery.tabledit.min.js') }}"></script>
+
     @yield('footer')
  
 

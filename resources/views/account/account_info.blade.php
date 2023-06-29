@@ -36,30 +36,21 @@
                     @csrf
                     <div class="row">
                         <div class="col"></div>
-                        <div class="col-md-1 text-end">วันที่</div>
-                        <div class="col-md-2 text-center">
-                            <div class="input-group" id="datepicker1">
-                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="startdate"
-                                    id="startdate" data-date-format="yyyy-mm-dd" data-date-container='#datepicker1'
-                                    data-provide="datepicker" data-date-autoclose="true" value="{{ $startdate }}">
 
-                                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                        <div class="col-md-1 text-end mt-2">วันที่</div>
+                        <div class="col-md-3 text-end">
+                            <div class="input-daterange input-group" id="datepicker1" data-date-format="dd M, yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
+                                <input type="text" class="form-control" name="startdate" id="datepicker" placeholder="Start Date"
+                                    data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                                    data-date-language="th-th" value="{{ $startdate }}" required/>
+                                <input type="text" class="form-control" name="enddate" placeholder="End Date" id="datepicker2"
+                                    data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                                    data-date-language="th-th" value="{{ $enddate }}" required/>
                             </div>
                         </div>
-                        <div class="col-md-1 text-center">ถึงวันที่</div>
-                        <div class="col-md-2 text-center">
-                            <div class="input-group" id="datepicker1">
-                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="enddate"
-                                    id="enddate" data-date-format="yyyy-mm-dd" data-date-container='#datepicker1'
-                                    data-provide="datepicker" data-date-autoclose="true" value="{{ $enddate }}">
-
-                                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa-solid fa-magnifying-glass me-2"></i>
-                                ค้นหา
+                        <div class="col-md-1 text-start">
+                            <button type="submit" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">
+                                <i class="pe-7s-search btn-icon-wrapper"></i>ค้นหา
                             </button>
                         </div>
                         <div class="col"></div>
@@ -84,12 +75,13 @@
                                     <th width="5%" class="text-center">ลำดับ</th>
                                     <th class="text-center">ปี</th>
                                     <th class="text-center">เดือน</th>
-                                    <th class="text-center">ไม่มี approve code HOS</th> 
+                                    <th class="text-center">คนไข้ที่มารับบริการ</th>
+                                    <th class="text-center">ไม่มี approve code HOS</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $i = 1; ?>
-                                @foreach ($datashow as $item2)                                            
+                                @foreach ($datashow as $item2)
                                         <tr>
                                             <td>{{$i++ }}</td>
                                             <td class="text-center">{{$item2->monyear }}</td>
@@ -119,10 +111,12 @@
                                         @else
                                             <td width="15%" class="text-center">ธันวาคม</td>
                                         @endif
-                                            
                                             <td class="text-center">
-                                                <a href="{{url('account_info_vn/'.$item2->monyear.'/'.$item2->months.'/'.$startdate.'/'.$enddate)}}" target="_blank">{{ $item2->vn}}</a>  
-                                            </td>                                             
+                                                <a href="{{url('account_info_vnall/'.$item2->monyear.'/'.$item2->months.'/'.$startdate.'/'.$enddate)}}" target="_blank">{{ $item2->vn}}</a>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{{url('account_info_vn/'.$item2->monyear.'/'.$item2->months.'/'.$startdate.'/'.$enddate)}}" target="_blank">{{ $item2->vnnull}}</a>
+                                            </td>
                                         </tr>
                                 @endforeach
                             </tbody>
@@ -152,12 +146,12 @@
                                     <th class="text-center">ปี</th>
                                     <th class="text-center">เดือน</th>
                                     <th class="text-center">จำนวนผู้ป่วยนอก</th>
-                                    <th class="text-center">ไม่มี approve code HOS</th> 
+                                    <th class="text-center">ไม่มี approve code HOS</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $i = 1; ?>
-                                @foreach ($datashow2 as $item3)                                            
+                                @foreach ($datashow2 as $item3)
                                         <tr>
                                             <td>{{$i++ }}</td>
                                             <td class="text-center">{{$item3->monyear }}</td>
@@ -187,12 +181,12 @@
                                         @else
                                             <td width="15%" class="text-center">ธันวาคม</td>
                                         @endif
-                                        <td class="text-center"> 
-                                            <a href="{{url('account_info_vn_subofc/'.$item3->months.'/'.$startdate.'/'.$enddate)}}" target="_blank">{{ $item3->vn}}</a>  
-                                        </td> 
                                         <td class="text-center">
-                                            <a href="{{url('account_info_noapproveofc/'.$item3->months.'/'.$startdate.'/'.$enddate)}}" target="_blank">{{ $item3->no_appprove}}</a>  
-                                        </td>                                             
+                                            <a href="{{url('account_info_vn_subofc/'.$item3->months.'/'.$startdate.'/'.$enddate)}}" target="_blank">{{ $item3->vn}}</a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{url('account_info_noapproveofc/'.$item3->months.'/'.$startdate.'/'.$enddate)}}" target="_blank">{{ $item3->no_appprove}}</a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -211,7 +205,7 @@
             <label for="">  รายงานจำนวนผู้ป่วยนอก OFC ส่งเบิก ติด C    </label>
             <div class="card">
                 <div class="card-body py-0 px-2 mt-2">
-                    <div class="table-responsive"> 
+                    <div class="table-responsive">
                             <table style="width: 100%;height:2%" id="example"
                             class="table table-hover table-striped table-bordered myTable">
                             <thead>
@@ -219,12 +213,12 @@
                                     <th width="5%" class="text-center">ลำดับ</th>
                                     <th class="text-center">ปี</th>
                                     <th class="text-center">เดือน</th>
-                                    <th class="text-center">ส่งเบิก ติด C</th> 
+                                    <th class="text-center">ส่งเบิก ติด C</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $i = 1; ?>
-                                @foreach ($datashow3 as $item4)                                            
+                                @foreach ($datashow3 as $item4)
                                         <tr>
                                             <td>{{$i++ }}</td>
                                             <td class="text-center">{{$item4->monyear }}</td>
@@ -254,10 +248,10 @@
                                         @else
                                             <td width="15%" class="text-center">ธันวาคม</td>
                                         @endif
-                                        <td class="text-center"> 
-                                            <a href="{{url('account_info_vn_subofc_vn/'.$item4->monyear.'/'.$item4->months.'/'.$strdateadmit.'/'.$enddateadmit)}}" target="_blank">{{ $item4->errorc}}</a>  
-                                        </td> 
-                                                                                   
+                                        <td class="text-center">
+                                            <a href="{{url('account_info_vn_subofc_vn/'.$item4->monyear.'/'.$item4->months.'/'.$strdateadmit.'/'.$enddateadmit)}}" target="_blank">{{ $item4->errorc}}</a>
+                                        </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -269,7 +263,7 @@
         </div>
         <div class="col-xl-2"> </div>
     </div>
-    
+
 
 
 @endsection
@@ -278,7 +272,19 @@
         $(document).ready(function() {
             $('#example').DataTable();
             $('#example2').DataTable();
- 
+            $('#datepicker').datepicker({
+            format: 'yyyy-mm-dd'
+            });
+            $('#datepicker2').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+
+            $('#datepicker3').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+            $('#datepicker4').datepicker({
+                format: 'yyyy-mm-dd'
+            });
         });
     </script>
 

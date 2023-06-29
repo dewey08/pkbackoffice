@@ -117,16 +117,16 @@
                     <div class="card shadow-lg">
                         <div class="card-header text-center">
                             <img src="{{ asset('images/spsch.jpg') }}" alt="Image"
-                                class="img-thumbnail shadow-lg me-4" width="600px" height="130px"> 
+                                class="img-thumbnail shadow-lg me-4" width="600px" height="130px">
                             <img src="{{ asset('images/logo150.png') }}" alt="Image" class="img-thumbnail"
                                 width="135px" height="135px">
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col"></div>
-                                <div class="col-md-2">&nbsp;&nbsp; 
+                                <div class="col-md-2">&nbsp;&nbsp;
                                     <img src="{{ asset('images/logo150.png') }}" alt="Image" class="img-thumbnail" width="250px" height="135px">
-                                    
+
                                 </div>
 
                             </div>
@@ -150,17 +150,12 @@
                                                     style="color: rgb(197, 8, 33);font-size:30px">กรุณาเสียบบัตรประชาชน</label>
                                                 <br>
                                             @else
-                                                <a href="{{ url('getsmartcard_authencode') }}"
+                                                <a href="{{ url('authencode_auto_save') }}"
                                                     class="btn shadow-lg mb-4"
                                                     style="background-color: rgb(7, 222, 150)">
-                                                    <div class="card"
-                                                        style="width: 280px;height:120px;background-color: rgb(7, 222, 150);border-color: white">
-                                                        <i
-                                                            class="fa-brands fa-3x fa-medrt mt-2 me-2 mb-2 text-white"></i>
-                                                        <label for=""
-                                                            style="color: rgb(255, 255, 255);font-size:30px"> ออก
-                                                            Authen</label>
-
+                                                    <div class="card" style="width: 280px;height:120px;background-color: rgb(7, 222, 150);border-color: white">
+                                                        <i class="fa-brands fa-3x fa-medrt mt-2 me-2 mb-2 text-white"></i>
+                                                        <label for="" style="color: rgb(255, 255, 255);font-size:30px"> ออก Authen</label>
                                                     </div>
                                                 </a>
                                             @endif

@@ -7,7 +7,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
-    <link rel="shortcut icon" href="{{ asset('apkclaim/images/logo150.ico') }}">
+   
+    <link rel="shortcut icon" href="{{ asset('pkclaim/images/logo150.ico') }}">
     <!-- Font Awesome -->
     <link href="{{ asset('assets/fontawesome/css/all.css') }}" rel="stylesheet">
     <script src="{{ asset('lib/webviewer.min.js') }}"></script>
@@ -596,16 +597,18 @@ $countadmin = StaticController::countadmin($userid);
 
 
     <!-- Bootstrap bundle JS -->
+    {{-- <script src="{{ asset('sky16/js/jquery.min.js') }}"></script> --}}
+    <script src="{{ asset('pkclaim/libs/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/dist/js/bootstrap.bundle.min.js') }}"></script>
     <!--plugins-->
     {{-- <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>  --}}
-    <script src="{{ asset('sky16/js/jquery.min.js') }}"></script>
+ 
     <script src="{{ asset('sky16/plugins/simplebar/js/simplebar.min.js') }}"></script>
     <script src="{{ asset('sky16/plugins/perfect-scrollbar/js/perfect-scrollbar.js') }}"></script>
     <script src="{{ asset('sky16/js/pace.min.js') }}"></script>
     <script src="{{ asset('sky16/plugins/vectormap/jquery-jvectormap-2.0.2.min.js') }}"></script>
     <script src="{{ asset('sky16/plugins/vectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
-    {{-- <script src="{{ asset('sky16/plugins/apexcharts-bundle/js/apexcharts.min.js') }}"></script> --}}
+    <script src="{{ asset('sky16/plugins/apexcharts-bundle/js/apexcharts.min.js') }}"></script>
   
     <script src="{{ asset('js/select2.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('fullcalendar/lib/moment.min.js') }}"></script>
@@ -617,7 +620,7 @@ $countadmin = StaticController::countadmin($userid);
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!--app-->
-  <script src="{{ asset('sky16/js/app.js') }}"></script> 
+  {{-- <script src="{{ asset('sky16/js/app.js') }}"></script>  --}}
  
 
 @yield('footer')
@@ -637,10 +640,49 @@ $countadmin = StaticController::countadmin($userid);
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+            // $('#saveBtn').click(function() {
+            //         var dss_color = $('#DEPARTMENT_SUB_SUB_COLOR').val(); 
+            //         var dss_id = $('#dss_id').val(); 
+            //         $.ajax({
+            //             url: "{{ route('setting.depsubsub_updatecolor') }}",
+            //             type: "POST",
+            //             dataType: 'json',
+            //             data: {
+            //               dss_color,
+            //                 dss_id 
+            //             },
+            //             success: function(data) {
+            //                 if (data.status == 200) {
+            //                     Swal.fire({
+            //                         title: 'แก้ไขข้อมูลสำเร็จ',
+            //                         text: "You edit data success",
+            //                         icon: 'success',
+            //                         showCancelButton: false,
+            //                         confirmButtonColor: '#06D177',
+            //                         confirmButtonText: 'เรียบร้อย'
+            //                     }).then((result) => {
+            //                         if (result
+            //                             .isConfirmed) {
+            //                             console.log(
+            //                                 data);
+
+            //                             window.location
+            //                                 .reload();
+            //                         }
+            //                     })
+            //                 } else {
+
+            //                 }
+
+            //             },
+            //         });
+            // });
 
         });
 
         $(document).ready(function(){
+         
+
               $('#insert_depForm').on('submit',function(e){
                     e.preventDefault();            
                     var form = this;

@@ -80,8 +80,8 @@
                 </div>
             </div>
         </div>
-        <form action="{{ route('acc.account_pkti4011_dash') }}" method="GET">
-            @csrf
+        {{-- <form action="{{ route('acc.account_pkti4011_dash') }}" method="GET">
+            @csrf --}}
             <div class="row"> 
                 <div class="col-md-4">
                     <h4 class="card-title">Detail 1102050101.4011</h4>
@@ -99,13 +99,19 @@
                             data-date-language="th-th" value="{{ $enddate }}" required/>  
                     </div> 
                 </div>
-                <div class="col-md-1 text-start">
-                    <button type="submit" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">
-                        <i class="pe-7s-search btn-icon-wrapper"></i>ค้นหา
+                <div class="col-md-2 text-start">
+                    <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">
+                        <i class="fa-solid fa-magnifying-glass text-info me-2"></i>
+                        ค้นหา
                     </button>
+                    <a href="{{url('account_pkti4011_pull')}}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary" target="_blank">  
+                        <i class="fa-solid fa-file-circle-plus text-primary me-2"></i>
+                        ดึงข้อมูล
+                    </a>
                 </div>
+               
             </div>
-        </form>  
+        {{-- </form>   --}}
         <div class="row "> 
             @foreach ($datashow as $item)   
             <div class="col-xl-6 col-md-6">
@@ -119,40 +125,116 @@
                                             <?php 
                                                 $y = $item->year; 
                                                 $ynew = $y + 543;
+                                                // $datas = DB::select('
+                                                //     SELECT count(distinct vn) as Cvn from acc_debtor  
+                                                //         WHERE account_code="1102050101.4011"             
+                                                //         AND stamp = "N" and income <>0 
+                                                //         and month(vstdate) = "'.$item->months.'" 
+                                                //         and year(vstdate) = "'.$item->year.'";
+                                                // ');
+                                                // foreach ($datas as $key => $value) {
+                                                //     $count_N = $value->Cvn;
+                                                // }
                                                 $datas = DB::select('
-                                                    SELECT count(distinct vn) as Cvn from acc_debtor  
-                                                        WHERE account_code="1102050101.4011"             
-                                                        AND stamp = "N" and income <>0 
-                                                        and month(vstdate) = "'.$item->months.'" 
-                                                        and year(vstdate) = "'.$item->year.'";
+                                                    SELECT count(DISTINCT vn) as Can
+                                                        ,SUM(debit) as sumdebit                                                     
+                                                        from acc_debtor  
+                                                            WHERE account_code="1102050101.4011"             
+                                                            AND stamp = "N" 
+                                                            and month(vstdate) = "'.$item->months.'" 
+                                                            and year(vstdate) = "'.$item->year.'";
                                                 ');
                                                 foreach ($datas as $key => $value) {
-                                                    $count_N = $value->Cvn;
+                                                    $count_N = $value->Can;
+                                                    $sum_N = $value->sumdebit;
                                                 }
                                                 $datasum_ = DB::select('
-                                                    SELECT sum(income) as income from acc_debtor  
-                                                        WHERE account_code="1102050101.4011"             
-                                                        AND stamp = "Y" and income <>0 
-                                                        and month(vstdate) = "'.$item->months.'" 
-                                                        and year(vstdate) = "'.$item->year.'"                                                                  
+                                                    SELECT sum(debit_total) as debit_total,count(vn) as Cvit 
+                                                            from acc_1102050101_4011 
+                                                            WHERE month(vstdate) = "'.$item->months.'" 
+                                                            and year(vstdate) = "'.$item->year.'" 
+                                                                                                               
                                                 ');
                                                 foreach ($datasum_ as $key => $value2) {
-                                                    $sum_Y = $value2->income;
+                                                    $sum_Y = $value2->debit_total;
+                                                    $count_Y = $value2->Cvit;
                                                 }
+                                                // AND status = "N" 
+                                                // สีเขียว STM
                                                 $sumapprove_ = DB::select('
-                                                SELECT sum(a.amount) as priceapprove 
-                                                from acc_stm_ti_total a 
-                                                LEFT JOIN acc_debtor ad ON ad.hn = a.hn AND ad.vstdate = a.vstdate
-                                                        WHERE ad.account_code="1102050101.4011"             
-                                                        AND ad.stamp = "Y" and ad.income <>0 
-                                                        and month(ad.vstdate) = "'.$item->months.'" 
-                                                        and year(ad.vstdate) = "'.$item->year.'"                                                                  
-                                                ');
-                                                foreach ($sumapprove_ as $key => $value3) {
-                                                    $sum_approveY = $value3->priceapprove;
-                                                }                                                       
-                                            ?>        
+                                                        SELECT count(DISTINCT a.vn) as Apvit ,sum(au.amount) as amountpay
+                                                            FROM acc_1102050101_4011 a 
+		                                                    LEFT JOIN acc_stm_ti_total au ON au.hn = a.hn AND au.vstdate = a.vstdate
+                                                            WHERE year(a.vstdate) = "'.$item->year.'"
+                                                            AND month(a.vstdate) = "'.$item->months.'"
+                                                            AND a.status = "Y"                                                                  
+                                                    ');
+                                                    foreach ($sumapprove_ as $key => $value3) {
+                                                        $amountpay = $value3->amountpay;
+                                                        $stm_count = $value3->Apvit;
+                                                    }   
+                                                    // สีส้ม ยกยอดไป                                                           
+                                                    $sumyokma_ = DB::select('
+                                                        SELECT count(DISTINCT vn) as anyokma ,sum(debit_total) as debityokma
+                                                            FROM acc_1102050101_4011 
+                                                            WHERE year(vstdate) = "'.$item->year.'"
+                                                            AND month(vstdate) = "'.$item->months.'"
+                                                            AND status ="N"                                 
+                                                    '); 
+                                                    foreach ($sumyokma_ as $key => $value5) {
+                                                        $total_yokma_ = $value5->debityokma;
+                                                        $count_yokma_ = $value5->anyokma;
+                                                    }  
+                                                    $total_yokma = $total_yokma_;
+                                                    // $total_yokma = $total_yokma_ +($sum_Y - $amountpay);
+                                                    // $total_yokma = $total_yokma_; 
+                                                    $count_yokma = $count_yokma_; 
+                                                                                                
+                                            ?>  
                                             <div class="row">
+                                                <div class="col-md-5 text-start mt-4 ms-4">
+                                                    <h4 >เดือน {{$item->MONTH_NAME}} {{$ynew}}</h4> 
+                                                </div>
+                                                <div class="col"></div>
+                                                <div class="col-md-3 text-end mt-2 me-4">
+                                                    <a href="{{url('account_pkucs202/'.$item->months.'/'.$item->year)}}" target="_blank"> 
+                                                        <div class="widget-chart widget-chart-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="จำนวนลูกหนี้ที่ต้องตั้ง"> 
+                                                            <h4 class="text-end">{{$count_N}} Visit</h4> 
+                                                        </div> 
+                                                    </a>                                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <a href="" target="_blank"> 
+                                                        <div class="widget-chart widget-chart-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="ลูกหนี้ {{number_format($sum_N, 2)}}">
+                                                            <p class="text-muted mb-0"><span class="text-info fw-bold font-size-12 me-2"><i class="fa-solid fa-sack-dollar me-1 align-middle"></i>{{ number_format($sum_N, 2) }}</span></p>
+                                                        </div> 
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <a href="{{url('account_pkucs202_detail/'.$item->months.'/'.$item->year)}}" target="_blank"> 
+                                                        <div class="widget-chart widget-chart-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="ตั้งลูกหนี้ {{number_format($sum_Y, 2)}} / {{$count_Y}}Visit"> 
+                                                            <p class="text-muted mb-0"><span class="text-danger fw-bold font-size-12 me-2"><i class="fa-solid fa-dollar-sign me-1 align-middle"></i>{{ number_format($sum_Y, 2) }}</span></p>
+                                                        </div> 
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <a href="{{url('account_pkucs202_stm/'.$item->months.'/'.$item->year)}}" target="_blank"> 
+                                                        <div class="widget-chart widget-chart-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="STM{{number_format($amountpay, 2) }} / {{$stm_count}}Visit">
+                                                            <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="fa-solid fa-hand-holding-dollar me-1 align-middle"></i>{{ number_format($amountpay, 2) }}</span></p>
+                                                        </div> 
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <a href="{{url('account_pkucs202_stmnull/'.$item->months.'/'.$item->year)}}" target="_blank"> 
+                                                        <div class="widget-chart widget-chart-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="ยอดยกไป {{number_format($total_yokma, 2) }} / {{$count_yokma}}Visit">
+                                                            <p class="text-muted mb-0"><span class="text-warning fw-bold font-size-12 me-2"><i class="fa-solid fa-hand-holding-dollar me-1 align-middle"></i>{{number_format($total_yokma, 2) }}</span></p>
+                                                        </div> 
+                                                    </a>
+                                                </div>
+                                            </div>       
+                                            {{-- <div class="row">
                                                 <div class="col-md-5 text-start mt-4 ms-4">
                                                     <h4 >เดือน {{$item->MONTH_NAME}} {{$ynew}}</h4> 
                                                 </div>
@@ -187,14 +269,14 @@
                                                         </div> 
                                                     </a>
                                                 </div>
-                                            </div> 
+                                            </div>  --}}
                                         </div>     
                                     </div>   
                                 </div> 
                             </div>                                           
                         </div> 
                     @else
-                        <div class="grid-menu-col">
+                        {{-- <div class="grid-menu-col">
                             <div class="g-0 row">
                                 <div class="col-sm-12"> 
                                     <div class="d-flex text-start">
@@ -244,7 +326,7 @@
                                     </div>   
                                 </div> 
                             </div>                                           
-                        </div> 
+                        </div>  --}}
                     @endif                 
                        
                    

@@ -97,8 +97,8 @@
     <div id="layout-wrapper">
 
         <header id="page-topbar">
-            <div class="navbar-header shadow-lg" style="background-color: rgb(155, 153, 155)">
-                
+            <div class="navbar-header shadow-lg" style="background-color: rgb(252, 252, 252)">
+                {{-- <div class="navbar-header shadow-lg" style="background-color: rgb(155, 153, 155)"> --}}
 
                 <div class="d-flex">
                     <!-- LOGO -->
@@ -146,12 +146,12 @@
                 <div class="d-flex">
                     <div class="dropdown d-none d-lg-inline-block ms-1">
                         <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
-                            <i class="ri-fullscreen-line" style="color: rgb(255, 255, 255)"></i>
+                            <i class="ri-fullscreen-line" style="color: rgb(15, 15, 15)"></i>
                         </button>
                     </div>
                     <div class="dropdown d-none d-lg-inline-block ms-1">
                         <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="modal" data-bs-target="#Keypassword"> 
-                            <i class="fa-solid fa-key" style="color: rgb(255, 255, 255)"></i>
+                            <i class="fa-solid fa-key" style="color: rgb(20, 20, 20)"></i>
                         </button>
                     </div>
 
@@ -165,7 +165,7 @@
                                 <img src="{{ asset('storage/person/' . Auth::user()->img) }}" height="32px"
                                     width="32px" alt="Header Avatar" class="rounded-circle header-profile-user">
                             @endif
-                            <span class="d-none d-xl-inline-block ms-1">
+                            <span class="d-none d-xl-inline-block ms-1" style="color: black">
                                 {{ Auth::user()->fname }} {{ Auth::user()->lname }}
                             </span>
                             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
@@ -213,7 +213,7 @@
                             <ul class="sub-menu" aria-expanded="true"> 
                                 <li><a href="{{ url('user_timeindex') }}">เวลาเข้า-ออก (backoffice)</a></li>
                                 <li><a href="{{ url('user_timeindex_nurh') }}">เวลาเข้า-ออก (Nurs)</a></li>
-                                <li><a href="{{ url('user_timeindex_day') }}">เวลาเข้า-ออก (รายวัน)</a></li>
+                                {{-- <li><a href="{{ url('user_timeindex_day') }}">เวลาเข้า-ออก (รายวัน)</a></li> --}}
                             </ul>
                         </li>  
                         <li>
@@ -239,6 +239,27 @@
                                 <li><a href="{{ url('workset') }}">รายการภาระงาน</a></li>    
                             </ul>
                         </li> 
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">  
+                                <i class="fa-solid fa-people-roof text-danger"></i>
+                                <span>ห้องประชุม</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('user_meetting/meetting_calenda') }}">ปฎิทินการใช้ห้องประชุม</a></li>     
+                                <li><a href="{{ url('user_meetting/meetting_index') }}">ช้อมูลการจองห้องประชุม</a></li>  
+                            </ul>
+                        </li>
+                        {{-- <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">  
+                                <i class="fa-solid fa-car-side text-danger"></i>
+                                <span>ยานพาหนะ</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('user_car/car_calenda/' . Auth::user()->id) }}">ปฎิทินการใช้รถ</a></li>     
+                                <li><a href="{{ url('user_car/car_narmal/' . Auth::user()->id) }}">ช้อมูลการการใช้รถทั่วไป</a></li> 
+                                <li><a href="{{ url('user_car/car_ambulance/' . Auth::user()->id) }}">ช้อมูลการการใช้รถพยาบาล</a></li>  
+                            </ul>
+                        </li>  --}}
                         
                     </ul>
                 </div>
@@ -437,6 +458,43 @@
                   });
             });
 
+            $('#Save_chooseForm').on('submit',function(e){
+                  e.preventDefault();
+              
+                  var form = this;
+                    //   alert('OJJJJOL');
+                  $.ajax({
+                    url:$(form).attr('action'),
+                    method:$(form).attr('method'),
+                    data:new FormData(form),
+                    processData:false,
+                    dataType:'json',
+                    contentType:false,
+                    beforeSend:function(){
+                      $(form).find('span.error-text').text('');
+                    },
+                    success:function(data){
+                      if (data.status == 0 ) {
+                        
+                      } else {          
+                        Swal.fire({
+                          title: 'บันทึกข้อมูลสำเร็จ',
+                          text: "You Insert data success",
+                          icon: 'success',
+                          showCancelButton: false,
+                          confirmButtonColor: '#06D177',
+                          // cancelButtonColor: '#d33',
+                          confirmButtonText: 'เรียบร้อย'
+                        }).then((result) => {
+                          if (result.isConfirmed) {         
+                            window.location="{{url('user_meetting/meetting_index')}}";
+                          }
+                        })      
+                      }
+                    }
+                  });
+            });
+
         });
 
         $(document).ready(function() {
@@ -454,6 +512,41 @@
                             Swal.fire({
                                 title: 'เปลี่ยนรหัสผ่านสำเร็จ',
                                 text: "You Chang password success",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#06D177',
+                                confirmButtonText: 'เรียบร้อย'
+                            }).then((result) => {
+                                if (result
+                                    .isConfirmed) {
+                                    console.log(
+                                        data);
+                                    window.location.reload();
+                                     
+                                }
+                            })
+                        } else {
+                             
+                        }
+
+                    },
+                });
+            });
+
+            $('#Save_choose').click(function() {
+                var meetting_title = $('#meetting_title').val();  
+                $.ajax({
+                    url: "{{ route('meetting.meetting_choose_linesave') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: { 
+                        meetting_title                       
+                    },
+                    success: function(data) {
+                        if (data.status == 200) {
+                            Swal.fire({
+                                title: 'บันทึกข้อมูลสำเร็จ',
+                                text: "You Insert Date success",
                                 icon: 'success',
                                 showCancelButton: false,
                                 confirmButtonColor: '#06D177',
