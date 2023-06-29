@@ -20,6 +20,7 @@ class Env_parameter_list extends Authenticatable
         'parameter_list_unit',
         'parameter_list_normal',
         'parameter_list_user_analysis_results'
+        
     ];
 
   
