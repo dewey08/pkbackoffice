@@ -247,7 +247,7 @@ $count_service = StaticController::count_service();
                                                 <p>{{$item->parameter_list_name}}</p>
                                             @endforeach --}}
                                             <table class="gwt-table table-striped table-vcenter" style="width: 100%;">
-                                                <thead style="background-color: #BDFBC9;">
+                                                <thead style="background-color: #aecefd;">
                                                     <tr height="40">
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;font-family: 'Kanit', sans-serif;font-size: 13px;" width="3%">ลำดับ</td>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">ประเภทขยะ</th>
@@ -259,15 +259,22 @@ $count_service = StaticController::count_service();
                                                 </thead>
                                                 <tbody class="tbody">
                                                     <?php $number = 1; ?>
-                                                    @foreach($dataparameters as $items)
-                                                   
-                                                    <tr height="20">                                             
-                                                        <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
+                                                    @foreach($data_trash_set as $items)                                                   
+                                                    <tr height="20">
+                                                        <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>
+                                                        <td>
+                                                            <input type="hidden" value="{{ $items->trash_set_id }}" name="trash_set_id[]" id="trash_set_id[]" class="form-control input-sm fo13" >
+                                                            <input value="{{ $items->trash_set_name }}" name="" id="" class="form-control input-sm fo13" readonly>
+                                                        </td>
+                                                        <td><input name="trash_sub_qty[]" id="trash_sub_qty[]" class="form-control input-sm fo13" ></td>  
+                                                        <td><input value="{{ $items->trash_set_unit }}" name="trash_set_unit[]" id="trash_set_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                                                                    
+                                                        {{-- <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
                                                         <td>
                                                             <input type="hidden" value="{{ $items->trash_set_id }}" name="trash_set_id[]" id="trash_set_id[]" class="form-control input-sm fo13" >
                                                             <input value="{{ $items->trash_set_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>                                
-                                                        <td><input value="{{ $items->trash_set_unit }}" name="trash_set_unit[]" id="trash_set_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input value="{{ $items->trash_set_unit }}" name="trash_set_unit[]" id="trash_set_unit[]" class="form-control input-sm fo13" readonly></td> --}}
                                                         {{-- <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
                                                         <td><input value="{{ $items->parameter_list_user_analysis_results }}" name="parameter_list_user_analysis_results[]" id="parameter_list_user_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
                                                         <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td> --}}

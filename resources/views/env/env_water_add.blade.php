@@ -230,7 +230,7 @@ $count_service = StaticController::count_service();
                                                 <p>{{$item->parameter_list_name}}</p>
                                             @endforeach --}}
                                             <table class="gwt-table table-striped table-vcenter" style="width: 100%;">
-                                                <thead style="background-color: #BDFBC9;">
+                                                <thead style="background-color: #aecefd;">
                                                     <tr height="40">
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;font-family: 'Kanit', sans-serif;font-size: 13px;" width="3%">ลำดับ</td>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">รายการพารามิเตอร์</th>

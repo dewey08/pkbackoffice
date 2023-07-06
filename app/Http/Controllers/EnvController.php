@@ -63,14 +63,19 @@ use App\Models\P4p_work;
 use App\Models\P4p_workset;
 use App\Models\P4p_workgroupset_unit;
 use App\Models\P4p_workgroupset;
-use App\Models\Env_trash_set;
-use App\Models\Env_trash;
-use App\Models\Env_trash_sub;
-
 
 use App\Models\Env_parameter_list;
-use App\Models\Env_trash_parameter;
 
+use App\Models\Env_trash_set;
+use App\Models\Env_trash_sub;
+use App\Models\Env_trash_type;
+use App\Models\Env_trash;
+
+use App\Models\Env_water_save;
+use App\Models\Env_water_sub;
+use App\Models\Env_water;
+
+use App\Models\Env_trash_parameter;
 use Auth;
 
 class EnvController extends Controller
@@ -363,7 +368,7 @@ class EnvController extends Controller
             SELECT count(*) as I from users u
             left join p4p_workload l on l.p4p_workload_user=u.id
             group by u.dep_subsubtrueid;
-        ');
+        ');        
 
         $data_parameter = DB::table('env_trash')->get();
         $data_trash_set = DB::table('env_trash_set')->get();
@@ -401,42 +406,68 @@ class EnvController extends Controller
 
     public function env_trash_save (Request $request)
     {
-        date_default_timezone_set("Asia/Bangkok");
-        $datenow = date('Y-m-d H:i:s');
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
-        $add = new env_trash();
-        $add->trash_bill_on = $request->input('trash_bill_on');
-        $add->trash_date = $request->input('trash_date'); 
-        $add->trash_time = $request->input('trash_time'); 
-        $add->trash_user = $request->input('trash_user'); 
-        $add->trash_sub = $request->input('trash_sub'); 
-        $add->save();
+        $acc_debtors = DB::select('
+            SELECT count(*) as I from users u
+            left join p4p_workload l on l.p4p_workload_user=u.id
+            group by u.dep_subsubtrueid;
+        ');
+
+
+        $data_parameter = DB::table('env_trash_set')->get();
+         
+
+        return view('env.env_trash_save', $data,[
+            'start'           => $startdate,
+            'end'             => $enddate, 
+            'dataparameters'  => $data_parameter, 
+        ]);
+
+        // date_default_timezone_set("Asia/Bangkok");
+        // $datenow = date('Y-m-d H:i:s');
+
+        // $data_parameter = DB::table('env_trash_set')->get();
+
+        // $add = new env_trash();
+        // $add->trash_bill_on = $request->input('trash_bill_on');
+        // $add->trash_date = $request->input('trash_date'); 
+        // $add->trash_time = $request->input('trash_time'); 
+        // $add->trash_user = $request->input('trash_user'); 
+        // $add->trash_sub = $request->input('trash_sub'); 
+        // $add->save();
         
-        $id_para =  Env_trash::max('trash_id');
+        // $id_para =  Env_trash::max('trash_id');
 
-        if($request->trash_set_id != '' || $request->trash_set_id != null){
+        // if($request->trash_set_id != '' || $request->trash_set_id != null){
 
-        $trash_set_id = $request->trash_set_id;
-        $TRASH_SUB_QTY = $request->TRASH_SUB_QTY;
-        $TRASH_SUB_UNIT = $request->TRASH_SUB_UNIT;
+        // $trash_set_id = $request->trash_set_id;
+        // $TRASH_SUB_QTY = $request->TRASH_SUB_QTY;
+        // $TRASH_SUB_UNIT = $request->TRASH_SUB_UNIT;
                             
-        $number =count($trash_set_id);
-        $count = 0;
-        for($count = 0; $count< $number; $count++)
-        { 
-            $idtrash = Env_trash_set::where('trash_set_id','=',$trash_set_id[$count])->first();
+        // $number =count($trash_set_id);
+        // $count = 0;
+        // for($count = 0; $count< $number; $count++)
+        // { 
+        //     $idtrash = Env_trash_set::where('trash_set_id','=',$trash_set_id[$count])->first();
 
-        $add_sub = new Env_trash_sub();
-        $add_sub->trash_id = $id_para;  
+        // $add_sub = new Env_trash_sub();
+        // $add_sub->trash_id = $id_para;  
 
-        $add_sub->TRASH_SUB_IDID = $idtrash->trash_set_id;  
-        $add_sub->TRASH_SUB_NAME = $idtrash->SET_TRASH_NAME; 
-        $add_sub->TRASH_SUB_QTY = $TRASH_SUB_QTY[$count];  
-        $add_sub->TRASH_SUB_UNIT = $TRASH_SUB_UNIT[$count];                          
-        $add_sub->save(); 
-        }
-        } 
-        return redirect()->route('menv.trash');
+        // $add_sub->TRASH_SUB_IDID = $idtrash->trash_set_id;  
+        // $add_sub->TRASH_SUB_NAME = $idtrash->SET_TRASH_NAME; 
+        // $add_sub->TRASH_SUB_QTY = $TRASH_SUB_QTY[$count];  
+        // $add_sub->TRASH_SUB_UNIT = $TRASH_SUB_UNIT[$count];                          
+        // $add_sub->save(); 
+        // }
+        // } 
+        // return redirect()->route('menv.trash');
     }
 
 //**************************************************************ตั้งค่า   ประเภทขยะ*********************************************
@@ -511,10 +542,10 @@ class EnvController extends Controller
         $datenow = date('Y-m-d H:m:s');
 
         Env_trash_set::insert([
-            // 'trash_type_id'                   => $request->trash_type_id,
+            // 'trash_set_id'                    => $request->trash_set_id,
             'trash_set_name'                   => $request->trash_set_name,
             'trash_set_unit'                   => $request->trash_set_unit,
-            'created_at'                            => $datenow
+            'created_at'                       => $datenow
         ]);
         $data_parameter_list = DB::table('env_trash_set')->get();
     
