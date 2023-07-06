@@ -99,6 +99,8 @@ class EnvController extends Controller
         ]);
     }
 
+//**************************************************************ระบบน้ำเสีย*********************************************
+
     public function env_water (Request $request)
     {
         $datestart = $request->startdate;
@@ -202,7 +204,8 @@ class EnvController extends Controller
 
         ]);
     }
-    
+//**************************************************************ตั้งค่า parameter น้ำ*********************************************
+
     public function env_water_parameter (Request $request)
     {
         $datestart = $request->startdate;
@@ -314,7 +317,7 @@ class EnvController extends Controller
         return redirect()->back();
     }
 
-//ระบบขยะติดเชื้อ
+//**************************************************************ระบบขยะติดเชื้อ*********************************************
 
     public function env_trash (Request $request)
     {
@@ -436,7 +439,7 @@ class EnvController extends Controller
         return redirect()->route('menv.trash');
     }
 
-//**************************************************************หน้าตั้งค่าประเภทขยะ*********************************************
+//**************************************************************ตั้งค่า   ประเภทขยะ*********************************************
 
     public function env_trash_parameter (Request $request) 
     {
