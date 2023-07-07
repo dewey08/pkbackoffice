@@ -408,8 +408,8 @@ class EnvController extends Controller
     {
         date_default_timezone_set("Asia/Bangkok");
         $datenow = date('Y-m-d H:i:s');
-
-        $data_parameter = DB::table('env_trash_set')->get();
+        $iduser = Auth::user()->id;
+        $data_trash_set = DB::table('env_trash_set')->get();
 
         $add = new env_trash();
         $add->trash_bill_on = $request->input('trash_bill_on');
@@ -419,13 +419,13 @@ class EnvController extends Controller
         $add->trash_sub = $request->input('trash_sub'); 
         $add->save();
         
-        $id_para =  Env_trash::max('trash_id');
+        $trash_id =  Env_trash::max('trash_id');
 
         if($request->trash_set_id != '' || $request->trash_set_id != null){
 
         $trash_set_id = $request->trash_set_id;
-        $TRASH_SUB_QTY = $request->TRASH_SUB_QTY;
-        $TRASH_SUB_UNIT = $request->TRASH_SUB_UNIT;
+        $trash_sub_qty = $request->trash_sub_qty;
+        $trash_sub_unit = $request->trash_sub_unit;
                             
         $number =count($trash_set_id);
         $count = 0;
@@ -434,11 +434,11 @@ class EnvController extends Controller
                 $idtrash = Env_trash_set::where('trash_set_id','=',$trash_set_id[$count])->first();
 
                 $add_sub = new Env_trash_sub();
-                $add_sub->trash_id = $id_para; 
-                $add_sub->TRASH_SUB_IDID = $idtrash->trash_set_id;  
-                $add_sub->TRASH_SUB_NAME = $idtrash->SET_TRASH_NAME; 
-                $add_sub->TRASH_SUB_QTY = $TRASH_SUB_QTY[$count];  
-                $add_sub->TRASH_SUB_UNIT = $TRASH_SUB_UNIT[$count];                          
+                $add_sub->trash_id = $trash_id; 
+                $add_sub->trash_sub_idd = $idtrash->trash_set_id;  
+                $add_sub->trash_sub_name = $idtrash->trash_set_name; 
+                $add_sub->trash_sub_qty = $trash_sub_qty[$count];  
+                $add_sub->trash_sub_unit = $trash_sub_unit[$count];                          
                 $add_sub->save(); 
             }
         } 

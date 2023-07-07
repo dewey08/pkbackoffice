@@ -144,8 +144,8 @@ if (Auth::check()) {
                                             <th class="text-center"width="10%">วันที่บันทึก</th>
                                             <th class="text-center"width="8%">เวลา</th> 
                                             <th class="text-center"width="20%">บริษัท</th>
-                                            <th class="text-center"width="8%">ขยะติดเชื้อ(kg)</th>
-                                            <th class="text-center"width="8%">ขยะทั่วไป(kg)</th>  
+                                            {{-- <th class="text-center"width="8%">ขยะติดเชื้อ(kg)</th>
+                                            <th class="text-center"width="8%">ขยะทั่วไป(kg)</th>   --}}
                                             <th class="text-center"width="12%">ผู้บันทึก</th>
                                             <th class="text-center"width="6%">คำสั่ง</th> 
                                           

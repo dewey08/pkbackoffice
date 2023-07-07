@@ -46,7 +46,7 @@
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\SuppliesController;
 use App\Http\Controllers\StaticController;
-
+use Auth;
 
 $refnumber = SuppliesController::refnumber();
 $count_product = StaticController::count_product();
@@ -119,7 +119,7 @@ $count_service = StaticController::count_service();
                                                 </div>
                                                 <div class="col-md-2">
                                                     <div class="form-group">
-                                                        <input type="time" id="trash_time" name="trash_time" class="form-control" placeholder=""/>
+                                                        <input type="time" id="time_save_trash" name="time_save_trash" class="form-control" placeholder=""/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -172,8 +172,73 @@ $count_service = StaticController::count_service();
                                                 {{-- </div> --}}
                                             </div>
                                             
-                                           
-                                      
+                                              
+                                            <div class="row mt-3">
+                                                {{-- <div class="col-md-2 text-end">
+                                                    <label for="parameter_list_normal">ผู้วิเคราะห์ตัวอย่าง :</label>
+                                                </div> --}}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        {{-- <input id="parameter_list_normal" type="text"
+                                                            class="form-control form-control-sm" name="parameter_list_normal"> --}}
+                                                        {{-- <select id="water_user2" name="water_user"
+                                                            class="form-control form-control-sm" style="width: 100%">
+                                                            <option value="">--เลือก--</option>
+                                                            @foreach ($users as $ue)                                               
+                                                                <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
+                                                            @endforeach
+                                                        </select> --}}
+                                                    </div>
+                                                </div>
+                                                {{-- <div class="col-md-2 text-end">
+                                                    <label for="water_comment">หมายเหตุ :</label>
+                                                </div> --}}
+                                                <div class="col-md-4">
+                                                    {{-- <div class="form-group">
+                                                        <input id="water_comment" type="text"
+                                                            class="form-control form-control-sm" name="water_comment">
+                                                    </div> --}}
+                                                </div>                                           
+                                            </div>
+
+                                        {{-- <div class="row push">
+                                            <div class="col-sm-2 ">
+                                                <div align="left" style=" font-family:'Kanit', sans-serif;font-size: 13px;font-weight:bold;">
+                                                    รายการพารามิเตอร์ :
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-9 ">
+                                                <table class="gwt-table table-striped table-vcenter" style="width: 100%;">
+                                                    <thead style="background-color: #BDFBC9;">
+                                                        <tr height="40">
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;font-family: 'Kanit', sans-serif;font-size: 13px;" width="5%">ลำดับ</td>
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;">รายการพารามิเตอร์</th>
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">หน่วย</th> 
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">ผลการวิเคราะห์</th> 
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th> 
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">ค่ามาตรฐาน</th>                                            
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">
+                                                        <?php $number = 1; ?>
+                                                        @foreach($dataparameters as $items)
+                                                       
+                                                        <tr height="20">                                             
+                                                            <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
+                                                            <td>
+                                                                <input type="hidden" value="{{ $items->parameter_list_id }}" name="parameter_list_id[]" id="parameter_list_id[]" class="form-control input-sm fo13" >
+                                                                <input value="{{ $items->parameter_list_name }}" name="" id="" class="form-control input-sm fo13" readonly>
+                                                            </td>                                
+                                                            <td><input value="{{ $items->parameter_list_unit }}" name="parameter_list_unit[]" id="parameter_list_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                            <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
+                                                            <td><input value="{{ $items->parameter_list_user_analysis_results }}" name="parameter_list_user_analysis_results[]" id="parameter_list_user_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
+                                                            <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td>
+                                                        </tr>
+                                                        @endforeach 
+                                                    </tbody>
+                                                </table>   
+                                            </div> 
+                                        </div> --}}
 
                                     <div class="row">
                                         <label for="">รายการขยะ</label>
@@ -202,7 +267,7 @@ $count_service = StaticController::count_service();
                                                             <input value="{{ $items->trash_set_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>
                                                         <td><input name="trash_sub_qty[]" id="trash_sub_qty[]" class="form-control input-sm fo13" ></td>  
-                                                        <td><input value="{{ $items->trash_sub_unit }}" name="trash_sub_unit[]" id="trash_sub_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input value="{{ $items->trash_set_unit }}" name="trash_set_unit[]" id="trash_set_unit[]" class="form-control input-sm fo13" readonly></td>
                                                                                                     
                                                         {{-- <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
                                                         <td>
