@@ -27,7 +27,7 @@ class Acc_stm_ti_total extends Authenticatable
         'vn',
         'active' 
     ];
-    public $timestamps = false; 
+    // public $timestamps = false; 
 
   
 }

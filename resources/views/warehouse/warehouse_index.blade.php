@@ -45,6 +45,59 @@
                 }
             })
         }
+        function warehouse_confirm_recieve(warehouse_rep_id) {
+            Swal.fire({
+                title: 'ยืนยันการรับเข้าคลังใช่ไหม?',
+                text: "รายการวัสดุจะถูกนำเข้าคลังตามที่เลือกไว้ !!",
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ใช่, ยืนยัน !',
+                cancelButtonText: 'ไม่, ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('warehouse_confirm_recieve') }}" + '/' + warehouse_rep_id,
+                        type: 'POST',
+                        data: {
+                            _token: $("input[name=_token]").val()
+                        },
+                        success: function(data) {
+                            if (data.status == 200 ) {
+                                Swal.fire({
+                                title: 'นำเข้าคลังเรียบร้อย',
+                                text: "You Insert data success",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#06D177',
+                                confirmButtonText: 'เรียบร้อย'
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                              })
+
+                            } else {
+                            //   Swal.fire({
+                            //     title: 'นำเข้าคลังเรียบร้อย',
+                            //     text: "You Insert data success",
+                            //     icon: 'success',
+                            //     showCancelButton: false,
+                            //     confirmButtonColor: '#06D177',
+                            //     confirmButtonText: 'เรียบร้อย'
+                            //   }).then((result) => {
+                            //     if (result.isConfirmed) {
+                            //         window.location.reload();
+                            //     }
+                            //   })
+                            }
+
+                        }
+                    })
+                }
+            })
+        }
 
         function warehouse_confirm(warehouse_rep_id) {
             Swal.fire({
@@ -78,7 +131,7 @@
                                     // $("#sid" + product_id).remove();
                                     window.location.reload();
                                     // window.location =
-                                    //     "{{ url('supplies/supplies_index') }}"; //     
+                                    //     "{{ url('supplies/supplies_index') }}"; //
                                 }
                             })
                         }
@@ -119,7 +172,7 @@
                                     // $("#sid" + product_id).remove();
                                     window.location.reload();
                                     // window.location =
-                                    //     "{{ url('supplies/supplies_index') }}"; //     
+                                    //     "{{ url('supplies/supplies_index') }}"; //
                                 }
                             })
                         }
@@ -148,26 +201,72 @@
     $time = date('H:i:s');
     $loter = $date . '' . $time;
     ?>
-
+<style>
+    #button{
+           display:block;
+           margin:20px auto;
+           padding:30px 30px;
+           background-color:#eee;
+           border:solid #ccc 1px;
+           cursor: pointer;
+           }
+           #overlay{
+           position: fixed;
+           top: 0;
+           z-index: 100;
+           width: 100%;
+           height:100%;
+           display: none;
+           background: rgba(0,0,0,0.6);
+           }
+           .cv-spinner {
+           height: 100%;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           }
+           .spinner {
+           width: 250px;
+           height: 250px;
+           border: 10px #ddd solid;
+           border-top: 10px #1fdab1 solid;
+           border-radius: 50%;
+           animation: sp-anime 0.8s infinite linear;
+           }
+           @keyframes sp-anime {
+           100% {
+               transform: rotate(390deg);
+           }
+           }
+           .is-hide{
+           display:none;
+           }
+</style>
     <div class="container-fluid">
         <div class="row ">
             <div class="col-md-12">
                 <div class="main-card mb-3 card shadow">
                     <div class="card-header">
-                        รายการตรวจรับ 
+                        รายการตรวจรับ
                         <div class="btn-actions-pane-right">
                             <div role="group" class="btn-group-sm btn-group">
-                                <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info"
+                                {{-- <a href="" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info"
                                     data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     <i class="pe-7s-shuffle btn-icon-wrapper"></i>เปิดบิล
+                            </a> --}}
+                                <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="pe-7s-shuffle btn-icon-wrapper"></i>ออกบิล
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div class="card-body shadow-lg">
-                        <div class="table-responsive">
-                            <table style="width: 100%;" id="example"
-                                class="table table-hover table-striped table-bordered myTable">
+                        {{-- <div class="table-responsive"> --}}
+                            {{-- <table style="width: 100%;" id="example"
+                                class="table table-hover table-striped table-bordered myTable"> --}}
+                                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <tr>
                                         <th width="3%" class="text-center">ลำดับ</th>
@@ -256,16 +355,23 @@
                                                         class="me-2 dropdown-toggle btn btn-outline-secondary btn-sm">
                                                         ทำรายการ
                                                     </button>
-                                                    <div tabindex="-1" role="menu" aria-hidden="true"
-                                                        class="dropdown-menu-hover-link dropdown-menu">
+                                                    <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-hover-link dropdown-menu">
 
                                                         @if ($item->warehouse_rep_status == 'recieve')
-                                                            <a class="dropdown-item text-info" href=""
+                                                            {{-- <a class="dropdown-item text-info" href=""
                                                                 style="font-size:13px" data-bs-toggle="modal"
                                                                 data-bs-target=".detail{{ $item->warehouse_rep_id }}">
                                                                 <i class="fa-solid fa-circle-info me-2 text-info"
                                                                     style="font-size:13px"></i>
-                                                                <span>รายละเอียด</span></a>
+                                                                <span>รายละเอียด</span></a> --}}
+                                                                {{-- <div class="dropdown-divider"></div> --}}
+                                                                <a class="dropdown-item text-success"
+                                                                    href="{{ url('warehouse_add_product/' . $item->warehouse_rep_id) }}"
+                                                                    style="font-size:13px" target="blank">
+                                                                    <i class="fa-solid fa-clipboard-check me-2 text-success"
+                                                                        style="font-size:13px"></i>
+                                                                    <span>เพิ่มรายการ</span>
+                                                                </a>
                                                             <div class="dropdown-divider"></div>
                                                             {{-- <a class="dropdown-item text-warning"
                                                                 href="{{ url('warehouse/warehouse_edit/' . $item->warehouse_rep_id) }}"
@@ -286,13 +392,13 @@
                                                         @endif
 
                                                         @if ($item->warehouse_rep_status == 'beforallow')
-                                                            <a class="dropdown-item text-info" href=""
+                                                            {{-- <a class="dropdown-item text-info" href=""
                                                                 style="font-size:13px" data-bs-toggle="modal"
                                                                 data-bs-target=".detail{{ $item->warehouse_rep_id }}">
                                                                 <i class="fa-solid fa-circle-info me-2 text-info"
                                                                     style="font-size:13px"></i>
-                                                                <span>รายละเอียด</span></a>
-                                                            <div class="dropdown-divider"></div>
+                                                                <span>รายละเอียด</span></a> --}}
+                                                            {{-- <div class="dropdown-divider"></div> --}}
                                                             <a class="dropdown-item"
                                                                 href="{{ url('warehouse/warehouse_addsub/' . $item->warehouse_rep_id) }}"
                                                                 style="color: rgb(5, 173, 134);font-size:13px">
@@ -301,16 +407,34 @@
                                                                 <span>เพิ่มรายการที่ส่งไม่ครบ</span>
                                                             </a>
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-primary" href=""
+                                                            {{-- <a class="dropdown-item text-primary" href=""
                                                                 style="font-size:12px">
                                                                 <i class="fa-solid fa-print me-2 text-primary"
                                                                     style="font-size:12px"></i>
-                                                                <span>Print</span></a>
+                                                                <span>Print</span></a> --}}
+                                                        @else
+                                                        @endif
+
+                                                        @if ($item->warehouse_rep_status == 'recieve' && $item->warehouse_rep_send == 'WAIT')
+                                                            {{-- <div class="dropdown-divider"></div> --}}
+                                                            <a class="dropdown-item text-success"
+                                                                href="{{ url('warehouse_add_product/' . $item->warehouse_rep_id) }}"
+                                                                style="font-size:13px" target="blank">
+                                                                <i class="fa-solid fa-clipboard-check me-2 text-success"
+                                                                    style="font-size:13px"></i>
+                                                                <span>เพิ่มรายการ</span>
+                                                            </a>
+                                                            {{-- <div class="dropdown-divider"></div> --}}
+                                                            {{-- <a class="dropdown-item text-primary" href=""
+                                                                style="font-size:12px">
+                                                                <i class="fa-solid fa-print me-2 text-primary"
+                                                                    style="font-size:12px"></i>
+                                                                <span>Print</span></a> --}}
                                                         @else
                                                         @endif
 
                                                         @if ($item->warehouse_rep_status == 'recieve' && $item->warehouse_rep_send == 'STALE')
-                                                            <div class="dropdown-divider"></div>
+                                                            {{-- <div class="dropdown-divider"></div> --}}
                                                             <a class="dropdown-item text-success"
                                                                 href="javascript:void(0)"
                                                                 onclick="warehouse_confirmbefor({{ $item->warehouse_rep_id }})"
@@ -320,11 +444,11 @@
                                                                 <span>ยืนยันรับเข้าคลังกรณีไม่ครบ</span>
                                                             </a>
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-primary" href=""
+                                                            {{-- <a class="dropdown-item text-primary" href=""
                                                                 style="font-size:12px">
                                                                 <i class="fa-solid fa-print me-2 text-primary"
                                                                     style="font-size:12px"></i>
-                                                                <span>Print</span></a>
+                                                                <span>Print</span></a> --}}
                                                         @else
                                                         @endif
 
@@ -339,20 +463,27 @@
                                                             </a> --}}
                                                         @elseif ($item->warehouse_rep_send == 'FINISH' && $item->warehouse_rep_status == 'recieve')
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-success"
+                                                            <a class="dropdown-item text-primary"
                                                                 href="javascript:void(0)"
-                                                                onclick="warehouse_confirm({{ $item->warehouse_rep_id }})"
+                                                                onclick="warehouse_confirm_recieve({{ $item->warehouse_rep_id }})"
                                                                 style="font-size:13px">
-                                                                <i class="fa-solid fa-clipboard-check me-2 text-success"
+                                                                <i class="fa-solid fa-clipboard-check me-2 text-primary"
                                                                     style="font-size:13px"></i>
                                                                 <span>ยืนยันรับเข้าคลัง</span>
                                                             </a>
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-primary" href=""
+                                                            <a class="dropdown-item text-info"
+                                                            href="{{ url('warehouse_edit_product/' . $item->warehouse_rep_id) }}"
+                                                            style="font-size:13px" target="blank">
+                                                            <i class="fa-solid fa-clipboard-check me-2 text-info"
+                                                                style="font-size:13px"></i>
+                                                            <span>แก้ไขรายการวัสดุ</span>
+                                                        </a>
+                                                            {{-- <a class="dropdown-item text-primary" href=""
                                                                 style="font-size:12px">
                                                                 <i class="fa-solid fa-print me-2 text-primary"
                                                                     style="font-size:12px"></i>
-                                                                <span>Print</span></a>
+                                                                <span>Print</span></a> --}}
                                                         @else
                                                             <!-- Extra Large modal -->
                                                             <a class="dropdown-item text-info" href=""
@@ -361,8 +492,8 @@
                                                                 <i class="fa-solid fa-circle-info me-2 text-info"
                                                                     style="font-size:13px"></i>
                                                                 <span>รายละเอียด</span></a>
-                                                            <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-primary" href=""
+                                                               <div class="dropdown-divider"></div>
+                                                         <a class="dropdown-item text-primary" href=""
                                                                 style="font-size:12px">
                                                                 <i class="fa-solid fa-print me-2 text-primary"
                                                                     style="font-size:12px"></i>
@@ -388,14 +519,14 @@
                                                         <form action="{{ route('ware.warehouse_billupdate') }}" method="POST" id="Wbillupdate" enctype="multipart/form-data">
                                                             @csrf
 
-                                                            <input id="warehouse_rep_id" type="hidden" name="warehouse_rep_id" value="{{ $item->warehouse_rep_id }}"> 
-                                                            <input id="warehouse_rep_code" type="hidden" name="warehouse_rep_code" value="{{ $item->warehouse_rep_code }}"> 
+                                                            <input id="warehouse_rep_id" type="hidden" name="warehouse_rep_id" value="{{ $item->warehouse_rep_id }}">
+                                                            <input id="warehouse_rep_code" type="hidden" name="warehouse_rep_code" value="{{ $item->warehouse_rep_code }}">
                                                             <input type="hidden" name="store_id" id="store_id" value="{{ Auth::user()->store_id }}">
                                                             <input type="hidden" name="warehouse_rep_user_id" id="warehouse_rep_user_id" value="{{ Auth::user()->id }}">
 
                                                             <div class="row">
                                                                 <div class="col-md-12">
-                                                                    <div class="row"> 
+                                                                    <div class="row">
                                                                         <div class="col-md-1">
                                                                             <label for="warehouse_rep_no_bill">เลขที่บิล :</label>
                                                                         </div>
@@ -420,7 +551,7 @@
                                                                         <div class="col-md-2">
                                                                             <div class="form-group">
                                                                                 <select id="warehouse_rep_year_edit" name="warehouse_rep_year"
-                                                                                    class="form-select form-select-lg" style="width: 100%"> 
+                                                                                    class="form-select form-select-lg" style="width: 100%">
                                                                                     @foreach ($budget_year as $ye)
                                                                                         @if ($ye->leave_year_id == $item->warehouse_rep_year)
                                                                                             <option value="{{ $ye->leave_year_id }}" selected> {{ $ye->leave_year_id }} </option>
@@ -430,10 +561,10 @@
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
-                                                                        </div> 
+                                                                        </div>
                                                                     </div>
 
-                                                                    <div class="row mt-3"> 
+                                                                    <div class="row mt-3">
                                                                         <div class="col-md-2">
                                                                             <label for="warehouse_rep_inven_id">รับเข้าคลัง :</label>
                                                                         </div>
@@ -448,7 +579,7 @@
                                                                                     @else
                                                                                         <option value="{{ $inven->warehouse_inven_id }}"> {{ $inven->warehouse_inven_name }} </option>
                                                                                     @endif
-                                                                                       
+
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
@@ -467,16 +598,16 @@
                                                                                     @else
                                                                                         <option value="{{ $ven->vendor_id }}"> {{ $ven->vendor_name }} </option>
                                                                                     @endif
-                                                                                        
+
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
-                                                                        </div> 
+                                                                        </div>
                                                                         <input class="form-control form-control-sm" type="hidden" id="example-datetime-local-input" name="warehouse_rep_date"
                                                                             value="{{ $datefull }}">
                                                                     </div>
                                                                 </div>
-                                                            </div>                    
+                                                            </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="submit" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">
@@ -612,12 +743,12 @@
                                                         <hr>
                                                         <?php $ii = 1;
                                                         $datadetail = DB::connection('mysql')->select(
-                                                            '   
+                                                            '
                                                                                                                                                                         select product_code,product_name,product_type_name,product_qty,product_price,product_price_total,product_unit_subname
-                                                                                                                                                                        from warehouse_rep_sub 
+                                                                                                                                                                        from warehouse_rep_sub
                                                                                                                                                                         where warehouse_rep_id ="' .
                                                                 $item->warehouse_rep_id .
-                                                                '"  
+                                                                '"
                                                                                                                                                                           ',
                                                         );
                                                         $total = 0;
@@ -669,7 +800,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
+                        {{-- </div> --}}
                     </div>
                 </div>
             </div>
@@ -683,7 +814,7 @@
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">เปิดบิล</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">ออกบิล</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
@@ -691,13 +822,13 @@
                     <form action="{{ route('ware.warehouse_billsave') }}" method="POST" id="Wbillsave" enctype="multipart/form-data">
                         @csrf
 
-                        <input id="warehouse_rep_code" type="hidden" name="warehouse_rep_code" value="{{ $refnumber }}"> 
+                        <input id="warehouse_rep_code" type="hidden" name="warehouse_rep_code" value="{{ $refnumber }}">
                         <input type="hidden" name="store_id" id="store_id" value="{{ Auth::user()->store_id }}">
                         <input type="hidden" name="warehouse_rep_user_id" id="warehouse_rep_user_id" value="{{ Auth::user()->id }}">
 
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="row"> 
+                                <div class="row">
                                     <div class="col-md-1">
                                         <label for="warehouse_rep_no_bill">เลขที่บิล :</label>
                                     </div>
@@ -733,10 +864,10 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div> 
+                                    </div>
                                 </div>
 
-                                <div class="row mt-3"> 
+                                <div class="row mt-3">
                                     <div class="col-md-2">
                                         <label for="warehouse_rep_inven_id">รับเข้าคลัง :</label>
                                     </div>
@@ -767,16 +898,16 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div> 
+                                    </div>
                                     <input class="form-control form-control-sm" type="hidden" id="example-datetime-local-input" name="warehouse_rep_date"
                                         value="{{ $datefull }}">
- 
+
                                 </div>
 
 
                             </div>
                         </div>
-                        
+
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">
@@ -805,7 +936,7 @@
 
             $('#warehouse_rep_year_edit').select2({
                 dropdownParent: $('#editModal')
-            }); 
+            });
             $('#warehouse_rep_inven_id_edit').select2({
                 dropdownParent: $('#editModal')
             });

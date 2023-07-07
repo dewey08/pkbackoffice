@@ -13,8 +13,8 @@
     <link rel="shortcut icon" href="{{ asset('pkclaim/images/logo150.ico') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
-   
+
+
 
     {{-- <link href="{{ asset('pkclaim/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css"> --}}
     <link href="{{ asset('pkclaim/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
@@ -48,15 +48,14 @@
    <!-- select2 -->
     <link rel="stylesheet" href="{{asset('asset/js/plugins/select2/css/select2.min.css')}}">
    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   
+
 <!-- Plugins css -->
 {{-- <link href="assets/libs/dropzone/min/dropzone.min.css" rel="stylesheet" type="text/css" /> --}}
 </head>
 <style>
-    body{   
+    body{
         background:
-            url(/pkbackoffice/public/images/bg7.png);
-            /* url(/pkbackoffice/public/images/bg5.jpg); */
+            /* url(/pkbackoffice/public/images/bg7.png);  */
             /* -webkit-background-size: cover; */
         background-repeat: no-repeat;
 		background-attachment: fixed;
@@ -66,7 +65,7 @@
         /* align-items: center; */
         /* justify-content: center; */
         /* width: 100vw;   ให้เต็มพอดี */
-        /* height: 100vh; ให้เต็มพอดี  */ 
+        /* height: 100vh; ให้เต็มพอดี  */
         }
     .Bgsidebar {
   		background-image: url('/pkbackoffice/public/images/bgside.jpg');
@@ -100,7 +99,7 @@
         color: #ccbcd1;
     }
 </style>
- 
+
 
 <body data-topbar="dark">
 
@@ -110,7 +109,7 @@
     {{-- <div id="preloader">
         <div id="status">
             <div class="spinner">
-                
+
             </div>
         </div>
     </div> --}}
@@ -119,9 +118,9 @@
     <div id="layout-wrapper">
 
         <header id="page-topbar">
-            <div class="navbar-header shadow-lg Bgheader">
-                {{-- <div class="navbar-header" style="background-color: rgb(141, 135, 136)"> --}}
-                {{-- <div class="d-flex"> 
+            {{-- <div class="navbar-header shadow-lg Bgheader"> --}}
+                <div class="navbar-header shadow-lg" style="background-color: rgb(255, 255, 255)">
+                {{-- <div class="d-flex">
                     <div class="navbar-brand-box">
                         <h4 style="color:rgb(255, 255, 255)" class="mt-4">PK-BACKOFFice</h4>
                     </div>
@@ -158,11 +157,11 @@
                         </a>
 
                         <a href="" class="logo logo-light">
-                            <span class="logo-sm"> 
+                            <span class="logo-sm">
                                 <img src="{{ asset('pkclaim/images/logo150.png') }}" alt="logo-sm-light" height="40">
                             </span>
                             <span class="logo-lg">
-                                <h4 style="color:rgb(3, 3, 3)" class="mt-4">PK-BACKOFFice</h4> 
+                                <h4 style="color:rgb(3, 3, 3)" class="mt-4">PK-BACKOFFice</h4>
                             </span>
                         </a>
                     </div>
@@ -170,20 +169,20 @@
                     <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect" id="vertical-menu-btn">
                         <i class="ri-menu-2-line align-middle" style="color:rgb(7, 7, 7)"></i>
                     </button>
-                    <?php  
-                        $org = DB::connection('mysql')->select(                                                            '   
-                                select * from orginfo 
+                    <?php
+                        $org = DB::connection('mysql')->select(                                                            '
+                                select * from orginfo
                                 where orginfo_id = 1                                                                                                                      ',
-                        ); 
+                        );
                     ?>
                     <form class="app-search d-none d-lg-block">
                         <div class="position-relative">
                             @foreach ($org as $item)
                             <h4 style="color:rgb(7, 7, 7)" class="mt-2">{{$item->orginfo_name}}</h4>
                             @endforeach
-                            
+
                         </div>
-                    </form>                                         
+                    </form>
                 </div>
 
 
@@ -191,7 +190,7 @@
                 <div class="d-flex">
                     <div class="dropdown d-none d-lg-inline-block ms-1">
                         <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
-                            <i class="ri-fullscreen-line" style="color: rgb(255, 255, 255)"></i>
+                            <i class="ri-fullscreen-line" style="color: rgb(175, 171, 171)"></i>
                         </button>
                     </div>
 
@@ -205,10 +204,10 @@
                                 <img src="{{ asset('storage/person/' . Auth::user()->img) }}" height="32px"
                                     width="32px" alt="Header Avatar" class="rounded-circle header-profile-user">
                             @endif
-                            <span class="d-none d-xl-inline-block ms-1">
+                            <span class="d-none d-xl-inline-block ms-1" style="color: rgb(175, 171, 171)">
                                 {{ Auth::user()->fname }} {{ Auth::user()->lname }}
                             </span>
-                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block" style="color: rgb(175, 171, 171)"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
@@ -241,21 +240,30 @@
         <div class="vertical-menu Bgsidebar">
 
             <div data-simplebar class="h-100">
- 
+
                 <!--- Sidemenu -->
                 <div id="sidebar-menu">
                     <!-- Left Menu Start -->
                     <ul class="metismenu list-unstyled" id="side-menu">
-                        <li class="menu-title">Menu</li>                       
-
+                        <li class="menu-title">Menu</li>
+                        <li>
+                            <a href="{{url('sit_acc_debtorauto')}}" class="has-arrow waves-effect">
+                                <i class="fa-solid fa-file-invoice-dollar text-success"></i>
+                                <span>ตรวจสอบสิทธิ์</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('sit_acc_debtorauto') }}">ตรวจสอบสิทธิ์ Auto</a></li> 
+                            </ul>
+                           
+                        </li> 
                         {{-- <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-solid fa-file-invoice-dollar text-success"></i>
                                 <span>ดึงข้อมูล</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('account_pk') }}">ดึงลูกหนี้จาก Hos-opd</a></li> 
-                                <li><a href="{{ url('account_pk_ipd') }}">ดึงลูกหนี้จาก Hos-ipd</a></li>  
+                                <li><a href="{{ url('account_pk') }}">ดึงลูกหนี้จาก Hos-opd</a></li>
+                                <li><a href="{{ url('account_pk_ipd') }}">ดึงลูกหนี้จาก Hos-ipd</a></li>
                             </ul>
                         </li>  --}}
                         <li>
@@ -265,18 +273,18 @@
                                 <span>UCS</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('account_pkucs202_dash') }}">ผัง-202</a></li> 
-                                <li><a href="{{ url('account_pkucs217_dash') }}">ผัง-217</a></li> 
+                                <li><a href="{{ url('account_pkucs202_dash') }}">ผัง-202</a></li>
+                                <li><a href="{{ url('account_pkucs217_dash') }}">ผัง-217</a></li>
                             </ul>
-                        </li> 
+                        </li>
                         {{-- <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect"> 
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-solid fa-file-invoice-dollar text-info"></i>
                                 <span>OFC</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('account_pkofc401_dash') }}">ผัง-401</a></li> 
-                                <li><a href="{{ url('account_pkofc402_dash') }}">ผัง-402</a></li> 
+                                <li><a href="{{ url('account_pkofc401_dash') }}">ผัง-401</a></li>
+                                <li><a href="{{ url('account_pkofc402_dash') }}">ผัง-402</a></li>
                             </ul>
                         </li>  --}}
                         {{-- <li>
@@ -285,7 +293,7 @@
                                 <span>SSS</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('account_pksss') }}">ตั้งลูกหนี้</a></li> 
+                                <li><a href="{{ url('account_pksss') }}">ตั้งลูกหนี้</a></li>
                             </ul>
                         </li>  --}}
                         <li>
@@ -295,23 +303,44 @@
                                 <span>ประกันสังคม</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('account_304_dash') }}">ผัง-304</a></li> 
-                                <li><a href="{{ url('account_308_dash') }}">ผัง-308</a></li> 
+                                <li><a href="{{ url('account_304_dash') }}">ผัง-304</a></li>
+                                <li><a href="{{ url('account_308_dash') }}">ผัง-308</a></li>
                             </ul>
-                        </li> 
+                        </li>
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 {{-- <i class="fa-solid fa-file-invoice-dollar text-danger"></i> --}}
+                                <i class="fa-brands fa-btc text-primary"></i>
+                                <span>OFC</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('account_401_dash') }}">ผัง-401</a></li>
+                                <li><a href="{{ url('account_402_dash') }}">ผัง-402</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-brands fa-btc text-danger"></i>
                                 <span>LGO</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('account_pklgo801_dash') }}">ผัง-801</a></li> 
-                                {{-- <li><a href="{{ url('account_pklgo802') }}">ผัง-802</a></li>  --}}
-                                {{-- <li><a href="{{ url('account_pklgo803') }}">ผัง-803</a></li>  --}}
-                                {{-- <li><a href="{{ url('account_pklgo804') }}">ผัง-804</a></li>  --}}
+                                <li><a href="{{ url('account_801_dash') }}">ผัง-801</a></li>
+                                <li><a href="{{ url('account_802_dash') }}">ผัง-802</a></li>
+                                <li><a href="{{ url('account_803_dash') }}">ผัง-803</a></li>
+                                <li><a href="{{ url('account_804_dash') }}">ผัง-804</a></li>
                             </ul>
-                        </li> 
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                {{-- <i class="fa-solid fa-file-invoice-dollar text-danger"></i> --}}
+                                <i class="fa-brands fa-btc" style="color: #e42ad4"></i>
+                                <span>พรบ</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('account_602_dash') }}">ผัง-602</a></li>
+                                <li><a href="{{ url('account_603_dash') }}">ผัง-603</a></li>
+                            </ul>
+                        </li>
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-brands fa-btc text-primary"></i>
@@ -319,12 +348,13 @@
                                 <span>ไต</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('account_pkti4011_dash') }}">OFC-4011</a></li> 
-                                <li><a href="{{ url('account_pkti8011_dash') }}">LGO-8011</a></li> 
-                                <li><a href="{{ url('account_pkti2166_dash') }}">UCS-2166</a></li> 
-                                <li><a href="{{ url('account_pkti2166_dash') }}">SSS-3099</a></li> 
+                                <li><a href="{{ url('account_pkti4011_dash') }}">OFC-4011</a></li>
+                                <li><a href="{{ url('account_pkti4022_dash') }}">OFC-4022</a></li>
+                                <li><a href="{{ url('account_pkti8011_dash') }}">LGO-8011</a></li>
+                                <li><a href="{{ url('account_pkti2166_dash') }}">UCS-2166</a></li>
+                                <li><a href="{{ url('account_pkti3099_dash') }}">SSS-3099</a></li>
                             </ul>
-                        </li> 
+                        </li>
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 {{-- <i class="fa-solid fa-file-invoice-dollar text-warning"></i> --}}
@@ -333,46 +363,50 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
                                 {{-- <li><a href="{{ url('upstm') }}">Upstm</a></li>  --}}
-                                <li><a href="{{ url('upstm_ti') }}">Upstm ไต(Excel)</a></li> 
-                                <li><a href="{{ url('upstm_tixml') }}">Upstm ไต(Xml)</a></li> 
+                                <li><a href="{{ url('upstm_ti') }}">UCS(Excel)</a></li>
+                                <li><a href="{{ url('upstm_ofcexcel') }}">OFC(Excel-ไต)</a></li>
+                                <li><a href="{{ url('upstm_tixml') }}">OFC(Xml)</a></li>
+                                <li><a href="{{ url('upstm_tixml_sss') }}">SSS(Xml)</a></li>
+                                <li><a href="{{ url('upstm_lgoexcel') }}">LGO-OP(Excel)</a></li>
+                                <li><a href="{{ url('upstm_lgoipexcel') }}">LGO-IP(Excel)</a></li>
                             </ul>
-                        </li> 
+                        </li>
                         <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect"> 
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-solid fa-chart-line text-info"></i>
                                 <span>STM report</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('acc_stm') }}">เทียบ stm</a></li> 
-                                <li><a href="{{ url('acc_repstm') }}">report stm ไต</a></li> 
+                                <li><a href="{{ url('acc_stm') }}">เทียบ stm</a></li>
+                                <li><a href="{{ url('acc_repstm') }}">report stm ไต</a></li>
                             </ul>
-                        </li> 
+                        </li>
                         <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect"> 
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-solid fa-sliders text-danger"></i>
                                 <span>ตั้งค่า</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('acc_setting') }}">Mapping Pttype</a></li>  
+                                <li><a href="{{ url('acc_setting') }}">Mapping Pttype</a></li>
                             </ul>
-                        </li> 
+                        </li>
                         {{-- <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect"> 
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-solid fa-chart-line text-danger"></i>
                                 <span>รายงาน</span>
-                            </a> 
+                            </a>
                         </li>  --}}
                         {{-- <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect">  
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-solid fa-gears text-danger"></i>
                                 <span>ตั้งค่า</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('p4p_work_position') }}">ตำแหน่งสายงาน</a></li> 
-                                <li><a href="{{ url('p4p_workgroupset') }}">หมวดภาระงาน</a></li>  
+                                <li><a href="{{ url('p4p_work_position') }}">ตำแหน่งสายงาน</a></li>
+                                <li><a href="{{ url('p4p_workgroupset') }}">หมวดภาระงาน</a></li>
                             </ul>
                         </li> --}}
-                       
+
 
 
                     </ul>
@@ -489,13 +523,13 @@
     <link href="{{ asset('acccph/styles/css/base.css') }}" rel="stylesheet">
     @yield('footer')
 
-    
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('#example').DataTable();
             $('#example2').DataTable();
             $('#example3').DataTable();
-           
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -505,10 +539,10 @@
         });
 
         $(document).ready(function() {
-            
+
         });
 
-       
+
     </script>
 
 </body>

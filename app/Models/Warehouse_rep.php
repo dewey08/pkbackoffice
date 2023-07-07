@@ -15,11 +15,10 @@ class Warehouse_rep extends Authenticatable
     protected $table = 'warehouse_rep';
     protected $primaryKey = 'warehouse_rep_id';
     protected $fillable = [
-        'warehouse_rep_code',
-        'warehouse_rep_code',
+        'warehouse_rep_code', 
         'product_id'
-         
+
     ];
 
-  
+
 }

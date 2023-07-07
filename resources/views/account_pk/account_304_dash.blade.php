@@ -114,7 +114,7 @@
         <div class="row "> 
             @foreach ($datashow as $item)   
             <div class="col-xl-6 col-md-6">
-                <div class="main-card mb-3 card">   
+                <div class="main-card mb-3 card shadow" style="background-color: rgb(246, 235, 247)"> 
 
                     @if ($startdate == '')
                         <div class="grid-menu-col">
@@ -181,7 +181,7 @@
                                                 </div>
                                                 <div class="col"></div>
                                                 <div class="col-md-4 text-end mt-2 me-4">
-                                                    <a href="{{url('account_304/'.$item->months.'/'.$item->year)}}" target="_blank"> 
+                                                    <a href="{{url('account_304_pull')}}" target="_blank"> 
                                                         <div class="widget-chart widget-chart-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="จำนวนลูกหนี้ที่ต้องตั้ง"> 
                                                             <h4 class="text-end">{{$count_N}} Visit</h4> 
                                                         </div> 

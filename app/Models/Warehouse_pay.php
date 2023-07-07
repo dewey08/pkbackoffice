@@ -15,9 +15,9 @@ class Warehouse_pay extends Authenticatable
     protected $table = 'warehouse_pay';
     protected $primaryKey = 'warehouse_pay_id';
     protected $fillable = [
-        'warehouse_pay_code',
-        'warehouse_pay_no_bill',
-        'warehouse_pay_year'
+        'pay_code',
+        'pay_year',
+        'pay_type'
          
     ];
 
