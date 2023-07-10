@@ -1,4 +1,4 @@
-@extends('layouts.envnew')
+.@extends('layouts.envnew')
 @section('title', 'PK-BACKOFFice || ENV')
 @section('content')
 <style>

@@ -423,9 +423,10 @@ class EnvController extends Controller
 
         if($request->trash_parameter_id != '' || $request->trash_parameter_id != null){
 
-        $trash_parameter_id = $request->trash_parameter_id;
-        $trash_sub_qty      = $request->trash_sub_qty;
-        $trash_sub_unit     = $request->trash_sub_unit;
+        $trash_parameter_id         = $request->trash_parameter_id;
+        $trash_sub_qty              = $request->trash_sub_qty;
+        $trash_sub_unit             = $request->trash_sub_unit;
+        // $trash_parameter_unit       = $request->trash_parameter_unit;
                             
         $number =count($trash_parameter_id);
         $count = 0;
@@ -434,12 +435,12 @@ class EnvController extends Controller
                 $idtrash = Env_trash_parameter::where('trash_parameter_id','=',$trash_parameter_id[$count])->first();
 
                 $add_sub = new Env_trash_sub();
-                $add_sub->trash_id          = $trash_id;
+                $add_sub->trash_id                = $trash_id;
                  
-                $add_sub->trash_sub_idd     = $idtrash->trash_parameter_id;  
-                $add_sub->trash_sub_name    = $idtrash->trash_parameter_name; 
-                $add_sub->trash_sub_qty     = $trash_sub_qty[$count];  
-                $add_sub->trash_sub_unit    = $trash_sub_unit[$count];                          
+                $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
+                $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
+                $add_sub->trash_sub_qty           = $trash_sub_qty[$count];                 
+                $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
                 $add_sub->save(); 
             }
         } 

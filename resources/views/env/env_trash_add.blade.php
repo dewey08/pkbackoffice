@@ -202,7 +202,7 @@ $count_service = StaticController::count_service();
                                                             <input value="{{ $items->trash_parameter_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>
                                                         <td><input name="trash_sub_qty[]" id="trash_sub_qty[]" class="form-control input-sm fo13" ></td>  
-                                                        <td><input value="{{ $items->trash_sub_unit }}" name="trash_sub_unit[]" id="trash_sub_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input value="{{ $items->trash_parameter_unit }}" name="trash_parameter_unit[]" id="trash_parameter_unit[]" class="form-control input-sm fo13" readonly></td>
                                                                                                     
                                                         {{-- <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
                                                         <td>
