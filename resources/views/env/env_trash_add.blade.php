@@ -194,12 +194,12 @@ $count_service = StaticController::count_service();
                                                 </thead>
                                                 <tbody class="tbody">
                                                     <?php $number = 1; ?>
-                                                    @foreach($data_trash_set as $items)                                                   
+                                                    @foreach($trash_parameter as $items)                                                   
                                                     <tr height="20">
                                                         <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>
                                                         <td>
-                                                            <input type="hidden" value="{{ $items->trash_set_id }}" name="trash_set_id[]" id="trash_set_id[]" class="form-control input-sm fo13" >
-                                                            <input value="{{ $items->trash_set_name }}" name="" id="" class="form-control input-sm fo13" readonly>
+                                                            <input type="hidden" value="{{ $items->trash_parameter_id }}" name="trash_parameter_id[]" id="trash_parameter_id[]" class="form-control input-sm fo13" >
+                                                            <input value="{{ $items->trash_parameter_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>
                                                         <td><input name="trash_sub_qty[]" id="trash_sub_qty[]" class="form-control input-sm fo13" ></td>  
                                                         <td><input value="{{ $items->trash_sub_unit }}" name="trash_sub_unit[]" id="trash_sub_unit[]" class="form-control input-sm fo13" readonly></td>

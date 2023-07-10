@@ -66,7 +66,7 @@ use App\Models\P4p_workgroupset;
 
 use App\Models\Env_parameter_list;
 
-use App\Models\Env_trash_set;
+use App\Models\Env_trash_parameter;
 use App\Models\Env_trash_sub;
 use App\Models\Env_trash_type;
 use App\Models\Env_trash;
@@ -75,7 +75,7 @@ use App\Models\Env_water_save;
 use App\Models\Env_water_sub;
 use App\Models\Env_water;
 
-use App\Models\Env_trash_parameter;
+
 use Auth;
 
 class EnvController extends Controller
@@ -371,7 +371,7 @@ class EnvController extends Controller
         ');        
 
         $data_parameter = DB::table('env_trash')->get();
-        $data_trash_set = DB::table('env_trash_set')->get();
+        $trash_parameter = DB::table('env_trash_parameter')->get();
         $data_trash_sub = DB::table('env_trash_sub')->get();
         $data_trash_type = DB::table('env_trash_type')->get();
         $data['products_vendor'] = Products_vendor::get();
@@ -396,7 +396,7 @@ class EnvController extends Controller
             'startdate'        => $datestart,
             'enddate'          => $dateend, 
             'dataparameters'   => $data_parameter,
-            'data_trash_set'   => $data_trash_set,
+            'trash_parameter'  => $trash_parameter,
             'data_trash_sub'   => $data_trash_sub,
             'data_trash_type'  => $data_trash_type,
             'billNos'          => $billNo,
@@ -409,36 +409,37 @@ class EnvController extends Controller
         date_default_timezone_set("Asia/Bangkok");
         $datenow = date('Y-m-d H:i:s');
         $iduser = Auth::user()->id;
-        $data_trash_set = DB::table('env_trash_set')->get();
+        $trash_parameter = DB::table('env_trash_parameter')->get();
 
-        $add = new env_trash();
+        $add = new Env_trash();
         $add->trash_bill_on = $request->input('trash_bill_on');
-        $add->trash_date = $request->input('trash_date'); 
-        $add->trash_time = $request->input('trash_time'); 
-        $add->trash_user = $request->input('trash_user'); 
-        $add->trash_sub = $request->input('trash_sub'); 
+        $add->trash_date    = $request->input('trash_date'); 
+        $add->trash_time    = $request->input('trash_time'); 
+        $add->trash_user    = $request->input('trash_user'); 
+        $add->trash_sub     = $request->input('trash_sub'); 
         $add->save();
         
         $trash_id =  Env_trash::max('trash_id');
 
-        if($request->trash_set_id != '' || $request->trash_set_id != null){
+        if($request->trash_parameter_id != '' || $request->trash_parameter_id != null){
 
-        $trash_set_id = $request->trash_set_id;
-        $trash_sub_qty = $request->trash_sub_qty;
-        $trash_sub_unit = $request->trash_sub_unit;
+        $trash_parameter_id = $request->trash_parameter_id;
+        $trash_sub_qty      = $request->trash_sub_qty;
+        $trash_sub_unit     = $request->trash_sub_unit;
                             
-        $number =count($trash_set_id);
+        $number =count($trash_parameter_id);
         $count = 0;
             for($count = 0; $count< $number; $count++)
             { 
-                $idtrash = Env_trash_set::where('trash_set_id','=',$trash_set_id[$count])->first();
+                $idtrash = Env_trash_parameter::where('trash_parameter_id','=',$trash_parameter_id[$count])->first();
 
                 $add_sub = new Env_trash_sub();
-                $add_sub->trash_id = $trash_id; 
-                $add_sub->trash_sub_idd = $idtrash->trash_set_id;  
-                $add_sub->trash_sub_name = $idtrash->trash_set_name; 
-                $add_sub->trash_sub_qty = $trash_sub_qty[$count];  
-                $add_sub->trash_sub_unit = $trash_sub_unit[$count];                          
+                $add_sub->trash_id          = $trash_id;
+                 
+                $add_sub->trash_sub_idd     = $idtrash->trash_parameter_id;  
+                $add_sub->trash_sub_name    = $idtrash->trash_parameter_name; 
+                $add_sub->trash_sub_qty     = $trash_sub_qty[$count];  
+                $add_sub->trash_sub_unit    = $trash_sub_unit[$count];                          
                 $add_sub->save(); 
             }
         } 
@@ -458,7 +459,7 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
  
-        $data_parameter_list = DB::table('env_trash_set')->get();
+        $data_parameter_list = DB::table('env_trash_parameter')->get();
          
 
         return view('env.env_trash_parameter', $data,[
@@ -484,13 +485,13 @@ class EnvController extends Controller
             group by u.dep_subsubtrueid;
         ');
 
-        $data_parameter = DB::table('env_trash_set')->get();
+        $data_parameter = DB::table('env_trash_parameter')->get();
          
 
         return view('env.env_trash_parameter_add', $data,[
             'startdate'        => $datestart,
             'enddate'          => $dateend, 
-            'dataparameters'  => $data_parameter, 
+            'dataparameters'   => $data_parameter, 
         ]);
     }
 
@@ -504,7 +505,7 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
  
-        $data_edit = DB::table('env_trash_set')->where('trash_set_id','=',$id)->first();
+        $data_edit = DB::table('env_trash_parameter')->where('trash_parameter_id','=',$id)->first();
 
         return view('env.env_trash_parameter_edit', $data,[
             'startdate'        => $datestart,
@@ -517,13 +518,13 @@ class EnvController extends Controller
     {  
         $datenow = date('Y-m-d H:m:s');
 
-        Env_trash_set::insert([
-            // 'trash_set_id'                    => $request->trash_set_id,
-            'trash_set_name'                   => $request->trash_set_name,
-            'trash_set_unit'                   => $request->trash_set_unit,
-            'created_at'                       => $datenow
+        Env_trash_parameter::insert([
+            // 'trash_parameter_id'                    => $request->trash_parameter_id,
+            'trash_parameter_name'                   => $request->trash_parameter_name,
+            'trash_parameter_unit'                   => $request->trash_parameter_unit,
+            'created_at'                             => $datenow
         ]);
-        $data_parameter_list = DB::table('env_trash_set')->get();
+        $data_parameter_list = DB::table('env_trash_parameter')->get();
     
         return redirect()->route('env.env_trash_parameter');
 
@@ -532,15 +533,13 @@ class EnvController extends Controller
     public function env_trash_parameter_update  (Request $request)
     { 
         $datenow = date('Y-m-d H:m:s');
-        $id = $request->trash_set_id;
+        $id = $request->trash_parameter_id;
         // DB::table('env_parameter_list')->where('parameter_list_id','=',$id)
-        Env_trash_set::where('trash_set_id','=',$id)
+        Env_trash_parameter::where('trash_parameter_id','=',$id)
         ->update([
-            'trash_set_name'                       => $request->trash_set_name,
-            'trash_set_unit'                       => $request->trash_set_unit,
-            // 'parameter_list_normal'                 => $request->parameter_list_normal,
-            // 'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results, 
-            'updated_at'                            => $datenow
+            'trash_parameter_name'                       => $request->trash_parameter_name,
+            'trash_parameter_unit'                       => $request->trash_parameter_unit,
+            'updated_at'                                 => $datenow
         ]);
 
         $data_parameter_list = DB::table('env_trash_type')->get();
@@ -553,7 +552,7 @@ class EnvController extends Controller
 
     public function env_trash_parameter_delete (Request $request,$id)
     {
-       $del = Env_trash_set::find($id);  
+       $del = Env_trash_parameter::find($id);  
        $del->delete(); 
 
         return redirect()->back();

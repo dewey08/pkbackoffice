@@ -114,10 +114,10 @@ if (Auth::check()) {
                                         $date = date('Y');
                                         ?>
                                         @foreach ($dataparameterlist as $item)
-                                            <tr id="sid{{ $item->trash_set_id }}">
+                                            <tr id="sid{{ $item->trash_parameter_id }}">
                                                 <td class="text-center" width="4%">{{ $i++ }}</td>
-                                                <td class="p-2" width="18%">{{ $item->trash_set_name }} </td>
-                                                <td class="text-center" width="5%">{{ $item->trash_set_unit }}</td>
+                                                <td class="p-2" width="18%">{{ $item->trash_parameter_name }} </td>
+                                                <td class="text-center" width="5%">{{ $item->trash_parameter_unit }}</td>
                                                 <td class="text-center" width="7%">
     
                                                     {{-- <div class="dropdown">
@@ -148,7 +148,7 @@ if (Auth::check()) {
                                                         </button>
                                                         <div class="dropdown-menu">
                                                             <a class="dropdown-item text-warning"
-                                                                href="{{ url('env_trash_parameter_edit/' . $item->trash_set_id) }}"
+                                                                href="{{ url('env_trash_parameter_edit/' . $item->trash_parameter_id) }}"
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="แก้ไข">
                                                                 <i class="fa-solid fa-pen-to-square me-2"></i>
@@ -157,7 +157,7 @@ if (Auth::check()) {
                                                             </a>
     
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->trash_set_id)}}"
+                                                            <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->trash_parameter_id)}}"
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="ลบ">
                                                                 <i class="fa-solid fa-trash-can me-2 mb-1"></i>

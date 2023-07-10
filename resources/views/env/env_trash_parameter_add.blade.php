@@ -88,21 +88,21 @@ $count_service = StaticController::count_service();
     
                                         <div class="row">
                                             <div class="col-md-2 text-end">
-                                                <label for="trash_set_name">ประเภทขยะติดเชื้อ :</label>
+                                                <label for="trash_parameter_name">ประเภทขยะติดเชื้อ :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="trash_set_name" type="text"
-                                                        class="form-control form-control-sm" name="trash_set_name">
+                                                    <input id="trash_parameter_name" type="text"
+                                                        class="form-control form-control-sm" name="trash_parameter_name">
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="trash_set_unit">หน่วย :</label>
+                                                <label for="trash_parameter_unit">หน่วย :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="trash_set_unit" type="text" 
-                                                        class="form-control form-control-sm" name="trash_set_unit">                                                        
+                                                    <input id="trash_parameter_unit" type="text" 
+                                                        class="form-control form-control-sm" name="trash_parameter_unit">                                                        
                                                 </div>
                                             </div>
                                         </div>

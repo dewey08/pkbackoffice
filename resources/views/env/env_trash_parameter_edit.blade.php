@@ -87,25 +87,25 @@ $count_service = StaticController::count_service();
                                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
     
 
-                                            <input type="hidden" id="trash_set_id" name="trash_set_id" class="form-control" value="{{$data_edit->trash_set_id}}"/>
+                                            <input type="hidden" id="trash_parameter_id" name="trash_parameter_id" class="form-control" value="{{$data_edit->trash_parameter_id}}"/>
 
                                         <div class="row">
                                             <div class="col-md-2 text-end">
-                                                <label for="trash_set_name">ประเภทขยะติดเชื้อ :</label>
+                                                <label for="trash_parameter_name">ประเภทขยะติดเชื้อ :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="trash_set_name" type="text"
-                                                        class="form-control form-control-sm" name="trash_set_name" value="{{$data_edit->trash_set_name}}">
+                                                    <input id="trash_parameter_name" type="text"
+                                                        class="form-control form-control-sm" name="trash_parameter_name" value="{{$data_edit->trash_parameter_name}}">
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="trash_set_unit">หน่วย :</label>
+                                                <label for="trash_parameter_unit">หน่วย :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="trash_set_unit" type="text" 
-                                                        class="form-control form-control-sm" name="trash_set_unit" value="{{$data_edit->trash_set_unit}}">                                                        
+                                                    <input id="trash_parameter_unit" type="text" 
+                                                        class="form-control form-control-sm" name="trash_parameter_unit" value="{{$data_edit->trash_parameter_unit}}">                                                        
                                                 </div>
                                             </div>
                                         </div>
