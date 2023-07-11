@@ -225,8 +225,8 @@ class EnvController extends Controller
          
 
         return view('env.env_water_parameter', $data,[
-            'startdate' => $datestart,
-            'enddate' => $dateend,
+            'startdate'         => $datestart,
+            'enddate'           => $dateend,
             'dataparameterlist' => $data_parameter_list, 
         ]);
     }
@@ -334,9 +334,20 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
-        $trash = DB::table('env_trash')->leftjoin('hrd_person','env_trash.trash_user','=','hrd_person.ID')
+        $trash = DB::table('env_trash')
+            ->leftjoin('users','env_trash.trash_user','=','users.id')
             ->leftjoin('env_trash_type','env_trash.trash_user','=','env_trash_type.trash_type_id')
-            ->leftjoin('products_vendor','env_trash.trash_sub','=','products_vendor.vendor_id');
+            ->leftjoin('products_vendor','env_trash.trash_sub','=','products_vendor.vendor_id')->get();
+
+
+        $datashow = DB::connection('mysql')->select('
+            SELECT DISTINCT(t.trash_bill_on) ,t.trash_id , t.trash_date , t.trash_time , pv.vendor_name , CONCAT(u.fname,"",u.lname) as trash_user
+            FROM env_trash t
+            LEFT JOIN env_trash_sub ts on ts.trash_id = t.trash_id
+		    LEFT JOIN products_vendor pv on pv.vendor_id = t.trash_sub
+			LEFT JOIN users u on u.id = t.trash_user 
+            order by t.trash_id desc;
+    ');
 
         $trash_type = DB::table('env_trash_type') ->get();
         
@@ -346,10 +357,11 @@ class EnvController extends Controller
         // ');
          
         return view('env.env_trash',[
-            'startdate' => $datestart,
-            'enddate' => $dateend,
-            'trashs'=>$trash,
-            'trash_type'=>$trash_type,
+            'startdate'     => $datestart,
+            'enddate'       => $dateend,
+            'trashs'        => $trash,
+            'trash_type'    => $trash_type,
+            'datashow'      => $datashow,
 
         ]);
     }
@@ -426,7 +438,7 @@ class EnvController extends Controller
         $trash_parameter_id         = $request->trash_parameter_id;
         $trash_sub_qty              = $request->trash_sub_qty;
         $trash_sub_unit             = $request->trash_sub_unit;
-        // $trash_parameter_unit       = $request->trash_parameter_unit;
+        $trash_parameter_unit       = $request->trash_parameter_unit;
                             
         $number =count($trash_parameter_id);
         $count = 0;
@@ -436,16 +448,83 @@ class EnvController extends Controller
 
                 $add_sub = new Env_trash_sub();
                 $add_sub->trash_id                = $trash_id;
-                 
                 $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
                 $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
-                $add_sub->trash_sub_qty           = $trash_sub_qty[$count];                 
-                $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
+                $add_sub->trash_sub_qty           = $trash_sub_qty[$count];
+                $add_sub->trash_sub_unit           = $trash_parameter_unit[$count];                 
+                // $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
                 $add_sub->save(); 
             }
         } 
         return redirect()->route('env.env_trash');
         // return redirect()->route('env.env_trash');
+    }
+
+    public function env_trash_edit (Request $request,$id)
+    {
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+ 
+        $trash = DB::table('env_trash')->where('trash_id','=',$id)->first();
+        $data['env_trash_sub']  = DB::table('env_trash_sub')->where('trash_id','=',$id)->get();
+  
+        $data['trash_parameter']  = DB::table('env_trash_parameter')->get();
+        // $data_trash_sub = DB::table('env_trash_sub')->get();
+        // $data_trash_type = DB::table('env_trash_type')->get();
+        $data['products_vendor'] = Products_vendor::get();
+
+        return view('env.env_trash_edit', $data,[
+            'startdate'        => $datestart,
+            'enddate'          => $dateend, 
+            'trash'            => $trash, 
+        ]);
+    }
+
+    public function env_trash_update  (Request $request)
+    { 
+        $datenow = date('Y-m-d H:m:s');
+        $id = $request->trash_id;
+        $ff = $request->trash_bill_on;
+        // dd($ff);
+
+        // Env_trash::where('trash_id','=',$id)
+        //     ->update([
+        //         'trash_bill_on'                    => $request->trash_bill_on,
+        //         'trash_date'                       => $request->trash_date,
+        //         'trash_time'                       => $request->trash_time,
+        //         'trash_user'                       => $request->trash_user,
+        //         'trash_sub'                        => $request->trash_sub,            
+        //         'updated_at'                       => $datenow
+        // ]);
+
+        $add = Env_trash::find($id);
+        $add->trash_bill_on = $request->trash_bill_on;
+        $add->trash_date    = $request->trash_date; 
+        $add->trash_time    = $request->trash_time; 
+        $add->trash_user    = $request->trash_user; 
+        $add->trash_sub     = $request->trash_sub; 
+        $add->save();
+
+
+        // Env_trash_sub::where('trash_id','=',$id)->update([
+        //         'trash_sub_idd'                    => $request->trash_sub_idd,
+        //         'trash_sub_name'                   => $request->trash_sub_name,
+        //         'trash_sub_qty'                    => $request->trash_sub_qty,
+        //         'trash_sub_unit'                   => $request->trash_sub_unit,            
+        //         'updated_at'                       => $datenow
+        // ]);
+
+        // $data_parameter_list = DB::table('env_trash_type')->get();
+        // return redirect()->back();
+        return redirect()->route('env.env_trash');
+        // return view('env.env_water_parameter',[ 
+        //     'dataparameterlist' => $data_parameter_list, 
+        // ]);
     }
 
 //**************************************************************ตั้งค่า   ประเภทขยะ*********************************************

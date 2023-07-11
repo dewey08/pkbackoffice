@@ -2002,5 +2002,8 @@ Route::match(['get','post'],'timein_save',[App\Http\Controllers\TimeINController
  Route::match(['get','post'],'env_trash',[App\Http\Controllers\EnvController::class, 'env_trash'])->name('env.env_trash');//หน้าหลักแสดงข้อมูล
  Route::match(['get','post'],'env_trash_add',[App\Http\Controllers\EnvController::class, 'env_trash_add'])->name('env.env_trash_add');//เพิ่มข้อมูล
  Route::match(['get','post'],'env_trash_save',[App\Http\Controllers\EnvController::class, 'env_trash_save'])->name('env.env_trash_save');//บันทึก
+ Route::match(['get','post'],'env_trash_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_edit'])->name('env.env_trash_edit');//แก้ไข
+ Route::match(['get','post'],'env_trash_update',[App\Http\Controllers\EnvController::class, 'env_trash_update'])->name('env.env_trash_update');//อัพเดท
+ Route::match(['get','post'],'env_trash_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_delete'])->name('env.env_trash_delete');//ลบข้อมูล
 
 });

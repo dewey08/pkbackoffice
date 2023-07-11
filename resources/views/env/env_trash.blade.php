@@ -151,6 +151,51 @@ if (Auth::check()) {
                                           
                                         </tr>
                                     </thead>
+                                    <tbody>
+                                        <?php $i = 1;
+                                        // $date = date('Y');
+                                        ?>
+                                        @foreach ($datashow as $item)
+                                        
+                                            <tr>
+                                            
+                                                <td class="text-center" width="4%">{{ $i++ }}</td>
+                                                <td class="text-center" width="7%">{{ $item->trash_bill_on }}</td>
+                                                <td class="text-center" width="7%">{{DateThai( $item->trash_date )}}</td>
+                                                <td class="text-center" width="5%">{{ $item->trash_time }}</td>
+                                                <td class="p-2" width="18%">{{ $item->vendor_name }}</td>
+                                                <td class="text-center" width="5%">{{ $item->trash_user }}</td>
+                                                <td class="text-center" width="7%">    
+                                                    
+                                                    <div class="btn-group">
+                                                        <button type="button"
+                                                            class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                            ทำรายการ 
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item text-warning"
+                                                                href="{{ url('env_trash_edit/' . $item->trash_id) }}"
+                                                                data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                data-bs-custom-class="custom-tooltip" title="แก้ไข">
+                                                                <i class="fa-solid fa-pen-to-square me-2"></i>
+                                                                <label for=""
+                                                                    style="color: rgb(252, 185, 0);font-size:13px">แก้ไข</label>
+                                                            </a>
+    
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->trash_id)}}"
+                                                                data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                data-bs-custom-class="custom-tooltip" title="ลบ">
+                                                                <i class="fa-solid fa-trash-can me-2 mb-1"></i>
+                                                                <label for="" style="color: rgb(255, 2, 2);font-size:13px">ลบ</label>
+                                                            </a>                                                           
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
                                     {{-- <tbody>
                                         <?php $ia = 1; ?>
                                         @foreach ($datashow_ as $item)  
