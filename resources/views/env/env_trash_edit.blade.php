@@ -85,6 +85,8 @@ $count_service = StaticController::count_service();
                                                 <input type="hidden" id="article_typeid" name="article_typeid" class="form-control" value="2"/>
                                                 <input type="hidden" id="article_groupid" name="article_groupid" class="form-control" value="3"/>
                                                 <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
+
+                                                <input type="hidden" name="trash_id" id="trash_id" value="{{$trash->trash_id}}">
         
                                             <div class="row">
                                                 <div class="col-md-1 text-end">
@@ -181,11 +183,8 @@ $count_service = StaticController::count_service();
                                                         </div>
                                                     </div>
                                                 {{-- </div> --}}
-                                            </div>
-                                            
+                                            </div>                       
                                            
-                                      
-
                                     <div class="row">
                                         <label for="">รายการขยะ</label>
                                         <div class="col-md-12">
@@ -198,9 +197,7 @@ $count_service = StaticController::count_service();
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;font-family: 'Kanit', sans-serif;font-size: 13px;" width="3%">ลำดับ</td>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">ประเภทขยะ</th>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="7%">ปริมาณ</th> 
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">หน่วย</th> 
-                                                        {{-- <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th> 
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="15%">ค่ามาตรฐาน</th>                                             --}}
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">หน่วย</th>                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody class="tbody">
@@ -213,17 +210,8 @@ $count_service = StaticController::count_service();
                                                             <input value="{{ $items2->trash_sub_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>
                                                         <td><input value="{{ $items2->trash_sub_qty }}"  name="trash_sub_qty[]" id="trash_sub_qty[]" class="form-control input-sm fo13" ></td>  
-                                                        <td><input value="{{ $items2->trash_sub_unit }}" name="trash_sub_unit[]" id="trash_sub_unit[]" class="form-control input-sm fo13" readonly></td>
-                                                                                                    
-                                                        {{-- <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
-                                                        <td>
-                                                            <input type="hidden" value="{{ $items->trash_set_id }}" name="trash_set_id[]" id="trash_set_id[]" class="form-control input-sm fo13" >
-                                                            <input value="{{ $items->trash_set_name }}" name="" id="" class="form-control input-sm fo13" readonly>
-                                                        </td>                                
-                                                        <td><input value="{{ $items->trash_set_unit }}" name="trash_set_unit[]" id="trash_set_unit[]" class="form-control input-sm fo13" readonly></td> --}}
-                                                        {{-- <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
-                                                        <td><input value="{{ $items->parameter_list_user_analysis_results }}" name="parameter_list_user_analysis_results[]" id="parameter_list_user_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
-                                                        <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td> --}}
+                                                        <td><input value="{{ $items2->trash_sub_unit }}" name="trash_sub_unit[]" id="trash_sub_unit[]" class="form-control input-sm fo13" readonly></td>                                                                                             
+                                                        
                                                     </tr>
                                                     @endforeach 
                                                 </tbody>

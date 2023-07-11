@@ -490,41 +490,45 @@ class EnvController extends Controller
         $datenow = date('Y-m-d H:m:s');
         $id = $request->trash_id;
         $ff = $request->trash_bill_on;
-        // dd($ff);
+        dd($ff);
+        $update = Env_trash::find($id);
+        
+        $update->trash_bill_on = $request->trash_bill_on;
+        $update->trash_date    = $request->trash_date; 
+        $update->trash_time    = $request->trash_time; 
+        $update->trash_user    = $request->trash_user; 
+        $update->trash_sub     = $request->trash_sub; 
+        $update->save();
 
-        // Env_trash::where('trash_id','=',$id)
-        //     ->update([
-        //         'trash_bill_on'                    => $request->trash_bill_on,
-        //         'trash_date'                       => $request->trash_date,
-        //         'trash_time'                       => $request->trash_time,
-        //         'trash_user'                       => $request->trash_user,
-        //         'trash_sub'                        => $request->trash_sub,            
-        //         'updated_at'                       => $datenow
-        // ]);
+        // Env_trash_sub::where('trash_id','=',$id)->delete();
 
-        $add = Env_trash::find($id);
-        $add->trash_bill_on = $request->trash_bill_on;
-        $add->trash_date    = $request->trash_date; 
-        $add->trash_time    = $request->trash_time; 
-        $add->trash_user    = $request->trash_user; 
-        $add->trash_sub     = $request->trash_sub; 
-        $add->save();
+        if($request->trash_sub_idd != '' || $request->trash_sub_idd != null){
 
+            $trash_sub_idd = $request->trash_sub_idd;
+            $trash_sub_qty = $request->trash_sub_qty;
+            $trash_sub_unit = $request->trash_sub_unit;
+            $trash_parameter_unit       = $request->trash_parameter_unit;
+                                
+            $number =count($trash_sub_idd);
+            $count = 0;
+                for($count = 0; $count< $number; $count++)
+                    { 
+                        $idtrash = Env_trash_parameter::where('SET_TRASH_ID','=',$trash_sub_idd[$count])->first();
+                        
+                        $add_sub = new Env_trash_sub();
+                        $add_sub->trash_id = $id;      
+                    
+                        $add_sub->trash_sub_idd = $idtrash->trash_parameter_id;  
+                        $add_sub->trash_sub_name = $idtrash->trash_parameter_name;
 
-        // Env_trash_sub::where('trash_id','=',$id)->update([
-        //         'trash_sub_idd'                    => $request->trash_sub_idd,
-        //         'trash_sub_name'                   => $request->trash_sub_name,
-        //         'trash_sub_qty'                    => $request->trash_sub_qty,
-        //         'trash_sub_unit'                   => $request->trash_sub_unit,            
-        //         'updated_at'                       => $datenow
-        // ]);
+                        $add_sub->trash_sub_qty = $trash_sub_qty[$count];  
+                        $add_sub->trash_sub_unit = $trash_parameter_unit[$count];                          
+                        $add_sub->save(); 
+                    }
+        }
 
-        // $data_parameter_list = DB::table('env_trash_type')->get();
-        // return redirect()->back();
         return redirect()->route('env.env_trash');
-        // return view('env.env_water_parameter',[ 
-        //     'dataparameterlist' => $data_parameter_list, 
-        // ]);
+        
     }
 
 //**************************************************************ตั้งค่า   ประเภทขยะ*********************************************
