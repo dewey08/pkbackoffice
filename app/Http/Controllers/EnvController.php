@@ -341,7 +341,7 @@ class EnvController extends Controller
 
 
         $datashow = DB::connection('mysql')->select('
-            SELECT DISTINCT(t.trash_bill_on) ,t.trash_id , t.trash_date , t.trash_time , pv.vendor_name , CONCAT(u.fname,"",u.lname) as trash_user
+            SELECT DISTINCT(t.trash_bill_on) ,t.trash_id , t.trash_date , t.trash_time , pv.vendor_name , CONCAT(u.fname," ",u.lname) as trash_user
             FROM env_trash t
             LEFT JOIN env_trash_sub ts on ts.trash_id = t.trash_id
 		    LEFT JOIN products_vendor pv on pv.vendor_id = t.trash_sub
@@ -489,8 +489,8 @@ class EnvController extends Controller
     { 
         $datenow = date('Y-m-d H:m:s');
         $id = $request->trash_id;
-        $ff = $request->trash_bill_on;
-        dd($ff);
+        // $ff = $request->trash_bill_on;
+        // dd($ff);
         $update = Env_trash::find($id);
         
         $update->trash_bill_on = $request->trash_bill_on;
