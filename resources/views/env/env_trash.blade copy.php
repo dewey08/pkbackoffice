@@ -63,11 +63,6 @@ if (Auth::check()) {
     $y = date('Y') + 543;
     $newweek = date('Y-m-d', strtotime($datenow . ' -1 week')); //ย้อนหลัง 1 สัปดาห์  
     $newDate = date('Y-m-d', strtotime($datenow . ' -1 months')); //ย้อนหลัง 1 เดือน 
-
-    use Illuminate\Support\Facades\DB;
-
-
-
 ?>
   
 <div class="tabs-animation">
@@ -157,7 +152,9 @@ if (Auth::check()) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php $i = 1; ?>
+                                        <?php $i = 1;
+                                        // $date = date('Y');
+                                        ?>
                                         @foreach ($datashow as $item)
                                         
                                             <tr>                                            
@@ -207,7 +204,11 @@ if (Auth::check()) {
                                                     </div>
                                                 </td>
                                             </tr>
-                                      
+
+                                        <?php  
+
+                                        
+                                        ?>
                                             <!--  Modal content Update -->
                                             <div class="modal fade" 
                                                 id="trashetailModal{{ $item->trash_id }}" tabindex="-1"
@@ -217,7 +218,8 @@ if (Auth::check()) {
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="trashetailModal">
                                                                 รายระเอียดข้อมูลขยะ
-                                                                                                                      </div>
+                                                                {{-- {{ $item->trash_id }}</h5> --}}
+                                                        </div>
                                                         <div class="modal-body">
 
                                                             <div class="row">
@@ -229,7 +231,16 @@ if (Auth::check()) {
                                                                     <p for="trash_bill_on">{{ $item->trash_bill_on }}</p>
 
                                                                 </div>
-                                                               
+                                                                {{-- <div class="col-md-2 ">
+                                                                    <label for=""><b>ปีงบประมาณ
+                                                                            :</b></label>
+                                                                </div>
+                                                                <div class="col-md-3">
+
+                                                                    <label
+                                                                        for="com_repaire_year">{{ $item->com_repaire_year }}</label>
+
+                                                                </div> --}}
                                                             </div>
 
                                                             <div class="row mt-3">
@@ -274,38 +285,130 @@ if (Auth::check()) {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <hr>
-                                                            <div class="row  mt-3">
-                                                                <div class="col-md-12">
-                                                               
-                                                                            <?php   
-                                                                                    $j = 1;
-                                                                                    $data_ = DB::connection('mysql')->select('
-                                                                                            SELECT *
-                                                                                            FROM env_trash_sub
-                                                                                            WHERE trash_id = "'.$item->trash_id.'"
-                                                                                    ');
-                                                                            ?>
-                                                                          
-                                                                    <div class="row ">
-                                                                        <div class="col-md-1">ลำดับ</div>
-                                                                        <div class="col-md-5">ประเภทขยะ</div>
-                                                                        <div class="col-md-3">จำนวน</div>
-                                                                        <div class="col-md-3">หน่วยนับ</div>
+
+                                                            {{-- <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>ความเร่งด่วน
+                                                                            :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="com_repaire_user_name">{{ $item->status_name }}</label>
                                                                     </div>
-                                                                    @foreach ($data_ as $item2)
-                                                                    <hr>
-                                                                    <div class="row">
-                                                                        <div class="col-md-1">{{$j++}}</div>
-                                                                        <div class="col-md-5">{{$item2->trash_sub_name}}</div>
-                                                                        <div class="col-md-3">{{$item2->trash_sub_qty}}</div>
-                                                                        <div class="col-md-3">{{$item2->trash_sub_unit}}</div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>รายการที่แจ้งซ่อม
+                                                                            :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="com_repaire_user_name">{{ $item->article_name }}</label>
                                                                     </div>
-                                                                    @endforeach
+                                                                </div>
+                                                            </div> --}}
+
+                                                            {{-- <hr> --}}
+
+                                                            {{-- <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>วันที่ซ่อม
+                                                                            :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="com_repaire_date">{{ DateThai($item->com_repaire_work_date) }}</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2 ">
+                                                                    <label for=""><b>เวลา :</b></label>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="com_repaire_time">{{ formatetime($item->com_repaire_work_time) }}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div> --}}
+
+                                                            {{-- <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>ช่างซ่อม :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="com_repaire_user_name">{{ $item->com_repaire_tec_name }}</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>รายละเอียดซ่อม
+                                                                            :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="com_repaire_debsubsub_name">{{ $item->com_repaire_detail_tech }}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div> --}}
+                                                            {{-- <hr> --}}
+
+                                                            {{-- <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label
+                                                                        for=""><b>วันที่ส่งงาน:</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="com_repaire_date">{{ DateThai($item->com_repaire_send_date) }}</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2 ">
+                                                                    <label for=""><b>เวลา :</b></label>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="com_repaire_time">{{ formatetime($item->com_repaire_send_time) }}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div> --}}
+
+                                                            {{-- <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label
+                                                                        for=""><b>ลายมือผู้แจ้ง:</b></label>
+                                                                </div>
+                                                                <div class="col-md-1 text-start">
+                                                                    <div class="form-group ">
+                                                                    <img src="data:image/png;base64,{{$singuser}}" alt="" width="120px">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col"></div>
+                                                                <div class="col-md-2 ">
+                                                                    <label for=""><b>ลายมือผู้รับ:</b></label>
+                                                                </div>
+                                                                <div class="col-md-1 text-start">
+                                                                    <div class="form-group ">
+                                                                    <img src="data:image/png;base64,{{$singrep}}" alt="" width="120px">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col"></div>
+
+                                                                <div class="col-md-2 ">
+                                                                <label for=""><b>ลายมือผู้ส่งงาน:</b></label>
+                                                            </div>
+                                                            <div class="col-md-1 text-start">
+                                                                <div class="form-group ">
+                                                                    <img src="data:image/png;base64,{{$singstaff}}" alt="" width="120px">
                                                                 </div>
                                                             </div>
-
-                                                 
+                                                                <div class="col"></div>
+                                                            </div> --}}
                                                         </div>
                                                         <div class="modal-footer">
 

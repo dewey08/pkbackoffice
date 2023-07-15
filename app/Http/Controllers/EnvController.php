@@ -338,10 +338,12 @@ class EnvController extends Controller
             ->leftjoin('users','env_trash.trash_user','=','users.id')
             ->leftjoin('env_trash_type','env_trash.trash_user','=','env_trash_type.trash_type_id')
             ->leftjoin('products_vendor','env_trash.trash_sub','=','products_vendor.vendor_id')->get();
+        
+        
 
 
         $datashow = DB::connection('mysql')->select('
-            SELECT DISTINCT(t.trash_bill_on) ,t.trash_id , t.trash_date , t.trash_time , pv.vendor_name , CONCAT(u.fname," ",u.lname) as trash_user
+            SELECT DISTINCT(t.trash_bill_on) ,t.trash_id , t.trash_date , t.trash_time ,t.trash_sub , pv.vendor_name , CONCAT(u.fname," ",u.lname) as trash_user
             FROM env_trash t
             LEFT JOIN env_trash_sub ts on ts.trash_id = t.trash_id
 		    LEFT JOIN products_vendor pv on pv.vendor_id = t.trash_sub
