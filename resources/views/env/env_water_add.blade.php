@@ -101,8 +101,6 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    {{-- <input id="water_user" type="text" 
-                                                        class="form-control form-control-sm" name="water_user"> --}}
                                                         <select id="water_user1" name="water_user"
                                                         class="form-control form-control-sm" style="width: 100%">
                                                         <option value="">--เลือก--</option>

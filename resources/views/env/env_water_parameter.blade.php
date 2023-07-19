@@ -114,13 +114,13 @@ if (Auth::check()) {
                                         <?php $i = 1;
                                         $date = date('Y');
                                         ?>
-                                        @foreach ($dataparameterlist as $item)
-                                            <tr id="sid{{ $item->parameter_list_id }}">
+                                        @foreach ($data_water_parameter as $item)
+                                            <tr id="sid{{ $item->water_parameter_id }}">
                                                 <td class="text-center" width="4%">{{ $i++ }}</td>
-                                                <td class="p-2" width="18%">{{ $item->parameter_list_name }} </td>
-                                                <td class="p-2" width="5%">{{ $item->parameter_list_unit }}</td>
-                                                <td class="p-2" width="13%">{{ $item->parameter_list_user_analysis_results }}</td>
-                                                <td class="p-2" width="10%">{{ $item->parameter_list_normal }}</td>
+                                                <td class="p-2" width="18%">{{ $item->water_parameter_name }} </td>
+                                                <td class="p-2" width="5%">{{ $item->water_parameter_unit }}</td>
+                                                <td class="p-2" width="13%">{{ $item->water_parameter_results }}</td>
+                                                <td class="p-2" width="10%">{{ $item->water_parameter_normal }}</td>
                                                 {{-- <td class="p-2" width="17%">{{ $item->parameter_list_normal }}</td> --}}
                                                 <td class="text-center" width="7%">
     
@@ -152,7 +152,7 @@ if (Auth::check()) {
                                                         </button>
                                                         <div class="dropdown-menu">
                                                             <a class="dropdown-item text-warning"
-                                                                href="{{ url('env_water_parameter_edit/' . $item->parameter_list_id) }}"
+                                                                href="{{ url('env_water_parameter_edit/' . $item->water_parameter_id) }}"
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="แก้ไข">
                                                                 <i class="fa-solid fa-pen-to-square me-2"></i>
@@ -161,7 +161,7 @@ if (Auth::check()) {
                                                             </a>
     
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-danger" href="{{url('env_water_parameter_delete/'.$item->parameter_list_id)}}"
+                                                            <a class="dropdown-item text-danger" href="{{url('env_water_parameter_delete/'.$item->water_parameter_id)}}"
                                                              
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="ลบ">

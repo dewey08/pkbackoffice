@@ -104,13 +104,7 @@ $count_service = StaticController::count_service();
                                                         <div class="form-group">
                                                             <input id="trash_date" type="date"
                                                                 class="form-control form-control-sm" name="trash_date">
-                                                        </div>
-                                                        {{-- <select id="water_user1" name="water_user" class="form-control form-control-sm" style="width: 100%">
-                                                            <option value="">--เลือก--</option>
-                                                            @foreach ($users as $ue)                                               
-                                                                <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
-                                                            @endforeach
-                                                        </select> --}}
+                                                        </div>                                                        
                                                     </div>
                                                 </div>
 

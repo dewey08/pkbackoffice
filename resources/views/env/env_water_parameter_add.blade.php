@@ -92,8 +92,8 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_name" type="text"
-                                                        class="form-control form-control-sm" name="parameter_list_name">
+                                                    <input id="water_parameter_name" type="text"
+                                                        class="form-control form-control-sm" name="water_parameter_name">
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
@@ -101,8 +101,8 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_unit" type="text" 
-                                                        class="form-control form-control-sm" name="parameter_list_unit">                                                        
+                                                    <input id="water_parameter_unit" type="text" 
+                                                        class="form-control form-control-sm" name="water_parameter_unit">                                                        
                                                 </div>
                                             </div>
                                         </div>
@@ -113,8 +113,8 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_normal" type="text"
-                                                        class="form-control form-control-sm" name="parameter_list_normal">
+                                                    <input id="water_parameter_normal" type="text"
+                                                        class="form-control form-control-sm" name="water_parameter_normal">
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
@@ -122,8 +122,8 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="parameter_list_user_analysis_results" type="text"
-                                                        class="form-control form-control-sm" name="parameter_list_user_analysis_results">
+                                                    <input id="water_parameter_results" type="text"
+                                                        class="form-control form-control-sm" name="water_parameter_results">
                                                 </div>
                                             </div>
                                         </div>   

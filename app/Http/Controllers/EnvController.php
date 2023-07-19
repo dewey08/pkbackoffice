@@ -64,7 +64,7 @@ use App\Models\P4p_workset;
 use App\Models\P4p_workgroupset_unit;
 use App\Models\P4p_workgroupset;
 
-use App\Models\Env_parameter_list;
+use App\Models\Env_water_parameter;
 
 use App\Models\Env_trash_parameter;
 use App\Models\Env_trash_sub;
@@ -221,13 +221,13 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
  
-        $data_parameter_list = DB::table('env_parameter_list')->get();
+        $data_water_parameter = DB::table('env_water_parameter')->get();
          
 
         return view('env.env_water_parameter', $data,[
             'startdate'         => $datestart,
             'enddate'           => $dateend,
-            'dataparameterlist' => $data_parameter_list, 
+            'data_water_parameter' => $data_water_parameter, 
         ]);
     }
 
@@ -247,13 +247,13 @@ class EnvController extends Controller
             group by u.dep_subsubtrueid;
         ');
 
-        $data_parameter = DB::table('env_parameter_list')->get();
+        $data_water_parameter = DB::table('env_water_parameter')->get();
          
 
         return view('env.env_water_parameter_add', $data,[
             'startdate'        => $datestart,
             'enddate'          => $dateend, 
-            'dataparameters'  => $data_parameter, 
+            'data_water_parameter'   => $data_water_parameter, 
         ]);
     }
 
@@ -267,7 +267,7 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
  
-        $data_edit = DB::table('env_parameter_list')->where('parameter_list_id','=',$id)->first();
+        $data_edit = DB::table('env_water_parameter')->where('water_parameter_id','=',$id)->first();
 
         return view('env.env_water_parameter_edit', $data,[
             'startdate'        => $datestart,
@@ -279,14 +279,14 @@ class EnvController extends Controller
     public function env_water_parameter_save (Request $request)
     {  
         $datenow = date('Y-m-d H:m:s');
-        Env_parameter_list::insert([
-            'parameter_list_name'                   => $request->parameter_list_name,
-            'parameter_list_unit'                   => $request->parameter_list_unit,
-            'parameter_list_normal'                 => $request->parameter_list_normal,
-            'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results,
-            'created_at'                            => $datenow
+        Env_water_parameter::insert([
+            'water_parameter_name'                   => $request->water_parameter_name,
+            'water_parameter_unit'                   => $request->water_parameter_unit,
+            'water_parameter_normal'                 => $request->water_parameter_normal,
+            'water_parameter_results'                => $request->water_parameter_results,
+            'created_at'                             => $datenow
         ]);
-        $data_parameter_list = DB::table('env_parameter_list')->get();
+        $data_water_parameter = DB::table('env_water_parameter')->get();
     
         return redirect()->route('env.env_water_parameter');
 
@@ -295,18 +295,18 @@ class EnvController extends Controller
     public function env_water_parameter_update  (Request $request)
     { 
         $datenow = date('Y-m-d H:m:s');
-        $id = $request->parameter_list_id;
+        $id = $request->water_parameter_id;
         // DB::table('env_parameter_list')->where('parameter_list_id','=',$id)
-        Env_parameter_list::where('parameter_list_id','=',$id)
+        Env_water_parameter::where('water_parameter_id','=',$id)
         ->update([
-            'parameter_list_name'                   => $request->parameter_list_name,
-            'parameter_list_unit'                   => $request->parameter_list_unit,
-            'parameter_list_normal'                 => $request->parameter_list_normal,
-            'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results, 
+            'water_parameter_name'                   => $request->water_parameter_name,
+            'water_parameter_unit'                   => $request->water_parameter_unit,
+            'water_parameter_normal'                 => $request->water_parameter_normal,
+            'water_parameter_results'                => $request->water_parameter_results, 
             'updated_at'                            => $datenow
         ]);
 
-        $data_parameter_list = DB::table('env_parameter_list')->get();
+        $data_water_parameter = DB::table('env_water_parameter')->get();
         // return redirect()->back();
         return redirect()->route('env.env_water_parameter');
         // return view('env.env_water_parameter',[ 
@@ -316,7 +316,7 @@ class EnvController extends Controller
 
     public function env_water_parameter_delete (Request $request,$id)
     {
-       $del = Env_parameter_list::find($id);  
+       $del = Env_water_parameter::find($id);  
        $del->delete(); 
 
         return redirect()->back();
@@ -326,22 +326,23 @@ class EnvController extends Controller
 
     public function env_trash (Request $request)
     {
-        $datestart = $request->startdate;
-        $dateend = $request->enddate;
+        // $datestart = $request->startdate;
+        // $dateend = $request->enddate;
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
         $iduser = Auth::user()->id;
         $data['users'] = User::get();
         $data['leave_month'] = DB::table('leave_month')->get();
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
+        
+
         $trash = DB::table('env_trash')
             ->leftjoin('users','env_trash.trash_user','=','users.id')
             ->leftjoin('env_trash_type','env_trash.trash_user','=','env_trash_type.trash_type_id')
-            ->leftjoin('products_vendor','env_trash.trash_sub','=','products_vendor.vendor_id')->get();
+            ->leftjoin('products_vendor','env_trash.trash_sub','=','products_vendor.vendor_id')->get(); 
         
-        
-
-
         $datashow = DB::connection('mysql')->select('
             SELECT DISTINCT(t.trash_bill_on) ,t.trash_id , t.trash_date , t.trash_time ,t.trash_sub , pv.vendor_name , CONCAT(u.fname," ",u.lname) as trash_user
             FROM env_trash t
@@ -359,11 +360,11 @@ class EnvController extends Controller
         // ');
          
         return view('env.env_trash',[
-            'startdate'     => $datestart,
-            'enddate'       => $dateend,
+            'startdate'     => $startdate,
+            'enddate'       => $enddate,
             'trashs'        => $trash,
             'trash_type'    => $trash_type,
-            'datashow'      => $datashow,
+            'datashow'      => $datashow,                      
 
         ]);
     }

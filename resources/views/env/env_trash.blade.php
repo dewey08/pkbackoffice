@@ -104,40 +104,22 @@ if (Auth::check()) {
                             <form action="{{ route('env.env_trash') }}" method="POST">
                                 @csrf
                                 <div class="row">
-                                    {{-- <div class="col"></div> --}}
                                     <div class="col-md-1 text-end">วันที่</div>
-                                    <div class="col-md-2 text-center">
-                                        <div class="input-group" id="datepicker1">
-                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="startdate"
-                                                id="startdate" data-date-format="yyyy-mm-dd" data-date-container='#datepicker1'
-                                                data-provide="datepicker" data-date-autoclose="true" value="{{ $startdate }}">
-            
-                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1 text-center">ถึงวันที่</div>
-                                    <div class="col-md-2 text-center">
-                                        <div class="input-group" id="datepicker1">
-                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="enddate"
-                                                id="enddate" data-date-format="yyyy-mm-dd" data-date-container='#datepicker1'
-                                                data-provide="datepicker" data-date-autoclose="true" value="{{ $enddate }}">
-            
-                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                    <div class="col-md-4 text-center">
+                                        <div class="input-daterange input-group" id="datepicker1" data-date-format="dd M, yyyy"
+                                            data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
+                                            <input type="text" class="form-control" name="startdate" id="datepicker" placeholder="Start Date"
+                                                data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                                                data-date-language="th-th" value="{{ $startdate }}" required/>
+                                            <input type="text" class="form-control" name="enddate" placeholder="End Date" id="datepicker2"
+                                                data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                                                data-date-language="th-th" value="{{ $enddate }}" required/> 
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fa-solid fa-magnifying-glass me-2"></i>
-                                            ค้นหา
-                                        </button>
-                                        
-                                            {{-- <a href="{{url('time_dep_excel/'.$deb.'/'.$startdate.'/'.$enddate)}}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-success">
-                                                <i class="fa-solid fa-file-excel me-2"></i>
-                                                Export
-                                            </a> --}}
-                                        
-                                        </div>
-                                        
+                                            <i class="fa-solid fa-magnifying-glass me-2"></i>ค้นหา
+                                        </button>                         
                                     </div>
                             </form> 
                             {{-- <div class="table-responsive mt-3"> --}}
@@ -217,7 +199,7 @@ if (Auth::check()) {
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="trashetailModal">
                                                                 รายระเอียดข้อมูลขยะ
-                                                                                                                      </div>
+                                                        </div>
                                                         <div class="modal-body">
 
                                                             <div class="row">
@@ -225,17 +207,13 @@ if (Auth::check()) {
                                                                     <p for=""><b>Trash_bill_on :</b></p>
                                                                 </div>
                                                                 <div class="col-md-4">
-
                                                                     <p for="trash_bill_on">{{ $item->trash_bill_on }}</p>
-
-                                                                </div>
-                                                               
+                                                                </div>                                                               
                                                             </div>
 
                                                             <div class="row mt-3">
                                                                 <div class="col-md-2">
-                                                                    <label for=""><b>วันที่แจ้ง
-                                                                            :</b></label>
+                                                                    <label for=""><b>วันที่แจ้ง :</b></label>
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <div class="form-group">
@@ -243,6 +221,7 @@ if (Auth::check()) {
                                                                             for="trash_date">{{ DateThai($item->trash_date) }}</p>
                                                                     </div>
                                                                 </div>
+
                                                                 <div class="col-md-2 ">
                                                                     <label for=""><b>เวลา :</b></label>
                                                                 </div>
@@ -264,9 +243,10 @@ if (Auth::check()) {
                                                                             for="trash_sub">{{ $item->vendor_name }}</label>
                                                                     </div>
                                                                 </div>
+
                                                                 <div class="col-md-2">
                                                                     <label for=""><b>ผู้บันทึกข้อมูล :</b></label>
-                                                                </div>
+                                                                </div>                                                                
                                                                 <div class="col-md-4">
                                                                     <div class="form-group">
                                                                         <label
@@ -274,6 +254,7 @@ if (Auth::check()) {
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            
                                                             <hr>
                                                             <div class="row  mt-3">
                                                                 <div class="col-md-12">
@@ -354,7 +335,7 @@ if (Auth::check()) {
 @endsection
 @section('footer')
 
-{{-- <script>
+<script>
     
     $(document).ready(function() {
         // $("#overlay").fadeIn(300);　
@@ -373,69 +354,69 @@ if (Auth::check()) {
             format: 'yyyy-mm-dd'
         });
 
-        $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-        });
-        $('#HR_DEPARTMENT_ID').select2({
-                placeholder: "--เลือก--",
-                allowClear: true
-            });
-        $('#HR_DEPARTMENT_SUB_ID').select2({
-                placeholder: "--เลือก--",
-                allowClear: true
-            });
-        $('#HR_DEPARTMENT_SUB_SUB_ID').select2({
-            placeholder: "--เลือก--",
-            allowClear: true
-        });
+        // $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        // });
+        // $('#HR_DEPARTMENT_ID').select2({
+        //         placeholder: "--เลือก--",
+        //         allowClear: true
+        //     });
+        // $('#HR_DEPARTMENT_SUB_ID').select2({
+        //         placeholder: "--เลือก--",
+        //         allowClear: true
+        //     });
+        // $('#HR_DEPARTMENT_SUB_SUB_ID').select2({
+        //     placeholder: "--เลือก--",
+        //     allowClear: true
+        // });
 
-        $("#spinner-div").hide(); //Request is complete so hide spinner
+        // $("#spinner-div").hide(); //Request is complete so hide spinner
 
-        $('#Savetime').click(function() {
-            var startdate = $('#datepicker').val();
-            var enddate = $('#datepicker2').val();
-            var HR_DEPARTMENT_SUB_ID = $('#HR_DEPARTMENT_SUB_ID').val();
-            var HR_DEPARTMENT_SUB_SUB_ID = $('#HR_DEPARTMENT_SUB_SUB_ID').val(); 
-            $.ajax({
-                url: "{{ route('t.time_index_excel') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    startdate,
-                    enddate,
-                    HR_DEPARTMENT_SUB_ID,
-                    HR_DEPARTMENT_SUB_SUB_ID
-                },
-                success: function(data) {
-                    if (data.status == 200) { 
-                        Swal.fire({
-                            title: 'บันทึกข้อมูลสำเร็จ',
-                            text: "You Insert data success",
-                            icon: 'success',
-                            showCancelButton: false,
-                            confirmButtonColor: '#06D177',
-                            confirmButtonText: 'เรียบร้อย'
-                        }).then((result) => {
-                            if (result
-                                .isConfirmed) {
-                                console.log(
-                                    data);
+        // $('#Savetime').click(function() {
+        //     var startdate = $('#datepicker').val();
+        //     var enddate = $('#datepicker2').val();
+        //     var HR_DEPARTMENT_SUB_ID = $('#HR_DEPARTMENT_SUB_ID').val();
+        //     var HR_DEPARTMENT_SUB_SUB_ID = $('#HR_DEPARTMENT_SUB_SUB_ID').val(); 
+        //     $.ajax({
+        //         url: "{{ route('t.time_index_excel') }}",
+        //         type: "POST",
+        //         dataType: 'json',
+        //         data: {
+        //             startdate,
+        //             enddate,
+        //             HR_DEPARTMENT_SUB_ID,
+        //             HR_DEPARTMENT_SUB_SUB_ID
+        //         },
+        //         success: function(data) {
+        //             if (data.status == 200) { 
+        //                 Swal.fire({
+        //                     title: 'บันทึกข้อมูลสำเร็จ',
+        //                     text: "You Insert data success",
+        //                     icon: 'success',
+        //                     showCancelButton: false,
+        //                     confirmButtonColor: '#06D177',
+        //                     confirmButtonText: 'เรียบร้อย'
+        //                 }).then((result) => {
+        //                     if (result
+        //                         .isConfirmed) {
+        //                         console.log(
+        //                             data);
 
-                                window.location
-                                    .reload();
-                            }
-                        })
-                    } else {
+        //                         window.location
+        //                             .reload();
+        //                     }
+        //                 })
+        //             } else {
 
-                    }
+        //             }
 
-                },
-            });
-        });  
+        //         },
+        //     });
+        // });  
     });
-</script> --}}
+</script>
 {{-- <script>
     $('.department').change(function () {
             if ($(this).val() != '') {
