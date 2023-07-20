@@ -75,7 +75,6 @@ use App\Models\Env_water_save;
 use App\Models\Env_water_sub;
 use App\Models\Env_water;
 
-
 use Auth;
 
 class EnvController extends Controller
@@ -115,17 +114,32 @@ class EnvController extends Controller
         $data['leave_month'] = DB::table('leave_month')->get();
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+        
 
         $acc_debtors = DB::select('
             SELECT count(*) as I from users u
             left join p4p_workload l on l.p4p_workload_user=u.id
             group by u.dep_subsubtrueid;
         ');
+
+        $water = DB::table('env_water')
+            ->leftjoin('users','env_water.water_user','=','users.id')
+            ->leftjoin('env_water_sub','env_water.water_id','=','env_water_sub.water_id')->get(); 
+        
+        $datashow = DB::connection('mysql')->select('
+            SELECT DISTINCT(w.water_id), w.water_date, w.water_location, w.water_group_excample, w.water_user, w.water_comment
+            from env_water w
+            LEFT JOIN env_water_sub ws on ws.water_id = w.water_id
+            LEFT JOIN users u on u.id = w.water_user 
+            ORDER BY w.water_id DESC;
+            ');
          
 
         return view('env.env_water', $data,[
             'startdate' => $datestart,
-            'enddate' => $dateend, 
+            'enddate'   => $dateend, 
+            'datashow'  => $datashow,
+            'water'     => $water,
         ]);
     }
 
@@ -146,7 +160,7 @@ class EnvController extends Controller
         ');
 
 
-        $data_parameter = DB::table('env_parameter_list')->get();
+        $data_parameter = DB::table('env_water_parameter')->get();
          
 
         return view('env.env_water_add', $data,[
@@ -158,20 +172,7 @@ class EnvController extends Controller
 
     public function env_water_save (Request $request)
     {
-
-        // $datenow = date('Y-m-d H:m:s');
-        // Env_parameter_list::insert([
-        //     'parameter_list_name'                   => $request->parameter_list_name,
-        //     'parameter_list_unit'                   => $request->parameter_list_unit,
-        //     'parameter_list_normal'                 => $request->parameter_list_normal,
-        //     'parameter_list_user_analysis_results'  => $request->parameter_list_user_analysis_results,
-        //     'created_at'                            => $datenow
-        // ]);
-        // $data_parameter_list = DB::table('env_parameter_list')->get();
-    
-        // return redirect()->route('env.env_water_parameter');
-
-
+   
         $startdate = $request->startdate;
         $enddate = $request->enddate;
         $iduser = Auth::user()->id;
@@ -187,7 +188,7 @@ class EnvController extends Controller
         ');
 
 
-        $data_parameter = DB::table('env_parameter_list')->get();
+        $data_parameter = DB::table('env_water_parameter')->get();
          
 
         return view('env.env_water_save', $data,[
@@ -350,7 +351,7 @@ class EnvController extends Controller
 		    LEFT JOIN products_vendor pv on pv.vendor_id = t.trash_sub
 			LEFT JOIN users u on u.id = t.trash_user 
             order by t.trash_id desc;
-    ');
+            ');
 
         $trash_type = DB::table('env_trash_type') ->get();
         

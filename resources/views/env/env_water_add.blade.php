@@ -133,44 +133,7 @@ $count_service = StaticController::count_service();
                                             </div>                                           
                                         </div>
                                         
-                                        <div class="row mt-3">
-                                            <div class="col-md-2 text-end">
-                                                <label for="parameter_list_normal">วันที่รับตัวอย่าง :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input id="parameter_list_normal" type="date"
-                                                        class="form-control form-control-sm" name="parameter_list_normal">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2 text-end">
-                                                <label for="parameter_list_user_analysis_results">วันที่วิเคราะห์ตัวอย่าง :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input id="parameter_list_user_analysis_results" type="date"
-                                                        class="form-control form-control-sm" name="parameter_list_user_analysis_results">
-                                                </div>
-                                            </div>                                           
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <div class="col-md-2 text-end">
-                                                <label for="parameter_list_normal">ผู้วิเคราะห์ตัวอย่าง :</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    {{-- <input id="parameter_list_normal" type="text"
-                                                        class="form-control form-control-sm" name="parameter_list_normal"> --}}
-                                                        <select id="water_user2" name="water_user"
-                                                        class="form-control form-control-sm" style="width: 100%">
-                                                        <option value="">--เลือก--</option>
-                                                        @foreach ($users as $ue)                                               
-                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
+                                        <div class="row mt-3">                                            
                                             <div class="col-md-2 text-end">
                                                 <label for="water_comment">หมายเหตุ :</label>
                                             </div>
@@ -245,13 +208,13 @@ $count_service = StaticController::count_service();
                                                     <tr height="20">                                             
                                                         <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
                                                         <td>
-                                                            <input type="hidden" value="{{ $items->parameter_list_id }}" name="parameter_list_id[]" id="parameter_list_id[]" class="form-control input-sm fo13" >
-                                                            <input value="{{ $items->parameter_list_name }}" name="" id="" class="form-control input-sm fo13" readonly>
+                                                            <input type="hidden" value="{{ $items->water_parameter_id }}" name="water_parameter_id[]" id="water_parameter_id[]" class="form-control input-sm fo13" >
+                                                            <input value="{{ $items->water_parameter_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>                                
-                                                        <td><input value="{{ $items->parameter_list_unit }}" name="parameter_list_unit[]" id="parameter_list_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input value="{{ $items->water_parameter_unit }}" name="water_parameter_unit[]" id="water_parameter_unit[]" class="form-control input-sm fo13" readonly></td>
                                                         <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
-                                                        <td><input value="{{ $items->parameter_list_user_analysis_results }}" name="parameter_list_user_analysis_results[]" id="parameter_list_user_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
-                                                        <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input value="{{ $items->water_parameter_results }}" name="water_parameter_results[]" id="water_parameter_results[]" class="form-control input-sm fo13" readonly></td> 
+                                                        <td><input value="{{ $items->water_parameter_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td>
                                                     </tr>
                                                     @endforeach 
                                                 </tbody>
