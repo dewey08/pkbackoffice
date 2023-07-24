@@ -187,6 +187,77 @@ class EnvController extends Controller
             group by u.dep_subsubtrueid;
         ');
 
+        // $add = new Env_trash();
+        // $add->trash_bill_on = $request->input('trash_bill_on');
+        // $add->trash_date    = $request->input('trash_date'); 
+        // $add->trash_time    = $request->input('trash_time'); 
+        // $add->trash_user    = $request->input('trash_user'); 
+        // $add->trash_sub     = $request->input('trash_sub'); 
+        // $add->save();
+
+        $add = new Env_water();
+        $add->water_date = $request->input('water_date');
+        $add->water_user = $request->input('water_user');
+        $add->water_location = $request->input('water_location');
+        $add->water_group_excample = $request->input('water_group_excample');
+        $add->water_comment = $request->input('water_comment');
+        $add->save();
+
+        // $trash_id =  Env_trash::max('trash_id');
+
+        // if($request->trash_parameter_id != '' || $request->trash_parameter_id != null){
+
+        // $trash_parameter_id         = $request->trash_parameter_id;
+        // $trash_sub_qty              = $request->trash_sub_qty;
+        // $trash_sub_unit             = $request->trash_sub_unit;
+        // $trash_parameter_unit       = $request->trash_parameter_unit;
+                            
+        // $number =count($trash_parameter_id);
+        // $count = 0;
+        //     for($count = 0; $count< $number; $count++)
+        //     { 
+        //         $idtrash = Env_trash_parameter::where('trash_parameter_id','=',$trash_parameter_id[$count])->first();
+
+        //         $add_sub = new Env_trash_sub();
+        //         $add_sub->trash_id                = $trash_id;
+        //         $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
+        //         $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
+        //         $add_sub->trash_sub_qty           = $trash_sub_qty[$count];
+        //         $add_sub->trash_sub_unit          = $trash_parameter_unit[$count];                 
+        //         $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
+        //         $add_sub->save(); 
+        //     }
+        // }
+        $water_id =  Env_water::max('water_id');
+
+        if($request->water_parameter_id != '' || $request->water_parameter_id != null){
+
+            $water_parameter_id         = $request->water_parameter_id;
+            $water_qty                  = $request->water_qty;
+            $water_list_unit            = $request->water_list_unit;
+            $water_list_detail          = $request->water_list_detail;
+            $water_list_idd             = $request->water_list_idd;
+            $water_results              = $request->water_results;
+
+            $number =count($water_parameter_id);
+            $count = 0;
+                for($count = 0; $count< $number; $count++)
+                {
+                    $idwater = Env_water_parameter::where('water_parameter_id','=',$water_parameter_id[$count])->first();
+
+                    $add_sub = new Env_water_sub();
+                    $add_sub->water_id                 = $water_id;
+                    $add_sub->water_list_idd           = $water_list_idd;
+                    $add_sub->water_list_detail        = $water_list_detail;
+                    $add_sub->water_list_unit          = $water_list_unit;
+                    $add_sub->water_qty                = $water_qty;
+                    $add_sub->water_results            = $water_results;
+                    $add_sub->water_qty                = $water_qty;
+                    $add_sub->water_qty                = $water_qty;
+
+                }
+        } 
+
 
         $data_parameter = DB::table('env_water_parameter')->get();
          
@@ -337,7 +408,7 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
-        
+
 
         $trash = DB::table('env_trash')
             ->leftjoin('users','env_trash.trash_user','=','users.id')
