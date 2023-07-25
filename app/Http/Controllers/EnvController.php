@@ -171,8 +171,7 @@ class EnvController extends Controller
     }
 
     public function env_water_save (Request $request)
-    {
-   
+    {   
         $startdate = $request->startdate;
         $enddate = $request->enddate;
         $iduser = Auth::user()->id;
@@ -185,59 +184,27 @@ class EnvController extends Controller
             SELECT count(*) as I from users u
             left join p4p_workload l on l.p4p_workload_user=u.id
             group by u.dep_subsubtrueid;
-        ');
-
-        // $add = new Env_trash();
-        // $add->trash_bill_on = $request->input('trash_bill_on');
-        // $add->trash_date    = $request->input('trash_date'); 
-        // $add->trash_time    = $request->input('trash_time'); 
-        // $add->trash_user    = $request->input('trash_user'); 
-        // $add->trash_sub     = $request->input('trash_sub'); 
-        // $add->save();
+        ');        
 
         $add = new Env_water();
-        $add->water_date = $request->input('water_date');
-        $add->water_user = $request->input('water_user');
-        $add->water_location = $request->input('water_location');
-        $add->water_group_excample = $request->input('water_group_excample');
-        $add->water_comment = $request->input('water_comment');
-        $add->save();
+        $add->water_date            = $request->input('water_date');
+        $add->water_user            = $request->input('water_user');
+        $add->water_location        = $request->input('water_location');
+        $add->water_group_excample  = $request->input('water_group_excample');
+        $add->water_comment         = $request->input('water_comment');
+        $add->save();        
 
-        // $trash_id =  Env_trash::max('trash_id');
-
-        // if($request->trash_parameter_id != '' || $request->trash_parameter_id != null){
-
-        // $trash_parameter_id         = $request->trash_parameter_id;
-        // $trash_sub_qty              = $request->trash_sub_qty;
-        // $trash_sub_unit             = $request->trash_sub_unit;
-        // $trash_parameter_unit       = $request->trash_parameter_unit;
-                            
-        // $number =count($trash_parameter_id);
-        // $count = 0;
-        //     for($count = 0; $count< $number; $count++)
-        //     { 
-        //         $idtrash = Env_trash_parameter::where('trash_parameter_id','=',$trash_parameter_id[$count])->first();
-
-        //         $add_sub = new Env_trash_sub();
-        //         $add_sub->trash_id                = $trash_id;
-        //         $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
-        //         $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
-        //         $add_sub->trash_sub_qty           = $trash_sub_qty[$count];
-        //         $add_sub->trash_sub_unit          = $trash_parameter_unit[$count];                 
-        //         $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
-        //         $add_sub->save(); 
-        //     }
-        // }
-        $water_id =  Env_water::max('water_id');
+        $waterid =  Env_water::max('water_id');
 
         if($request->water_parameter_id != '' || $request->water_parameter_id != null){
 
             $water_parameter_id         = $request->water_parameter_id;
-            $water_qty                  = $request->water_qty;
-            $water_list_unit            = $request->water_list_unit;
-            $water_list_detail          = $request->water_list_detail;
-            $water_list_idd             = $request->water_list_idd;
-            $water_results              = $request->water_results;
+            $water_parameter_unit       = $request->water_parameter_unit;
+
+            $use_analysis_results              = $request->use_analysis_results;
+            $water_parameter_normal       = $request->water_parameter_normal;
+            $water_qty                  = $request->water_qty;     
+            
 
             $number =count($water_parameter_id);
             $count = 0;
@@ -246,27 +213,29 @@ class EnvController extends Controller
                     $idwater = Env_water_parameter::where('water_parameter_id','=',$water_parameter_id[$count])->first();
 
                     $add_sub = new Env_water_sub();
-                    $add_sub->water_id                 = $water_id;
-                    $add_sub->water_list_idd           = $water_list_idd;
-                    $add_sub->water_list_detail        = $water_list_detail;
-                    $add_sub->water_list_unit          = $water_list_unit;
-                    $add_sub->water_qty                = $water_qty;
-                    $add_sub->water_results            = $water_results;
-                    $add_sub->water_qty                = $water_qty;
-                    $add_sub->water_qty                = $water_qty;
+                    $add_sub->water_id                 = $waterid;
+                    $add_sub->water_list_idd           = $idwater->water_parameter_id;
+                    $add_sub->water_list_detail        = $idwater->water_parameter_name;
+                    $add_sub->water_list_unit         = $water_parameter_unit[$count];
+                    $add_sub->water_results            = $water_parameter_normal[$count];
+                    $add_sub->use_analysis_results     = $use_analysis_results[$count];
+                    $add_sub->water_qty                = $water_qty[$count];
+                    $add_sub->save();                                       
 
                 }
         } 
 
-
-        $data_parameter = DB::table('env_water_parameter')->get();
-         
-
-        return view('env.env_water_save', $data,[
-            'start'           => $startdate,
-            'end'             => $enddate, 
-            'dataparameters'  => $data_parameter, 
-        ]);
+        $data_parameter = DB::table('env_water_parameter')->get(); 
+                
+        return redirect()->route('env.env_water');
+        
+        
+        // return view('env.env_water', $data,[
+        //     'startdate'           => $startdate,
+        //     'enddate'             => $enddate,
+        //     //'end'             => $enddate,
+        //     'dataparameters'  => $data_parameter, 
+        // ]);
     }
 
     public function env_water_datetime (Request $request)
@@ -526,7 +495,7 @@ class EnvController extends Controller
                 $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
                 $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
                 $add_sub->trash_sub_qty           = $trash_sub_qty[$count];
-                $add_sub->trash_sub_unit           = $trash_parameter_unit[$count];                 
+                $add_sub->trash_sub_unit          = $trash_parameter_unit[$count];                 
                 // $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
                 $add_sub->save(); 
             }

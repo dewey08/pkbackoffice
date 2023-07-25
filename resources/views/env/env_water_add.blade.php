@@ -212,9 +212,9 @@ $count_service = StaticController::count_service();
                                                             <input value="{{ $items->water_parameter_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>                                
                                                         <td><input value="{{ $items->water_parameter_unit }}" name="water_parameter_unit[]" id="water_parameter_unit[]" class="form-control input-sm fo13" readonly></td>
-                                                        <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
-                                                        <td><input value="{{ $items->water_parameter_results }}" name="water_parameter_results[]" id="water_parameter_results[]" class="form-control input-sm fo13" readonly></td> 
-                                                        <td><input value="{{ $items->water_parameter_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" ></td>
+                                                        <td><input value="{{ $items->water_parameter_results }}" name="use_analysis_results[]" id="use_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
+                                                        <td><input value="{{ $items->water_parameter_normal }}" name="water_parameter_normal[]" id="water_parameter_normal[]" class="form-control input-sm fo13" readonly></td>
                                                     </tr>
                                                     @endforeach 
                                                 </tbody>
