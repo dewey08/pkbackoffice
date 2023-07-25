@@ -63,6 +63,8 @@ if (Auth::check()) {
     $y = date('Y') + 543;
     $newweek = date('Y-m-d', strtotime($datenow . ' -1 week')); //ย้อนหลัง 1 สัปดาห์  
     $newDate = date('Y-m-d', strtotime($datenow . ' -1 months')); //ย้อนหลัง 1 เดือน 
+
+    use Illuminate\Support\Facades\DB;
 ?>
   
 <div class="tabs-animation">
@@ -127,44 +129,77 @@ if (Auth::check()) {
                                             {{-- <a href="{{url('time_dep_excel/'.$deb.'/'.$startdate.'/'.$enddate)}}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-success">
                                                 <i class="fa-solid fa-file-excel me-2"></i>
                                                 Export
-                                            </a> --}}
-                                        
-                                        </div>
-                                        
+                                            </a> --}}                                        
                                     </div>
+                                        
+                                </div>
                             </form> 
                             <div class="table-responsive mt-3">
                                 <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="example2">
                                     <thead>
                                         <tr>
-                                            <th>ลำดับ</th> 
-                                            <th>วันที่บันทึก</th>
-                                            <th>สถานที่เก็บตัวอย่าง</th>
-                                            {{-- <th>วันที่รับตัวอย่าง</th> 
-                                            <th>วันที่วิเคราะห์ตัวอย่าง</th>
-                                            <th>ผู้วิเคราะห์ตัวอย่าง</th>  --}}
-                                            <th>ผู้บันทึก</th>
-                                            <th>หมายเหตุ</th>
-                                            <th>คำสั่ง</th> 
-                                          
+                                            <th class="text-center"width="5%">ลำดับ</th> 
+                                            <th class="text-center"width="10%">วันที่บันทึก</th>
+                                            <th class="text-center"width="5%">สถานที่เก็บตัวอย่าง</th>
+                                            <th class="text-center"width="5%">ผู้บันทึก</th>
+                                            <th class="text-center"width="5%">หมายเหตุ</th>
+                                            <th class="text-center"width="5%">คำสั่ง</th>                                          
                                         </tr>
                                     </thead>
-                                    {{-- <tbody>
+                                    <tbody>
                                         <?php $ia = 1; ?>
-                                        @foreach ($datashow_ as $item)  
-                                            
+                                        @foreach ($datashow as $item)
                                             <tr>
                                                 <td>{{ $ia++ }}</td>
-                                                <td>{{ $item->CHEACKIN_DATE }}</td> 
-                                                <td class="p-2">{{ $item->hrname }}</td>   
-                                                <td class="p-2">{{ $item->HR_DEPARTMENT_SUB_SUB_NAME }}</td> 
-                                                <td>{{ $item->CHEACKINTIME }}</td>  
-                                                <td>{{ $item->CHEACKOUTTIME }}</td>  
-                                                <td>{{ $item->OPERATE_TYPE_NAME }}</td>   
+                                                <td>{{DateThai ($item->water_date) }}</td> 
+                                                <td class="p-2">{{ $item->water_location }}</td>   
+                                                <td class="p-2">{{ $item->water_user }}</td> 
+                                                <td>{{ $item->water_comment }}</td>  
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button"
+                                                            class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                            ทำรายการ 
+                                                        </button>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item menu" data-bs-toggle="modal"
+                                                                    data-bs-target="#trashetailModal{{ $item->water_id }}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    data-bs-custom-class="custom-tooltip" title="รายละเอียด">
+                                                                    <i class="fa-solid fa-pen-to-square me-2"></i>
+                                                                    <label for=""style="color: rgb(33, 187, 248);font-size:13px">รายละเอียด</label>
+                                                                </a>
+                                                                <a class="dropdown-item text-warning"
+                                                                    href="{{ url('env_trash_edit/' . $item->water_id) }}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    data-bs-custom-class="custom-tooltip" title="แก้ไข">
+                                                                    <i class="fa-solid fa-pen-to-square me-2"></i>
+                                                                    <label for=""style="color: rgb(7191, 24, 224);font-size:13px">แก้ไข</label>
+                                                                </a>
+                                                                <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->water_id)}}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    data-bs-custom-class="custom-tooltip" title="ลบ">
+                                                                    <i class="fa-solid fa-trash-can me-2 mb-1"></i>
+                                                                    <label for="" style="color: rgb(255, 22, 22);font-size:13px">ลบ</label>
+                                                                </a>    
+                                                                {{-- <div class="dropdown-divider"></div> --}}
+                                                                {{-- <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->trash_id)}}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    data-bs-custom-class="custom-tooltip" title="ลบ">
+                                                                    <i class="fa-solid fa-trash-can me-2 mb-1"></i>
+                                                                    <label for="" style="color: rgb(70, 70, 70);font-size:13px">ลบ</label>
+                                                                </a>                                                            --}}
+                                                            </div>
+                                                    </div>
+                                                </td>  
+                                                {{-- <td>{{ $item->OPERATE_TYPE_NAME }}</td>    --}}
+
+                                                
                                             </tr>    
                                         @endforeach
                                         
-                                    </tbody> --}}
+                                    </tbody>
                                 </table>
                             </div> 
                         </p>

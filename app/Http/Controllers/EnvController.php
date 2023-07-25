@@ -127,7 +127,7 @@ class EnvController extends Controller
             ->leftjoin('env_water_sub','env_water.water_id','=','env_water_sub.water_id')->get(); 
         
         $datashow = DB::connection('mysql')->select('
-            SELECT DISTINCT(w.water_id), w.water_date, w.water_location, w.water_group_excample, w.water_user, w.water_comment
+            SELECT DISTINCT(w.water_id),w.water_date,w.water_location,w.water_comment,CONCAT(u.fname," ",u.lname) as water_user
             from env_water w
             LEFT JOIN env_water_sub ws on ws.water_id = w.water_id
             LEFT JOIN users u on u.id = w.water_user 
@@ -262,8 +262,7 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
  
-        $data_water_parameter = DB::table('env_water_parameter')->get();
-         
+        $data_water_parameter = DB::table('env_water_parameter')->get();         
 
         return view('env.env_water_parameter', $data,[
             'startdate'         => $datestart,
