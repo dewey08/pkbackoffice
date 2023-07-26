@@ -201,8 +201,8 @@ class EnvController extends Controller
             $water_parameter_id         = $request->water_parameter_id;
             $water_parameter_unit       = $request->water_parameter_unit;
 
-            $use_analysis_results              = $request->use_analysis_results;
-            $water_parameter_normal       = $request->water_parameter_normal;
+            $use_analysis_results       = $request->use_analysis_results;
+            $water_parameter_normal     = $request->water_parameter_normal;
             $water_qty                  = $request->water_qty;     
             
 
@@ -216,7 +216,7 @@ class EnvController extends Controller
                     $add_sub->water_id                 = $waterid;
                     $add_sub->water_list_idd           = $idwater->water_parameter_id;
                     $add_sub->water_list_detail        = $idwater->water_parameter_name;
-                    $add_sub->water_list_unit         = $water_parameter_unit[$count];
+                    $add_sub->water_list_unit          = $water_parameter_unit[$count];
                     $add_sub->water_results            = $water_parameter_normal[$count];
                     $add_sub->use_analysis_results     = $use_analysis_results[$count];
                     $add_sub->water_qty                = $water_qty[$count];
@@ -230,12 +230,100 @@ class EnvController extends Controller
         return redirect()->route('env.env_water');
         
         
-        // return view('env.env_water', $data,[
-        //     'startdate'           => $startdate,
-        //     'enddate'             => $enddate,
-        //     //'end'             => $enddate,
-        //     'dataparameters'  => $data_parameter, 
-        // ]);
+    }
+
+    public function env_water_edit (Request $request,$id)
+    {
+        $datestart = $request->startdate;
+        $dateend = $request->enddate;
+        $iduser = Auth::user()->id;
+        $data['users'] = User::get();
+        $data['leave_month'] = DB::table('leave_month')->get();
+        $data['users_group'] = DB::table('users_group')->get();
+        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+ 
+        $water = DB::table('env_water')->where('water_id','=',$id)->first();
+
+        $data['env_water_sub']  = DB::table('env_water_sub')->where('water_id','=',$id)->get();
+  
+        $data['water_parameter']  = DB::table('env_water_parameter')->get();
+       
+        $data['products_vendor'] = Products_vendor::get();
+
+        return view('env.env_water_edit', $data,[
+            'startdate'        => $datestart,
+            'enddate'          => $dateend, 
+            'water'            => $water, 
+        ]);
+    }
+
+    public function env_water_update  (Request $request)
+    { 
+        $datenow = date('Y-m-d H:m:s');
+        $id = $request->water_id;
+        // $ff = $request->trash_bill_on;
+        // dd($ff);
+        $update = Env_water::find($id);
+        
+        $update->water_date             = $request->water_date;
+        $update->water_user             = $request->water_user; 
+        $update->water_location         = $request->water_location; 
+        $update->water_group_excample   = $request->water_group_excample; 
+        $update->water_comment          = $request->water_comment; 
+        $update->save();
+
+        // Env_trash_sub::where('trash_id','=',$id)->delete();
+
+        if($request->water_list_idd != '' || $request->water_list_idd != null){
+
+            // $water_parameter_id         = $request->water_parameter_id;
+            // $water_parameter_unit       = $request->water_parameter_unit;
+
+            // $use_analysis_results       = $request->use_analysis_results;
+            // $water_parameter_normal     = $request->water_parameter_normal;
+            // $water_qty                  = $request->water_qty; 
+
+            $water_list_idd             = $request->water_list_idd;
+            $water_qty                  = $request->water_qty;
+            $water_parameter_unit       = $request->water_parameter_unit;
+                                
+            $number =count($water_list_idd);
+            $count = 0;
+                for($count = 0; $count< $number; $count++)
+                    { 
+                        $idtrash = Env_water_parameter::where('SET_"WATER"_ID','=',$water_list_idd[$count])->first();
+
+                        // $add_sub = new Env_water_sub();
+                        // $add_sub->water_id                 = $waterid;
+                        // $add_sub->water_list_idd           = $idwater->water_parameter_id;
+                        // $add_sub->water_list_detail        = $idwater->water_parameter_name;
+                        // $add_sub->water_list_unit          = $water_parameter_unit[$count];
+                        // $add_sub->water_results            = $water_parameter_normal[$count];
+                        // $add_sub->use_analysis_results     = $use_analysis_results[$count];
+                        // $add_sub->water_qty                = $water_qty[$count];
+                        
+                        $add_sub = new Env_water_sub();
+                        $add_sub->water_id = $id;      
+                    
+                        $add_sub->water_list_idd        = $idtrash->trash_parameter_id;  
+                        $add_sub->water_list_detail     = $idtrash->trash_parameter_name;
+
+                        $add_sub->water_qty             = $water_qty[$count];  
+                        $add_sub->water_list_unit        = $water_parameter_unit[$count];                          
+                        $add_sub->save(); 
+                    }
+        }
+
+        return redirect()->route('env.env_water');
+        
+    }
+
+    public function env_water_delete (Request $request,$id)
+    {
+       $del = Env_water::find($id);  
+       $del->delete(); 
+
+        return redirect()->back();
     }
 
     public function env_water_datetime (Request $request)
@@ -384,7 +472,8 @@ class EnvController extends Controller
             ->leftjoin('products_vendor','env_trash.trash_sub','=','products_vendor.vendor_id')->get(); 
         
         $datashow = DB::connection('mysql')->select('
-            SELECT DISTINCT(t.trash_bill_on) ,t.trash_id , t.trash_date , t.trash_time ,t.trash_sub , pv.vendor_name , CONCAT(u.fname," ",u.lname) as trash_user
+            SELECT DISTINCT(t.trash_bill_on) ,t.trash_id , t.trash_date , t.trash_time ,t.trash_sub , pv.vendor_name ,
+            CONCAT(u.fname," ",u.lname) as trash_user
             FROM env_trash t
             LEFT JOIN env_trash_sub ts on ts.trash_id = t.trash_id
 		    LEFT JOIN products_vendor pv on pv.vendor_id = t.trash_sub
@@ -547,9 +636,9 @@ class EnvController extends Controller
 
         if($request->trash_sub_idd != '' || $request->trash_sub_idd != null){
 
-            $trash_sub_idd = $request->trash_sub_idd;
-            $trash_sub_qty = $request->trash_sub_qty;
-            $trash_sub_unit = $request->trash_sub_unit;
+            $trash_sub_idd              = $request->trash_sub_idd;
+            $trash_sub_qty              = $request->trash_sub_qty;
+            $trash_sub_unit             = $request->trash_sub_unit;
             $trash_parameter_unit       = $request->trash_parameter_unit;
                                 
             $number =count($trash_sub_idd);
@@ -559,13 +648,13 @@ class EnvController extends Controller
                         $idtrash = Env_trash_parameter::where('SET_TRASH_ID','=',$trash_sub_idd[$count])->first();
                         
                         $add_sub = new Env_trash_sub();
-                        $add_sub->trash_id = $id;      
+                        $add_sub->trash_id          = $id;      
                     
-                        $add_sub->trash_sub_idd = $idtrash->trash_parameter_id;  
-                        $add_sub->trash_sub_name = $idtrash->trash_parameter_name;
+                        $add_sub->trash_sub_idd     = $idtrash->trash_parameter_id;  
+                        $add_sub->trash_sub_name    = $idtrash->trash_parameter_name;
 
-                        $add_sub->trash_sub_qty = $trash_sub_qty[$count];  
-                        $add_sub->trash_sub_unit = $trash_parameter_unit[$count];                          
+                        $add_sub->trash_sub_qty     = $trash_sub_qty[$count];  
+                        $add_sub->trash_sub_unit    = $trash_parameter_unit[$count];                          
                         $add_sub->save(); 
                     }
         }

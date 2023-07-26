@@ -72,7 +72,8 @@ $count_service = StaticController::count_service();
                         </div>
 
                         <div class="card-body shadow-lg">
-                            <form class="custom-validation" action="{{ route('env.env_water_update') }}" method="POST" enctype="multipart/form-data">
+                            <form class="custom-validation" action="{{ route('land.land_index_save') }}" method="POST"
+                            id="insert_landForm" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}">
                             <div class="row">
@@ -85,38 +86,31 @@ $count_service = StaticController::count_service();
                                             <input type="hidden" id="article_typeid" name="article_typeid" class="form-control" value="2"/>
                                             <input type="hidden" id="article_groupid" name="article_groupid" class="form-control" value="3"/>
                                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
-
-                                            <input type="hidden" name="water_id" id="water_id" value="{{$water->water_id}}">
     
                                         <div class="row">
                                             <div class="col-md-2 text-end">
-                                                <label for="water_date">วันที่บันทึก :</label>
+                                                <label for="land_tonnage_number">วันที่บันทึก :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input id="water_date" type="date"
+                                                    <input id="water_date" type="text"
                                                         class="form-control form-control-sm" name="water_date">
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="water_user">ผู้บันทึก :</label>
+                                                <label for="article_name">ผู้บันทึก :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                        <select id="water_user1" name="water_user"
-                                                        class="form-control form-control-sm" style="width: 100%">
-                                                        <option value="">--เลือก--</option>
-                                                        @foreach ($users as $ue)                                               
-                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>                                             
-                                                        @endforeach
-                                                    </select>
+                                                    <input id="water_user" type="text" 
+                                                        class="form-control form-control-sm" name="water_user">                                                        
                                                 </div>
                                             </div>
                                         </div>
     
                                         <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="water_location">สถานที่เก็บตัวอย่าง :</label>
+                                                <label for="land_tonnage_no">สถานที่เก็บตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -125,7 +119,7 @@ $count_service = StaticController::count_service();
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
-                                                <label for="water_group_excample">ลักษณะตัวอย่าง :</label>
+                                                <label for="land_explore_page">ลักษณะตัวอย่าง :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -135,9 +129,39 @@ $count_service = StaticController::count_service();
                                             </div>                                           
                                         </div>
                                         
-                                        <div class="row mt-3">                                            
+                                        <div class="row mt-3">
                                             <div class="col-md-2 text-end">
-                                                <label for="water_comment">หมายเหตุ :</label>
+                                                <label for="land_tonnage_no">วันที่รับตัวอย่าง :</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input id="parameter_list_normal" type="text"
+                                                        class="form-control form-control-sm" name="parameter_list_normal">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 text-end">
+                                                <label for="land_explore_page">วันที่วิเคราะห์ตัวอย่าง :</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input id="parameter_list_user_analysis_results" type="text"
+                                                        class="form-control form-control-sm" name="parameter_list_user_analysis_results">
+                                                </div>
+                                            </div>                                           
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-2 text-end">
+                                                <label for="land_tonnage_no">ผู้วิเคราะห์ตัวอย่าง :</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input id="parameter_list_normal" type="text"
+                                                        class="form-control form-control-sm" name="parameter_list_normal">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 text-end">
+                                                <label for="land_explore_page">หมายเหตุ :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -146,25 +170,45 @@ $count_service = StaticController::count_service();
                                                 </div>
                                             </div>                                           
                                         </div>
-                                        <?php $number = 1; ?>
-                                            @foreach($dataparameters as $items)
+
+                                        {{-- <div class="row push">
+                                            <div class="col-sm-2 ">
+                                                <div align="left" style=" font-family:'Kanit', sans-serif;font-size: 13px;font-weight:bold;">
+                                                    รายการพารามิเตอร์ :
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-9 ">
+                                                <table class="gwt-table table-striped table-vcenter" style="width: 100%;">
+                                                    <thead style="background-color: #BDFBC9;">
+                                                        <tr height="40">
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;font-family: 'Kanit', sans-serif;font-size: 13px;" width="5%">ลำดับ</td>
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;">รายการพารามิเตอร์</th>
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">หน่วย</th> 
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">ผลการวิเคราะห์</th> 
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th> 
+                                                            <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">ค่ามาตรฐาน</th>                                            
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">
+                                                        <?php $number = 1; ?>
+                                                        @foreach($dataparameters as $items)
                                                        
-                                                <tr height="20">                                             
-                                                    <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
-                                                    <td>
-                                                        <input type="hidden" value="{{ $items->parameter_list_id }}" name="parameter_list_id[]" id="parameter_list_id[]" class="form-control input-sm fo13" >
-                                                        <input value="{{ $items->parameter_list_name }}" name="" id="" class="form-control input-sm fo13" readonly>
-                                                    </td>                                
-                                                    <td><input value="{{ $items->parameter_list_unit }}" name="parameter_list_unit[]" id="parameter_list_unit[]" class="form-control input-sm fo13" readonly></td>
-                                                    <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
-                                                    <td><input value="{{ $items->parameter_list_user_analysis_results }}" name="parameter_list_user_analysis_results[]" id="parameter_list_user_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
-                                                    <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td>
-                                                </tr>
-                                            @endforeach 
+                                                        <tr height="20">                                             
+                                                            <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
+                                                            <td>
+                                                                <input type="hidden" value="{{ $items->parameter_list_id }}" name="parameter_list_id[]" id="parameter_list_id[]" class="form-control input-sm fo13" >
+                                                                <input value="{{ $items->parameter_list_name }}" name="" id="" class="form-control input-sm fo13" readonly>
+                                                            </td>                                
+                                                            <td><input value="{{ $items->parameter_list_unit }}" name="parameter_list_unit[]" id="parameter_list_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                            <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
+                                                            <td><input value="{{ $items->parameter_list_user_analysis_results }}" name="parameter_list_user_analysis_results[]" id="parameter_list_user_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
+                                                            <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td>
+                                                        </tr>
+                                                        @endforeach 
                                                     </tbody>
                                                 </table>   
                                             </div> 
-                                        </div>
+                                        </div> --}}
 
                                     <div class="row">
                                         <label for="">รายการพารามิเตอร์</label>
@@ -173,30 +217,31 @@ $count_service = StaticController::count_service();
                                                 <p>{{$item->parameter_list_name}}</p>
                                             @endforeach --}}
                                             <table class="gwt-table table-striped table-vcenter" style="width: 100%;">
-                                                <thead style="background-color: #aecefd;">
+                                                <thead style="background-color: #BDFBC9;">
                                                     <tr height="40">
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;font-family: 'Kanit', sans-serif;font-size: 13px;" width="3%">ลำดับ</td>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">รายการพารามิเตอร์</th>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="7%">หน่วย</th> 
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">ผลการวิเคราะห์</th> 
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th> 
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="15%">ค่ามาตรฐาน</th>                                            
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="15%">ค่ามาตรฐาน</th>
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="8%">คำสั่ง</th>                                            
                                                     </tr>
                                                 </thead>
                                                 <tbody class="tbody">
                                                     <?php $number = 1; ?>
-                                                    @foreach($dataparameters as $items2)
+                                                    @foreach($dataparameters as $items)
                                                    
                                                     <tr height="20">                                             
                                                         <td style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 13px;"> {{ $number++}} </td>                                           
                                                         <td>
-                                                            <input type="hidden" value="{{ $items2->water_parameter_id }}" name="water_parameter_id[]" id="water_parameter_id[]" class="form-control input-sm fo13" >
-                                                            <input value="{{ $items2->water_parameter_name }}" name="" id="" class="form-control input-sm fo13" readonly>
+                                                            <input type="hidden" value="{{ $items->parameter_list_id }}" name="parameter_list_id[]" id="parameter_list_id[]" class="form-control input-sm fo13" >
+                                                            <input value="{{ $items->parameter_list_name }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>                                
-                                                        <td><input value="{{ $items2->water_parameter_unit }}" name="water_parameter_unit[]" id="water_parameter_unit[]" class="form-control input-sm fo13" readonly></td>
-                                                        <td><input name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" ></td>
-                                                        <td><input value="{{ $items2->water_parameter_results }}" name="use_analysis_results[]" id="use_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
-                                                        <td><input value="{{ $items2->water_parameter_normal }}" name="water_parameter_normal[]" id="water_parameter_normal[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input value="{{ $items->parameter_list_unit }}" name="parameter_list_unit[]" id="parameter_list_unit[]" class="form-control input-sm fo13" readonly></td>
+                                                        <td><input name="ANALYSIS_RESULTS[]" id="ANALYSIS_RESULTS[]" class="form-control input-sm fo13" ></td>
+                                                        <td><input value="{{ $items->parameter_list_user_analysis_results }}" name="parameter_list_user_analysis_results[]" id="parameter_list_user_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
+                                                        <td><input value="{{ $items->parameter_list_normal }}" name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" readonly></td>
                                                     </tr>
                                                     @endforeach 
                                                 </tbody>
@@ -226,6 +271,7 @@ $count_service = StaticController::count_service();
                             </div>
                         </div>
                         </form>
+
                     
                 </div>
             </div>
@@ -235,38 +281,7 @@ $count_service = StaticController::count_service();
 </div>
 
 
-@endsection
-@section('footer')
-<script>
-    
-    $(document).ready(function() {
-        // $("#overlay").fadeIn(300);　
 
-        $('#datepicker').datepicker({
-            format: 'yyyy-mm-dd'
-        });
-        $('#datepicker2').datepicker({
-            format: 'yyyy-mm-dd'
-        });
 
-        $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-        });
-        // ช่องค้นหาชื่อ
-        $('#water_user1').select2({
-                placeholder: "--เลือก--",
-                allowClear: true
-            });
-        // ช่องค้นหาชื่อ
-            $('#water_user2').select2({
-            placeholder: "--เลือก--",
-            allowClear: true
-        }); 
-       
-       
-    });
-</script>
 
 @endsection

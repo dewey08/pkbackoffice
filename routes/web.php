@@ -1986,6 +1986,9 @@ Route::match(['get','post'],'timein_save',[App\Http\Controllers\TimeINController
  Route::match(['get','post'],'env_water',[App\Http\Controllers\EnvController::class, 'env_water'])->name('env.env_water');//หน้าหลักแสดงข้อมูล
  Route::match(['get','post'],'env_water_add',[App\Http\Controllers\EnvController::class, 'env_water_add'])->name('env.env_water_add');//เพิ่มข้อมูล
  Route::match(['get','post'],'env_water_save',[App\Http\Controllers\EnvController::class, 'env_water_save'])->name('env.env_water_save');//บันทึก
+ Route::match(['get','post'],'env_water_edit',[App\Http\Controllers\EnvController::class, 'env_water_edit'])->name('env.env_water_edit');//แก้ไขข้อมูล
+ Route::match(['get','post'],'env_water_update',[App\Http\Controllers\EnvController::class, 'env_water_update'])->name('env.env_water_update');//อัพเดท
+ Route::match(['get','post'],'env_water_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_water_delete'])->name('env.env_water_delete');//ลบข้อมูล
  Route::match(['get','post'],'env_water_datetime',[App\Http\Controllers\EnvController::class, 'env_water_datetime'])->name('env.env_water_datetime');//ค้นตามช่วงวันที่
  
  

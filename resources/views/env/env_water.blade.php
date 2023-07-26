@@ -138,23 +138,23 @@ if (Auth::check()) {
                                 <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="example2">
                                     <thead>
                                         <tr>
-                                            <th class="text-center"width="5%">ลำดับ</th> 
-                                            <th class="text-center"width="10%">วันที่บันทึก</th>
-                                            <th class="text-center"width="5%">สถานที่เก็บตัวอย่าง</th>
+                                            <th class="text-center"width="2%">ลำดับ</th> 
+                                            <th class="text-center"width="2%">วันที่บันทึก</th>
+                                            <th class="text-center"width="10%">สถานที่เก็บตัวอย่าง</th>
                                             <th class="text-center"width="5%">ผู้บันทึก</th>
                                             <th class="text-center"width="5%">หมายเหตุ</th>
-                                            <th class="text-center"width="5%">คำสั่ง</th>                                          
+                                            <th class="text-center"width="2%">คำสั่ง</th>                                          
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php $ia = 1; ?>
                                         @foreach ($datashow as $item)
                                             <tr>
-                                                <td>{{ $ia++ }}</td>
-                                                <td>{{DateThai ($item->water_date) }}</td> 
-                                                <td class="p-2">{{ $item->water_location }}</td>   
-                                                <td class="p-2">{{ $item->water_user }}</td> 
-                                                <td>{{ $item->water_comment }}</td>  
+                                                <td class="text-center">{{ $ia++ }}</td>
+                                                <td class="text-center">{{DateThai ($item->water_date) }}</td> 
+                                                <td class="text-center">{{ $item->water_location }}</td>   
+                                                <td class="text-center">{{ $item->water_user }}</td> 
+                                                <td class="text-center">{{ $item->water_comment }}</td>  
                                                 <td>
                                                     <div class="btn-group">
                                                         <button type="button"
@@ -171,7 +171,7 @@ if (Auth::check()) {
                                                                     <label for=""style="color: rgb(33, 187, 248);font-size:13px">รายละเอียด</label>
                                                                 </a>
                                                                 <a class="dropdown-item text-warning"
-                                                                    href="{{ url('env_trash_edit/' . $item->water_id) }}"
+                                                                    href="{{ url('env_water_edit/' . $item->water_id) }}"
                                                                     data-bs-toggle="tooltip" data-bs-placement="left"
                                                                     data-bs-custom-class="custom-tooltip" title="แก้ไข">
                                                                     <i class="fa-solid fa-pen-to-square me-2"></i>

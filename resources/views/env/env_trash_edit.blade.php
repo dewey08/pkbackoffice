@@ -65,7 +65,7 @@ $count_service = StaticController::count_service();
                         <div class="card-header">
                             <div class="d-flex">
                                 <div class="">
-                                    <label for="">เพิ่มข้อมูลขยะ </label>
+                                    <label for="">แก้ไขข้อมูลขยะ </label>
                                 </div>
                                 <div class="ms-auto">
     
