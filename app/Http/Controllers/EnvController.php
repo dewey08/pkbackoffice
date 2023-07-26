@@ -253,7 +253,8 @@ class EnvController extends Controller
         return view('env.env_water_edit', $data,[
             'startdate'        => $datestart,
             'enddate'          => $dateend, 
-            'water'            => $water, 
+            'water'            => $water,
+            'data'             => $data,  
         ]);
     }
 
@@ -293,15 +294,7 @@ class EnvController extends Controller
                     { 
                         $idtrash = Env_water_parameter::where('SET_"WATER"_ID','=',$water_list_idd[$count])->first();
 
-                        // $add_sub = new Env_water_sub();
-                        // $add_sub->water_id                 = $waterid;
-                        // $add_sub->water_list_idd           = $idwater->water_parameter_id;
-                        // $add_sub->water_list_detail        = $idwater->water_parameter_name;
-                        // $add_sub->water_list_unit          = $water_parameter_unit[$count];
-                        // $add_sub->water_results            = $water_parameter_normal[$count];
-                        // $add_sub->use_analysis_results     = $use_analysis_results[$count];
-                        // $add_sub->water_qty                = $water_qty[$count];
-                        
+                                                
                         $add_sub = new Env_water_sub();
                         $add_sub->water_id = $id;      
                     

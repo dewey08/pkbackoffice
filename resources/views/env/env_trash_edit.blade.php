@@ -175,9 +175,7 @@ $count_service = StaticController::count_service();
                                                                     <option value="{{ $ue->id }}" selected> {{ $ue->fname }}  {{ $ue->lname }} </option>    
                                                                     @else
                                                                     <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>    
-                                                                    @endif    
-
-                                                                                                             
+                                                                    @endif                                                                                                             
                                                                     @endforeach
                                                                 </select>
                                                         </div>
@@ -194,7 +192,7 @@ $count_service = StaticController::count_service();
                                             <table class="gwt-table table-striped table-vcenter" style="width: 100%;">
                                                 <thead style="background-color: #aecefd;">
                                                     <tr height="40">
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;font-family: 'Kanit', sans-serif;font-size: 13px;" width="3%">ลำดับ</td>
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="3%">ลำดับ</td>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">ประเภทขยะ</th>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="7%">ปริมาณ</th> 
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">หน่วย</th>                                                        
