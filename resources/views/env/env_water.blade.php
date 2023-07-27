@@ -134,14 +134,14 @@ if (Auth::check()) {
                                         
                                 </div>
                             </form> 
-                            <div class="table-responsive mt-3">
+                            {{-- <div class="table-responsive mt-3"> --}}
                                 <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="example2">
                                     <thead>
                                         <tr>
                                             <th class="text-center"width="2%">ลำดับ</th> 
                                             <th class="text-center"width="2%">วันที่บันทึก</th>
-                                            <th class="text-center"width="10%">สถานที่เก็บตัวอย่าง</th>
-                                            <th class="text-center"width="5%">ผู้บันทึก</th>
+                                            <th class="text-center"width="5%">สถานที่เก็บตัวอย่าง</th>
+                                            <th class="text-center"width="4%">ผู้บันทึก</th>
                                             <th class="text-center"width="5%">หมายเหตุ</th>
                                             <th class="text-center"width="2%">คำสั่ง</th>                                          
                                         </tr>
@@ -155,7 +155,7 @@ if (Auth::check()) {
                                                 <td class="text-center">{{ $item->water_location }}</td>   
                                                 <td class="text-center">{{ $item->water_user }}</td> 
                                                 <td class="text-center">{{ $item->water_comment }}</td>  
-                                                <td>
+                                                <td class="text-center">
                                                     <div class="btn-group">
                                                         <button type="button"
                                                             class="btn btn-outline-secondary btn-sm dropdown-toggle"
@@ -164,7 +164,7 @@ if (Auth::check()) {
                                                         </button>
                                                             <div class="dropdown-menu">
                                                                 <a class="dropdown-item menu" data-bs-toggle="modal"
-                                                                    data-bs-target="#trashetailModal{{ $item->water_id }}"
+                                                                    data-bs-target="#waterModal{{ $item->water_id }}"
                                                                     data-bs-toggle="tooltip" data-bs-placement="left"
                                                                     data-bs-custom-class="custom-tooltip" title="รายละเอียด">
                                                                     <i class="fa-solid fa-pen-to-square me-2"></i>
@@ -177,7 +177,7 @@ if (Auth::check()) {
                                                                     <i class="fa-solid fa-pen-to-square me-2"></i>
                                                                     <label for=""style="color: rgb(7191, 24, 224);font-size:13px">แก้ไข</label>
                                                                 </a>
-                                                                <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->water_id)}}"
+                                                                <a class="dropdown-item text-danger" href="{{url('env_water_delete/'.$item->water_id)}}"
                                                                     data-bs-toggle="tooltip" data-bs-placement="left"
                                                                     data-bs-custom-class="custom-tooltip" title="ลบ">
                                                                     <i class="fa-solid fa-trash-can me-2 mb-1"></i>
@@ -192,16 +192,129 @@ if (Auth::check()) {
                                                                 </a>                                                            --}}
                                                             </div>
                                                     </div>
-                                                </td>  
-                                                {{-- <td>{{ $item->OPERATE_TYPE_NAME }}</td>    --}}
+                                                </td>                                                                                               
+                                            </tr>
+                                            
+                                            <!--  Modal content Update -->
+                                            <div class="modal fade" 
+                                                id="waterModal{{ $item->water_id }}" tabindex="-1"
+                                                aria-labelledby="waterModal" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="waterModal">
+                                                                รายละเอียดข้อมูลระบบบำบัดน้ำเสีย
+                                                        </div>
+                                                        <div class="modal-body">
 
-                                                
-                                            </tr>    
+                                                            <div class="row">
+                                                                <div class="col-md-2 ">
+                                                                    <p for=""><b>วันที่บันทึก :</b></p>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <p for="water_date">{{ DateThai($item->water_date) }}</p>
+                                                                </div>                                                               
+                                                            </div>
+
+                                                            <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>ผู้บันทึก :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <p
+                                                                            for="water_user">{{ $item->water_user }}</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-2 ">
+                                                                    <label for=""><b>สถานที่เก็บตัวอย่าง :</b></label>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="water_location">{{ $item->water_location }}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>ลักษณะตัวอย่าง :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="water_group_excample">{{ $item->water_group_excample }}</label>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>หมายเหตุ :</b></label>
+                                                                </div>                                                                
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="water_comment">{{ $item->water_comment }}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <hr>
+                                                            <div class="row  mt-3">
+                                                                <div class="col-md-12">
+                                                               
+                                                                            <?php   
+                                                                                    $j = 1;
+                                                                                    $data_ = DB::connection('mysql')->select('
+                                                                                            SELECT *
+                                                                                            FROM env_water_sub
+                                                                                            WHERE water_id = "'.$item->water_id.'"
+                                                                                    ');
+                                                                            ?>
+                                                                          
+                                                                    <div class="row ">
+                                                                        <div class="col-md-1 text-center">ลำดับ</div>
+                                                                        <div class="col-md-4 text-center">รายการพารามิเตอร์</div>
+                                                                        <div class="col-md-1 text-center">หน่วย</div>
+                                                                        <div class="col-md-2 text-center">ผลการวิเคราะห์</div>
+                                                                        <div class="col-md-2 text-center">วิธี่ที่ใช้วิเคราะห์</div>
+                                                                        <div class="col-md-2 text-center">ค่ามาตรฐาน</div>
+                                                                    </div>
+                                                                    @foreach ($data_ as $item2)
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-md-1 text-center">{{$j++}}</div>
+                                                                        <div class="col-md-4">{{$item2->water_list_detail}}</div>
+                                                                        <div class="col-md-1 text-center">{{$item2->water_list_unit}}</div>
+                                                                        <div class="col-md-2 text-center">{{$item2->water_qty}}</div>
+                                                                        <div class="col-md-2">{{$item2->use_analysis_results}}</div>
+                                                                        <div class="col-md-2 ">{{$item2->water_results}}</div>
+                                                                    </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+
+                                                 
+                                                        </div>
+                                                        <div class="modal-footer">
+
+                                                            <button type="button" class="btn btn-danger btn-sm"
+                                                                data-bs-dismiss="modal" id="closebtn">
+                                                                <i class="fa-solid fa-xmark me-2"></i>
+                                                                ปิด
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div> 
+
                                         @endforeach
                                         
                                     </tbody>
                                 </table>
-                            </div> 
+                            {{-- </div>  --}}
                         </p>
                     </div>
                      

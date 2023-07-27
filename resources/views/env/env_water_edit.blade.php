@@ -203,7 +203,7 @@ $count_service = StaticController::count_service();
                                         บันทึกข้อมูล
                                     </button>
     
-                                    <a href="{{ url('env_trash') }}" class="btn btn-danger btn-sm">
+                                    <a href="{{ url('env_water') }}" class="btn btn-danger btn-sm">
                                         <i class="fa-solid fa-xmark me-2"></i>
                                         ยกเลิก
                                     </a>

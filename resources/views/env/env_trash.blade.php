@@ -172,7 +172,7 @@ if (Auth::check()) {
                                                                 <i class="fa-solid fa-pen-to-square me-2"></i>
                                                                 <label for=""style="color: rgb(7191, 24, 224);font-size:13px">แก้ไข</label>
                                                             </a>
-                                                            <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->trash_id)}}"
+                                                            <a class="dropdown-item text-danger" href="{{url('env_trash_delete/'.$item->trash_id)}}"
                                                                 data-bs-toggle="tooltip" data-bs-placement="left"
                                                                 data-bs-custom-class="custom-tooltip" title="ลบ">
                                                                 <i class="fa-solid fa-trash-can me-2 mb-1"></i>

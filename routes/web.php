@@ -1973,7 +1973,7 @@ Route::match(['get','post'],'timein_save',[App\Http\Controllers\TimeINController
 
  Route::match(['get','post'],'env_dashboard',[App\Http\Controllers\EnvController::class, 'env_dashboard'])->name('env.env_dashboard');//
 
- //บ่อบำบัด
+ //บ่อบำบัด//////////////////////////////////////////////////////////////
  //ตั้งค่า parameter น้ำ
  Route::match(['get','post'],'env_water_parameter',[App\Http\Controllers\EnvController::class, 'env_water_parameter'])->name('env.env_water_parameter');//หน้าหลักแสดงข้อมูล
  Route::match(['get','post'],'env_water_parameter_add',[App\Http\Controllers\EnvController::class, 'env_water_parameter_add'])->name('env.env_water_parameter_add');//เพิ่มข้อมูล
@@ -1992,7 +1992,7 @@ Route::match(['get','post'],'timein_save',[App\Http\Controllers\TimeINController
  Route::match(['get','post'],'env_water_datetime',[App\Http\Controllers\EnvController::class, 'env_water_datetime'])->name('env.env_water_datetime');//ค้นตามช่วงวันที่
  
  
- //ขยะ
+ //ขยะ//////////////////////////////////////////////////////////////
  //ตั้งค่าประเภทขยะ
  Route::match(['get','post'],'env_trash_parameter',[App\Http\Controllers\EnvController::class, 'env_trash_parameter'])->name('env.env_trash_parameter');//หน้าหลักแสดงข้อมูล
  Route::match(['get','post'],'env_trash_parameter_add',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_add'])->name('env.env_trash_parameter_add');//เพิ่ม

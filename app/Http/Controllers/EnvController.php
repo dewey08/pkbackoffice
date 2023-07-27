@@ -127,7 +127,7 @@ class EnvController extends Controller
             ->leftjoin('env_water_sub','env_water.water_id','=','env_water_sub.water_id')->get(); 
         
         $datashow = DB::connection('mysql')->select('
-            SELECT DISTINCT(w.water_id),w.water_date,w.water_location,w.water_comment,CONCAT(u.fname," ",u.lname) as water_user
+            SELECT DISTINCT(w.water_id),w.water_date,w.water_location,water_group_excample,w.water_comment,CONCAT(u.fname," ",u.lname) as water_user
             from env_water w
             LEFT JOIN env_water_sub ws on ws.water_id = w.water_id
             LEFT JOIN users u on u.id = w.water_user 
@@ -195,6 +195,8 @@ class EnvController extends Controller
         $add->save();        
 
         $waterid =  Env_water::max('water_id');
+        
+
 
         if($request->water_parameter_id != '' || $request->water_parameter_id != null){
 
@@ -204,6 +206,7 @@ class EnvController extends Controller
             $use_analysis_results       = $request->use_analysis_results;
             $water_parameter_normal     = $request->water_parameter_normal;
             $water_qty                  = $request->water_qty;     
+            
             
 
             $number =count($water_parameter_id);
@@ -272,17 +275,10 @@ class EnvController extends Controller
         $update->water_group_excample   = $request->water_group_excample; 
         $update->water_comment          = $request->water_comment; 
         $update->save();
-
-        // Env_trash_sub::where('trash_id','=',$id)->delete();
+        
+        Env_water_sub::where('water_id','=',$id)->delete();
 
         if($request->water_list_idd != '' || $request->water_list_idd != null){
-
-            // $water_parameter_id         = $request->water_parameter_id;
-            // $water_parameter_unit       = $request->water_parameter_unit;
-
-            // $use_analysis_results       = $request->use_analysis_results;
-            // $water_parameter_normal     = $request->water_parameter_normal;
-            // $water_qty                  = $request->water_qty; 
 
             $water_list_idd             = $request->water_list_idd;
             $water_qty                  = $request->water_qty;
@@ -292,17 +288,17 @@ class EnvController extends Controller
             $count = 0;
                 for($count = 0; $count< $number; $count++)
                     { 
-                        $idtrash = Env_water_parameter::where('SET_"WATER"_ID','=',$water_list_idd[$count])->first();
+                        $idtrash = Env_water_parameter::where('SET_WATER_ID','=',$water_list_idd[$count])->first();
 
                                                 
                         $add_sub = new Env_water_sub();
-                        $add_sub->water_id = $id;      
+                        $add_sub->water_id              = $id;      
                     
-                        $add_sub->water_list_idd        = $idtrash->trash_parameter_id;  
-                        $add_sub->water_list_detail     = $idtrash->trash_parameter_name;
+                        $add_sub->water_list_idd        = $idtrash->water_parameter_id;  
+                        $add_sub->water_list_detail     = $idtrash->water_parameter_name;
 
                         $add_sub->water_qty             = $water_qty[$count];  
-                        $add_sub->water_list_unit        = $water_parameter_unit[$count];                          
+                        $add_sub->water_list_unit       = $water_parameter_unit[$count];                          
                         $add_sub->save(); 
                     }
         }
@@ -313,8 +309,8 @@ class EnvController extends Controller
 
     public function env_water_delete (Request $request,$id)
     {
-       $del = Env_water::find($id);  
-       $del->delete(); 
+       Env_water::destroy($id); 
+       Env_water_sub::where('water_id','=',$id)->delete();
 
         return redirect()->back();
     }
@@ -654,6 +650,14 @@ class EnvController extends Controller
 
         return redirect()->route('env.env_trash');
         
+    }
+
+    public function env_trash_delete (Request $request,$id)
+    {
+       Env_trash::destroy($id); 
+       Env_trash_sub::where('trash_id','=',$id)->delete();
+
+        return redirect()->back();
     }
 
 //**************************************************************ตั้งค่า   ประเภทขยะ*********************************************
