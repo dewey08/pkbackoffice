@@ -63,6 +63,8 @@ if (Auth::check()) {
     $y = date('Y') + 543;
     $newweek = date('Y-m-d', strtotime($datenow . ' -1 week')); //ย้อนหลัง 1 สัปดาห์  
     $newDate = date('Y-m-d', strtotime($datenow . ' -1 months')); //ย้อนหลัง 1 เดือน 
+
+    use Illuminate\Support\Facades\DB;
 ?>
   
 <div class="tabs-animation">
@@ -94,42 +96,225 @@ if (Auth::check()) {
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-eg2-0" role="tabpanel">
                         <p> 
-                            <form action="{{ route('t.time_nurs_dep') }}" method="POST">
+                            <form action="{{ route('env.env_water') }}" method="POST">
                                 @csrf
-
-                            </form>  
-                            <div class="table-responsive mt-3">
+                                <div class="row">
+                                    {{-- <div class="col"></div> --}}
+                                    <div class="col-md-1 text-end">วันที่</div>
+                                    <div class="col-md-2 text-center">
+                                        <div class="input-group" id="datepicker1">
+                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="startdate"
+                                                id="startdate" data-date-format="yyyy-mm-dd" data-date-container='#datepicker1'
+                                                data-provide="datepicker" data-date-autoclose="true" value="{{ $startdate }}">
+            
+                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 text-center">ถึงวันที่</div>
+                                    <div class="col-md-2 text-center">
+                                        <div class="input-group" id="datepicker1">
+                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="enddate"
+                                                id="enddate" data-date-format="yyyy-mm-dd" data-date-container='#datepicker1'
+                                                data-provide="datepicker" data-date-autoclose="true" value="{{ $enddate }}">
+            
+                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa-solid fa-magnifying-glass me-2"></i>
+                                            ค้นหา
+                                        </button>
+                                        
+                                            {{-- <a href="{{url('time_dep_excel/'.$deb.'/'.$startdate.'/'.$enddate)}}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-success">
+                                                <i class="fa-solid fa-file-excel me-2"></i>
+                                                Export
+                                            </a> --}}                                        
+                                    </div>
+                                        
+                                </div>
+                            </form> 
+                            {{-- <div class="table-responsive mt-3"> --}}
                                 <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="example2">
                                     <thead>
                                         <tr>
-                                            <th>ลำดับ</th> 
-                                            <th>วันที่บันทึก</th>
-                                            <th>สถานที่เก็บตัวอย่าง</th>
-                                            <th>วันที่รับตัวอย่าง</th> 
-                                            <th>วันที่วิเคราะห์ตัวอย่าง</th>
-                                            <th>ผู้วิเคราะห์ตัวอย่าง</th> 
-                                            <th>ผู้บันทึก</th>
-                                            <th>คำสั่ง</th> 
+                                            <th class="text-center"width="2%">ลำดับ</th> 
+                                            <th class="text-center"width="2%">วันที่บันทึก</th>
+                                            <th class="text-center"width="5%">สถานที่เก็บตัวอย่าง</th>
+                                            <th class="text-center"width="4%">ผู้บันทึก</th>
+                                            <th class="text-center"width="5%">หมายเหตุ</th>
+                                            <th class="text-center"width="2%">คำสั่ง</th>                                          
                                         </tr>
                                     </thead>
-                                    {{-- <tbody>
+                                    <tbody>
                                         <?php $ia = 1; ?>
-                                        @foreach ($datashow_ as $item)  
-                                            
+                                        @foreach ($datashow as $item)
                                             <tr>
-                                                <td>{{ $ia++ }}</td>
-                                                <td>{{ $item->CHEACKIN_DATE }}</td> 
-                                                <td class="p-2">{{ $item->hrname }}</td>   
-                                                <td class="p-2">{{ $item->HR_DEPARTMENT_SUB_SUB_NAME }}</td> 
-                                                <td>{{ $item->CHEACKINTIME }}</td>  
-                                                <td>{{ $item->CHEACKOUTTIME }}</td>  
-                                                <td>{{ $item->OPERATE_TYPE_NAME }}</td>   
-                                            </tr>    
+                                                <td class="text-center">{{ $ia++ }}</td>
+                                                <td class="text-center">{{DateThai ($item->water_date) }}</td> 
+                                                <td class="text-center">{{ $item->water_location }}</td>   
+                                                <td class="text-center">{{ $item->water_user }}</td> 
+                                                <td class="text-center">{{ $item->water_comment }}</td>  
+                                                <td class="text-center">
+                                                    <div class="btn-group">
+                                                        <button type="button"
+                                                            class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                            ทำรายการ 
+                                                        </button>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item menu" data-bs-toggle="modal"
+                                                                    data-bs-target="#waterModal{{ $item->water_id }}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    data-bs-custom-class="custom-tooltip" title="รายละเอียด">
+                                                                    <i class="fa-solid fa-pen-to-square me-2"></i>
+                                                                    <label for=""style="color: rgb(33, 187, 248);font-size:13px">รายละเอียด</label>
+                                                                </a>
+                                                                <a class="dropdown-item text-warning"
+                                                                    href="{{ url('env_water_edit/' . $item->water_id) }}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    data-bs-custom-class="custom-tooltip" title="แก้ไข">
+                                                                    <i class="fa-solid fa-pen-to-square me-2"></i>
+                                                                    <label for=""style="color: rgb(7191, 24, 224);font-size:13px">แก้ไข</label>
+                                                                </a>
+                                                                <a class="dropdown-item text-danger" href="{{url('env_water_delete/'.$item->water_id)}}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    data-bs-custom-class="custom-tooltip" title="ลบ">
+                                                                    <i class="fa-solid fa-trash-can me-2 mb-1"></i>
+                                                                    <label for="" style="color: rgb(255, 22, 22);font-size:13px">ลบ</label>
+                                                                </a>    
+                                                                {{-- <div class="dropdown-divider"></div> --}}
+                                                                {{-- <a class="dropdown-item text-danger" href="{{url('env_trash_parameter_delete/'.$item->trash_id)}}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    data-bs-custom-class="custom-tooltip" title="ลบ">
+                                                                    <i class="fa-solid fa-trash-can me-2 mb-1"></i>
+                                                                    <label for="" style="color: rgb(70, 70, 70);font-size:13px">ลบ</label>
+                                                                </a>                                                            --}}
+                                                            </div>
+                                                    </div>
+                                                </td>                                                                                               
+                                            </tr>
+                                            
+                                            <!--  Modal content Update -->
+                                            <div class="modal fade" 
+                                                id="waterModal{{ $item->water_id }}" tabindex="-1"
+                                                aria-labelledby="waterModal" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="waterModal">
+                                                                รายละเอียดข้อมูลระบบบำบัดน้ำเสีย
+                                                        </div>
+                                                        <div class="modal-body">
+
+                                                            <div class="row">
+                                                                <div class="col-md-2 ">
+                                                                    <p for=""><b>วันที่บันทึก :</b></p>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <p for="water_date">{{ DateThai($item->water_date) }}</p>
+                                                                </div>                                                               
+                                                            </div>
+
+                                                            <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>ผู้บันทึก :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <p
+                                                                            for="water_user">{{ $item->water_user }}</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-2 ">
+                                                                    <label for=""><b>สถานที่เก็บตัวอย่าง :</b></label>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="water_location">{{ $item->water_location }}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row mt-3">
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>ลักษณะตัวอย่าง :</b></label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="water_group_excample">{{ $item->water_group_excample }}</label>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-2">
+                                                                    <label for=""><b>หมายเหตุ :</b></label>
+                                                                </div>                                                                
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="water_comment">{{ $item->water_comment }}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <hr>
+                                                            <div class="row  mt-3">
+                                                                <div class="col-md-12">
+                                                               
+                                                                            <?php   
+                                                                                    $j = 1;
+                                                                                    $data_ = DB::connection('mysql')->select('
+                                                                                            SELECT *
+                                                                                            FROM env_water_sub
+                                                                                            WHERE water_id = "'.$item->water_id.'"
+                                                                                    ');
+                                                                            ?>
+                                                                          
+                                                                    <div class="row ">
+                                                                        <div class="col-md-1 text-center">ลำดับ</div>
+                                                                        <div class="col-md-4 text-center">รายการพารามิเตอร์</div>
+                                                                        <div class="col-md-1 text-center">หน่วย</div>
+                                                                        <div class="col-md-2 text-center">ผลการวิเคราะห์</div>
+                                                                        <div class="col-md-2 text-center">วิธี่ที่ใช้วิเคราะห์</div>
+                                                                        <div class="col-md-2 text-center">ค่ามาตรฐาน</div>
+                                                                    </div>
+                                                                    @foreach ($data_ as $item2)
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-md-1 text-center">{{$j++}}</div>
+                                                                        <div class="col-md-4">{{$item2->water_list_detail}}</div>
+                                                                        <div class="col-md-1 text-center">{{$item2->water_list_unit}}</div>
+                                                                        <div class="col-md-2 text-center">{{$item2->water_qty}}</div>
+                                                                        <div class="col-md-2">{{$item2->use_analysis_results}}</div>
+                                                                        <div class="col-md-2 ">{{$item2->water_results}}</div>
+                                                                    </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+
+                                                 
+                                                        </div>
+                                                        <div class="modal-footer">
+
+                                                            <button type="button" class="btn btn-danger btn-sm"
+                                                                data-bs-dismiss="modal" id="closebtn">
+                                                                <i class="fa-solid fa-xmark me-2"></i>
+                                                                ปิด
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div> 
+
                                         @endforeach
                                         
-                                    </tbody> --}}
+                                    </tbody>
                                 </table>
-                            </div> 
+                            {{-- </div>  --}}
                         </p>
                     </div>
                      
@@ -137,14 +322,13 @@ if (Auth::check()) {
             </div>
             
         </div>
-</div> 
+</div>  
 
- 
       
 @endsection
 @section('footer')
 
-<script>
+{{-- <script>
     
     $(document).ready(function() {
         // $("#overlay").fadeIn(300);　
@@ -225,8 +409,8 @@ if (Auth::check()) {
             });
         });  
     });
-</script>
-<script>
+</script> --}}
+{{-- <script>
     $('.department').change(function () {
             if ($(this).val() != '') {
                     var select = $(this).val();
@@ -264,7 +448,7 @@ if (Auth::check()) {
                     // console.log(select);
             }
     });
-</script>
+</script> --}}
 @endsection
  
  
