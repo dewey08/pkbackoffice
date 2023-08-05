@@ -15,17 +15,16 @@ return new class extends Migration
     {   
         if (!Schema::hasTable('d_orf'))
         {
-            Schema::connection('mysql7')->create('d_orf', function (Blueprint $table) {
+            Schema::connection('mysql')->create('d_orf', function (Blueprint $table) {
                 $table->bigIncrements('d_orf_id');
 
                 $table->string('HN')->nullable();// 
-                $table->date('DATEOPD')->nullable();// 
-                 
+                $table->string('DATEOPD')->nullable();//
                 $table->string('CLINIC')->nullable();//  
                 $table->string('REFER')->nullable(); //             
                 $table->string('REFERTYPE')->nullable(); //  
                 $table->string('SEQ')->nullable(); //  
-                 
+                $table->string('user_id')->nullable(); //  
                 $table->timestamps();
             });
         }

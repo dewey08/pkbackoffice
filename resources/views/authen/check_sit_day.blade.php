@@ -60,15 +60,19 @@
                         Report check sit
                         <div class="btn-actions-pane-right">
                             <div role="group" class="btn-group-sm btn-group">
-                                {{-- <button class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-success" id="PullCheck">
-                                    <i class="pe-7s-shuffle btn-icon-wrapper"></i>ดึงข้อมูล
-                                </button> --}}
+
                                 {{-- <button class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-danger" id="Checksitbtn">
                                     <i class="pe-7s-check btn-icon-wrapper"></i>ตรวจสอบสิทธิ์
                                 </button>  --}}
                                 <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     <i class="pe-7s-science btn-icon-wrapper"></i>Token
                                 </button>
+                                {{-- <a href="{{url('check_sit_daypullauto')}}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-danger" target="_blank">
+                                    <i class="pe-7s-check btn-icon-wrapper"></i>ดึงข้อมูล Auto
+                                </a> --}}
+                                {{-- <a href="{{url('check_sit_daysitauto')}}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-warning" target="_blank">
+                                    <i class="pe-7s-check btn-icon-wrapper"></i>Checksit Auto
+                                </a> --}}
                             </div>
                         </div>
                     </div>
@@ -79,12 +83,24 @@
                             <div class="row mt-3">
                                 <div class="col"></div>
                                 <div class="col-md-1 text-end">วันที่</div>
+                                <div class="col-md-4 text-center">
+                                    <div class="input-daterange input-group" id="datepicker1" data-date-format="dd M, yyyy"
+                                        data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
+                                        <input type="text" class="form-control" name="startdate" id="datepicker" placeholder="Start Date"
+                                            data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                                            data-date-language="th-th" value="{{ $start }}" />
+                                        <input type="text" class="form-control" name="enddate" placeholder="End Date" id="datepicker2"
+                                            data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                                            data-date-language="th-th" value="{{ $end }}" />
+                                    </div>
+                                </div>
+
+                                {{-- <div class="col-md-1 text-end">วันที่</div>
                                 <div class="col-md-2 text-center">
                                     <div class="input-group" id="datepicker1">
                                         <input type="text" class="form-control" name="startdate" id="datepicker"  data-date-container='#datepicker1'
                                             data-provide="datepicker" data-date-autoclose="true" data-date-language="th-th"
                                             value="{{ $start }}">
-
                                         <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                     </div>
                                 </div>
@@ -94,11 +110,13 @@
                                         <input type="text" class="form-control" name="enddate" id="datepicker2" data-date-container='#datepicker1'
                                             data-provide="datepicker" data-date-autoclose="true" data-date-language="th-th"
                                             value="{{ $end }}">
-
                                         <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
+                                </div> --}}
+
+
+
+                                <div class="col-md-1">
                                     <button class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">
                                         <i class="pe-7s-search btn-icon-wrapper"></i>ค้นหา
                                     </button>
@@ -109,22 +127,29 @@
 
                         </form>
                         <div class="table-responsive mt-3">
-                            <table class="align-middle mb-0 table table-borderless" id="example">
+                            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
+                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            {{-- <table class="align-middle mb-0 table table-borderless" id="example"> --}}
                                 {{-- <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="example"> --}}
                                 <thead>
                                     <tr>
                                         <th>ลำดับ</th>
                                         <th>vn</th>
+                                        <th>hn</th>
                                         <th>cid</th>
+                                        <th>tel</th>
                                         <th>vstdate</th>
                                         <th>fullname</th>
                                         <th>pttype Hos</th>
-                                        <th>hospmain</th>
-                                        <th>hospsub</th>
+                                        <th>hmain Hos</th>
+                                        <th>hsub Hos</th>
                                         <th>pttype สปสช</th>
-                                        <th>hmain สปสช</th>
-                                        <th>hsub สปสช</th>
+                                        <th>hmainสปสช</th>
+                                        <th>hsubสปสช</th>
+                                        {{-- <th>claimcode</th> --}}
+                                        <th>claimtype</th>
                                         <th>staff</th>
+                                        <th>main_dep</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -141,7 +166,9 @@
                                         <tr style="background-color: rgb(255, 255, 255)">
                                             <td>{{ $ia++ }}</td>
                                             <td>{{ $item->vn }}</td>
+                                            <td>{{ $item->hn }}</td>
                                             <td>{{ $item->cid }}</td>
+                                            <td>{{ $item->hometel }}</td>
                                             <td>{{ $item->vstdate }}</td>
                                             <td>{{ $item->fullname }}</td>
                                             <td style="background-color: rgb(255, 255, 255)">{{ $item->pttype }}</td>
@@ -150,14 +177,26 @@
                                             <td style="background-color: rgb(255, 255, 255)">{{ $item->subinscl }}</td>
                                             <td>{{ $item->hmain }}</td>
                                             <td>{{ $item->hsub }}</td>
+
+                                            @if ($item->claimcode == '')
+                                                {{-- <td style="background-color: rgb(250, 139, 139)">{{ $item->claimcode }}</td> --}}
+                                                <td style="background-color: rgb(250, 139, 139)">{{ $item->claimcode }}</td>
+                                                {{-- {{ $item->servicerep }} --}}
+                                            @else
+                                                {{-- <td>{{ $item->claimcode }}</td> --}}
+                                                <td>{{ $item->claimtype }}</td>
+                                            @endif
                                             <td>{{ $item->staff }}</td>
+                                            <td>{{ $item->department }}</td>
                                         </tr>
                                     @elseif( $item->pttype != $item->subinscl )
 
                                         <tr>
                                             <td>{{ $ia++ }}</td>
                                             <td>{{ $item->vn }}</td>
+                                            <td>{{ $item->hn }}</td>
                                             <td>{{ $item->cid }}</td>
+                                            <td>{{ $item->hometel }}</td>
                                             <td>{{ $item->vstdate }}</td>
                                             <td>{{ $item->fullname }}</td>
                                             <td>
@@ -168,7 +207,6 @@
                                                 <button type="button" class="btn btn-icon btn-shadow btn-dashed btn-outline-danger" data-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content=" {{$d}}">
                                                     {{ $item->pttype }}
                                                 </button>
-
                                             </td>
                                             <td style="background-color: rgb(155, 253, 240)">{{ $item->hospmain }}</td>
                                             <td>{{ $item->hospsub }}</td>
@@ -179,13 +217,23 @@
                                             </td>
                                             <td style="background-color: rgb(188, 229, 253)">{{ $item->hmain }}</td>
                                             <td>{{ $item->hsub }}</td>
+                                            @if ($item->claimcode == '')
+                                                {{-- <td style="background-color: rgb(250, 139, 139)">{{ $item->claimcode }}</td> --}}
+                                                <td style="background-color: rgb(250, 139, 139)">{{ $item->claimcode }}</td>
+                                            @else
+                                                {{-- <td>{{ $item->claimcode }}</td> --}}
+                                                <td>{{ $item->claimtype }}</td>
+                                            @endif
                                             <td>{{ $item->staff }}</td>
+                                            <td>{{ $item->department }}</td>
                                         </tr>
                                     @else
                                         <tr style="background-color: rgb(255, 255, 255)">
                                             <td>{{ $ia++ }}</td>
                                             <td>{{ $item->vn }}</td>
+                                            <td>{{ $item->hn }}</td>
                                             <td>{{ $item->cid }}</td>
+                                            <td>{{ $item->hometel }}</td>
                                             <td>{{ $item->vstdate }}</td>
                                             <td>{{ $item->fullname }}</td>
 
@@ -196,7 +244,15 @@
                                             <td style="background-color: rgb(255, 255, 255)">{{ $item->subinscl }}</td>
                                             <td style="background-color: rgb(188, 229, 253)">{{ $item->hmain }}</td>
                                             <td>{{ $item->hsub }}</td>
+                                            @if ($item->claimcode == '')
+                                            {{-- <td style="background-color: rgb(250, 139, 139)">{{ $item->claimcode }}</td> --}}
+                                            <td style="background-color: rgb(250, 139, 139)">{{ $item->claimcode }}</td>
+                                            @else
+                                                {{-- <td>{{ $item->claimcode }}</td> --}}
+                                                <td>{{ $item->claimtype }}</td>
+                                            @endif
                                             <td>{{ $item->staff }}</td>
+                                            <td>{{ $item->department }}</td>
                                         </tr>
                                     @endif
 

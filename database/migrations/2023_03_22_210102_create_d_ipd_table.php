@@ -15,17 +15,15 @@ return new class extends Migration
     { 
         if (!Schema::hasTable('d_ipd'))
         {
-            Schema::connection('mysql7')->create('d_ipd', function (Blueprint $table) {
+            Schema::connection('mysql')->create('d_ipd', function (Blueprint $table) {
                 $table->bigIncrements('d_ipd_id');
 
                 $table->string('HN')->nullable();// 
                 $table->string('AN')->nullable();// 
-
-                $table->date('DATEADM')->nullable();// 
+                $table->string('DATEADM')->nullable();// 
                 $table->string('TIMEADM')->nullable();//  
-                $table->date('DATEDSC')->nullable();// 
+                $table->string('DATEDSC')->nullable();// 
                 $table->string('TIMEDSC')->nullable();//  
-
                 $table->string('DISCHS')->nullable();//  
                 $table->string('DISCHT')->nullable(); //   
                 $table->string('WARDDSC')->nullable(); //  
@@ -33,7 +31,7 @@ return new class extends Migration
                 $table->string('ADM_W')->nullable(); // 
                 $table->string('UUC')->nullable(); // 
                 $table->string('SVCTYPE')->nullable(); // 
- 
+                $table->string('user_id')->nullable(); //  
                 $table->timestamps();
             });
         }

@@ -20,7 +20,7 @@ class Env_trash_sub extends Model
         'trash_sub_qty',
         'trash_sub_unit',
         'trash_sub_idd'
-       
+        // 'parameter_list_user_analysis_results'
         
     ];
 

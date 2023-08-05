@@ -15,18 +15,14 @@ return new class extends Migration
     { 
         if (!Schema::hasTable('d_aer'))
         {
-            Schema::connection('mysql7')->create('d_aer', function (Blueprint $table) {
+            Schema::connection('mysql')->create('d_aer', function (Blueprint $table) {
                 $table->bigIncrements('d_aer_id');
                 $table->string('HN')->nullable();//  
                 $table->string('AN')->nullable();//  
-
-                $table->date('DATEOPD')->nullable();// 
-
+                $table->string('DATEOPD')->nullable();// 
                 $table->string('AUTHAE')->nullable();//  
-
-                $table->date('AEDATE')->nullable();// 
+                $table->string('AEDATE')->nullable();// 
                 $table->string('AETIME')->nullable();//  
-
                 $table->string('AETYPE')->nullable(); //  
                 $table->string('REFER_NO')->nullable(); // 
                 $table->string('REFMAINI')->nullable(); // 
@@ -39,7 +35,7 @@ return new class extends Migration
                 $table->string('AESTATUS')->nullable(); // 
                 $table->string('DALERT')->nullable(); // 
                 $table->string('TALERT')->nullable(); //  
-  
+                $table->string('user_id')->nullable(); //  
                 $table->timestamps();
             });
         }

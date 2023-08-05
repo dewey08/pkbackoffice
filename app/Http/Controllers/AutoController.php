@@ -60,6 +60,8 @@ use App\Models\Dashboard_authenstaff_day;
 use App\Models\Acc_debtor;
 use App\Models\Check_sit_auto_claim;
 use App\Models\Db_year;
+use App\Models\Db_authen;
+use App\Models\Db_authen_detail;
 use Auth;
 use ZipArchive;
 use Storage;
@@ -71,10 +73,62 @@ use SoapClient;
 use SplFileObject;
 // use File;
 
-
-
 class AutoController extends Controller
 {
+    public function authencode_confirm(Request $request)
+    {
+        $date_now = date('Y-m-d');
+        $date_start = "2023-05-07";
+        $date_end = "2023-05-09";
+
+        $url = "https://authenservice.nhso.go.th/authencode/api/authencode-report?hcode=10978&provinceCode=3600&zoneCode=09&claimDateFrom=$date_now&claimDateTo=$date_now&page=0&size=1000&sort=transId,desc";
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            // CURLOPT_URL => 'https://authenservice.nhso.go.th/authencode/api/authencode-report?hcode=10978&provinceCode=3600&zoneCode=09&claimDateFrom=2023-05-09&claimDateTo=2023-01-05&page=0&size=1000',
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Accept: application/json, text/plain, */*',
+                'Accept-Language: th-TH,th;q=0.9,en-US;q=0.8,en;q=0.7',
+                'Connection: keep-alive',
+                'Cookie: SESSION=NWY1NjU4N2YtN2E2Zi00OGQ1LWEzYjUtYzYyY2Y3NWJkNmNk; TS01bfdc7f=013bd252cb2f635ea275a9e2adb4f56d3ff24dc90de5421d2173da01a971bc0b2d397ab2bfbe08ef0e379c3946b8487cf4049afe9f2b340d8ce29a35f07f94b37287acd9c2; _ga_B75N90LD24=GS1.1.1665019756.2.0.1665019757.0.0.0; _ga=GA1.3.1794349612.1664942850; TS01e88bc2=013bd252cb8ac81a003458f85ce451e7bd5f66e6a3930b33701914767e3e8af7b92898dd63a6258beec555bbfe4b8681911d19bf0c; SESSION=YmI4MjUyNjYtODY5YS00NWFmLTlmZGItYTU5OWYzZmJmZWNh; TS01bfdc7f=013bd252cbc4ce3230a1e9bdc06904807c8155bd7d0a8060898777cf88368faf4a94f2098f920d5bbd729fbf29d55a388f507d977a65a3dbb3b950b754491e7a240f8f72eb; TS01e88bc2=013bd252cbe2073feef8c43b65869a02b9b370d9108007ac6a34a07f6ae0a96b2967486387a6a0575c46811259afa688d09b5dfd21',
+                'Referer: https://authenservice.nhso.go.th/authencode/',
+                'Sec-Fetch-Dest: empty',
+                'Sec-Fetch-Mode: cors',
+                'Sec-Fetch-Site: same-origin',
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+                'sec-ch-ua: "Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+                'sec-ch-ua-mobile: ?0',
+                'sec-ch-ua-platform: "Windows"'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        // dd($curl);
+        $contents = $response;
+        $result = json_decode($contents, true);
+        @$content = $result['content'];
+        // dd($content);
+
+        foreach ($content as $key => $value) {
+            $transId = $value['transId'];
+            isset( $value['patientName'] ) ? $patientName = $value['patientName'] : $patientName = "";
+
+            $claimDate = explode("T",$value['claimDate']);
+            $checkdate = $claimDate[0];
+            $checktime = $claimDate[1];
+        }
+        return view('auto.checkauthen_autospsch',[
+            'response'  => $response,
+            'result'  => $result,
+        ]);
+
+    }
     public function sit(Request $request)
     {
         return view('authen.sit');
@@ -125,61 +179,71 @@ class AutoController extends Controller
     // ดึงข้อมูลมาไว้เช็คสิทธิ์
     public function sit_pull_auto(Request $request)
     {
+        // $data_check = DB::connection('mysql')->select('
+        //         SELECT vn
+        //         FROM check_sit_auto 
+        // ');
+        // foreach ($data_check as $key => $val) {
+        //     $check_hos = Check_sit_auto::where('vn', $val->vn)->count();
+        // }       
+
             $data_sits = DB::connection('mysql3')->select('
-                SELECT o.an,o.vn,p.hn,p.cid,o.vstdate,o.vsttime,o.pttype,concat(p.pname,p.fname," ",p.lname) as fullname,o.staff,pt.nhso_code,o.hospmain,o.hospsub
+                SELECT o.an,o.vn,p.hn,p.cid,o.vstdate,o.vsttime,o.pttype,concat(p.pname,p.fname," ",p.lname) as fullname,o.staff,p.hometel
+                ,pt.nhso_code,o.hospmain,o.hospsub,o.main_dep,v.income-v.discount_money-v.rcpt_money debit
                 FROM ovst o
+                LEFT JOIN vn_stat v on v.vn = o.vn
                 join patient p on p.hn=o.hn
                 JOIN pttype pt on pt.pttype=o.pttype
                 JOIN opduser op on op.loginname = o.staff
                 WHERE o.vstdate = CURDATE()
-                group by p.cid
+                AND o.main_dep NOT IN("011","036","107")
+                AND o.pttype NOT IN("M1","M2","M3","M4","M5","M6")
+                group by o.vn
                 limit 1500
             ');
-            // CURDATE()
+            // CURDATE() "2023-08-01"
             foreach ($data_sits as $key => $value) {
                 $check = Check_sit_auto::where('vn', $value->vn)->count();
-                if ($check == 0) {
-                    Check_sit_auto::insert([
-                        'vn' => $value->vn,
-                        'an' => $value->an,
-                        'hn' => $value->hn,
-                        'cid' => $value->cid,
-                        'vstdate' => $value->vstdate,
-                        'vsttime' => $value->vsttime,
-                        'fullname' => $value->fullname,
-                        'pttype' => $value->pttype,
-                        'hospmain' => $value->hospmain,
-                        'hospsub' => $value->hospsub,
-                        'staff' => $value->staff
-                    ]);
-                }
-            }
-            $data_sits_ipd = DB::connection('mysql3')->select('
-                    SELECT a.an,a.vn,p.hn,p.cid,a.dchdate,a.pttype
-                    from hos.opitemrece op
-                    LEFT JOIN hos.ipt ip ON ip.an = op.an
-                    LEFT JOIN hos.an_stat a ON ip.an = a.an
-                    LEFT JOIN hos.vn_stat v on v.vn = a.vn
-                    LEFT JOIN patient p on p.hn=a.hn
-                    WHERE a.dchdate = CURDATE()
-                    group by p.cid
-                    limit 1500
 
-            ');
-            // CURDATE()
-            foreach ($data_sits_ipd as $key => $value2) {
-                $check = Check_sit_auto::where('an', $value2->an)->count();
-                if ($check == 0) {
+                if ($check > 0) {
+                    Check_sit_auto::where('vn', $value->vn)
+                        ->update([
+                            'an'       => $value->an,
+                            'hn'         => $value->hn,
+                            'cid'        => $value->cid,
+                            'vstdate'    => $value->vstdate,
+                            'hometel'    => $value->hometel,
+                            'vsttime'    => $value->vsttime,
+                            'fullname'   => $value->fullname,
+                            'pttype'     => $value->pttype,
+                            'hospmain'   => $value->hospmain,
+                            'hospsub'    => $value->hospsub,
+                            'main_dep'   => $value->main_dep,
+                            'staff'      => $value->staff,
+                            'debit'      => $value->debit
+                        ]);
+                } else {
                     Check_sit_auto::insert([
-                        'vn' => $value2->vn,
-                        'an' => $value2->an,
-                        'hn' => $value2->hn,
-                        'cid' => $value2->cid,
-                        'pttype' => $value2->pttype,
-                        'dchdate' => $value2->dchdate
+                        'vn'         => $value->vn,
+                        'an'         => $value->an,
+                        'hn'         => $value->hn,
+                        'cid'        => $value->cid,
+                        'vstdate'    => $value->vstdate,
+                        'hometel'    => $value->hometel,
+                        'vsttime'    => $value->vsttime,
+                        'fullname'   => $value->fullname,
+                        'pttype'     => $value->pttype,
+                        'hospmain'   => $value->hospmain,
+                        'hospsub'    => $value->hospsub,
+                        'main_dep'   => $value->main_dep,
+                        'staff'      => $value->staff,
+                        'debit'      => $value->debit
                     ]);
+
                 }
+
             }
+           
             return view('authen.sit_pull_auto');
     }
 
@@ -214,7 +278,7 @@ class AutoController extends Controller
             AND subinscl IS NULL
             LIMIT 30
         ');
-        // BETWEEN "2023-01-05" AND "2023-05-16"       CURDATE()
+        // BETWEEN "2023-07-01" AND "2023-05-16"       CURDATE()
         foreach ($data_sitss as $key => $item) {
             $pids = $item->cid;
             $vn = $item->vn;
@@ -900,6 +964,99 @@ class AutoController extends Controller
             //     group by o.vn
             // ');
             return view('auto.sit_pullacc_auto');
+    }
+
+    public function authen_auto_year(Request $request)
+    {
+        Db_authen::truncate();
+            $date = date('Y-m-d');
+            $y = date('Y');
+            $db_year_ = DB::connection('mysql3')->select('
+            SELECT  COUNT(DISTINCT o.vn) as countvn ,MONTH(o.vstdate) as month,YEAR(o.vstdate) as year
+                        FROM ovst o
+                        LEFT JOIN vn_stat v on v.vn = o.vn
+                        LEFT JOIN patient p on p.hn = o.hn
+
+                        WHERE YEAR(o.vstdate) = "'.$y.'"
+                        AND o.main_dep NOT IN("011","036","107")
+                        AND o.pttype NOT IN("M1","M2","M3","M4","M5","M6")
+                        AND o.an is null
+                        GROUP BY month
+                    ORDER BY year,month ASC
+            ');
+
+            // WHERE o.vstdate BETWEEN "2022-09-01" AND "2023-09-30"
+            foreach ($db_year_ as $key => $value3) {
+                Db_authen::insert([
+                    'month'       => $value3->month,
+                    'year'        => $value3->year,
+                    'countvn'     => $value3->countvn,
+                    // 'authen_opd'  => $value3->authenOPD
+                ]);
+            }
+
+            $db_year_update = DB::connection('mysql')->select('
+                        SELECT COUNT(*) as count_authen,MONTH(vstdate) as months,YEAR(vstdate) as years
+                        FROM check_authen
+                        WHERE YEAR(vstdate) = "'.$y.'" AND claimtype ="PG0060001"
+                        GROUP BY months
+                        ORDER BY months ASC
+            ');
+            foreach ($db_year_update as $key => $value4) {
+                $yearnew = $value4->years;
+                Db_authen::where('month', $value4->months)->where('year', $yearnew)
+                ->update([
+                    'authen_opd'      => $value4->count_authen,
+                ]);
+            }
+
+            return view('auto.authen_auto_year');
+    }
+    public function db_authen_detail(Request $request)
+    {
+        // Db_authen_detail
+        $detail_auto = DB::connection('mysql3')->select('
+                SELECT "" db_authen_detail_id
+                ,o.vn,o.an,o.hn,showcid(p.cid) as cid,v.vstdate,concat(p.pname,p.fname," ",p.lname) as ptname,o.staff,v.income-v.discount_money-v.rcpt_money debit
+                ,"" created_at,"" updated_at
+                FROM ovst o
+                LEFT JOIN vn_stat v on v.vn = o.vn
+                LEFT JOIN patient p on p.hn = o.hn
+
+                WHERE o.vstdate = CURDATE()
+                AND o.main_dep NOT IN("011","036","107")
+                AND o.pttype NOT IN("M1","M2","M3","M4","M5","M6")
+                GROUP BY o.vn
+            ');
+
+            foreach ($detail_auto as $key => $value) {
+                $check = Db_authen_detail::where('vn','=',$value->vn)->count();
+                if ($check > 0) {
+                    Db_authen_detail::where('vn', $value->vn)->update([
+                        'an'           => $value->an,
+                        'hn'           => $value->hn,
+                        'cid'          => $value->cid,
+                        'vstdate'      => $value->vstdate,
+                        'ptname'       => $value->ptname,
+                        'staff'        => $value->staff,
+                        'debit'        => $value->debit,
+                    ]);
+                } else {
+                    Db_authen_detail::insert([
+                        'vn'           => $value->vn,
+                        'an'           => $value->an,
+                        'hn'           => $value->hn,
+                        'cid'          => $value->cid,
+                        'vstdate'      => $value->vstdate,
+                        'ptname'       => $value->ptname,
+                        'staff'        => $value->staff,
+                        'debit'        => $value->debit,
+                    ]);
+                }
+
+
+            }
+        return view('auto.db_authen_detail');
     }
 
 

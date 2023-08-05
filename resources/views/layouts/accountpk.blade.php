@@ -252,7 +252,8 @@
                                 <span>ตรวจสอบสิทธิ์</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('sit_acc_debtorauto') }}">ตรวจสอบสิทธิ์ Auto</a></li> 
+                                <li><a href="{{ url('sit_accpull_auto') }}" target="_blank">ดึงข้อมูล Auto</a></li> 
+                                <li><a href="{{ url('sit_acc_debtorauto') }}" target="_blank">ตรวจสอบสิทธิ์ Auto</a></li> 
                             </ul>
                            
                         </li> 
@@ -303,6 +304,8 @@
                                 <span>ประกันสังคม</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('account_301_dash') }}">ผัง-301</a></li>
+                                <li><a href="{{ url('account_302_dash') }}">ผัง-302</a></li>
                                 <li><a href="{{ url('account_304_dash') }}">ผัง-304</a></li>
                                 <li><a href="{{ url('account_308_dash') }}">ผัง-308</a></li>
                             </ul>
@@ -363,12 +366,14 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
                                 {{-- <li><a href="{{ url('upstm') }}">Upstm</a></li>  --}}
-                                <li><a href="{{ url('upstm_ti') }}">UCS(Excel)</a></li>
-                                <li><a href="{{ url('upstm_ofcexcel') }}">OFC(Excel-ไต)</a></li>
-                                <li><a href="{{ url('upstm_tixml') }}">OFC(Xml)</a></li>
+                                <li><a href="{{ url('upstm_ucs') }}">UCS(Excel-202)</a></li>                              
+                                <li><a href="{{ url('upstm_ofcexcel') }}">OFC(Excel)</a></li>                                
                                 <li><a href="{{ url('upstm_tixml_sss') }}">SSS(Xml)</a></li>
                                 <li><a href="{{ url('upstm_lgoexcel') }}">LGO-OP(Excel)</a></li>
                                 <li><a href="{{ url('upstm_lgoipexcel') }}">LGO-IP(Excel)</a></li>
+                                
+                                <li><a href="{{ url('upstm_ti') }}">UCS(Excel-ไต)</a></li>
+                                <li><a href="{{ url('upstm_tixml') }}">OFC(Xml-ไต)</a></li>
                             </ul>
                         </li>
                         <li>

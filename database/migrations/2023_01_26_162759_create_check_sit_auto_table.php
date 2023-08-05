@@ -19,19 +19,21 @@ return new class extends Migration
             Schema::connection('mysql')->create('check_sit_auto', function (Blueprint $table) {
                 $table->bigIncrements('check_sit_auto_id'); 
                 $table->string('vn')->nullable();// รหัส
+                $table->string('an')->nullable();// 
                 $table->string('hn')->nullable();// 
                 $table->string('cid')->nullable();// 
+                $table->string('hometel')->nullable();// 
                 $table->date('vstdate')->nullable();//  
                 $table->Time('vsttime')->nullable();// 
-
+                $table->date('dchdate')->nullable();// 
                 $table->string('hospmain')->nullable();// 
                 $table->string('hospsub')->nullable();// 
 
                 $table->string('pttype')->nullable();// 
                 $table->string('fullname')->nullable();// 
                 $table->string('staff')->nullable();// 
-
-                
+                $table->string('fokliad')->nullable();// 
+                $table->string('main_dep')->nullable();// 
                 $table->string('maininscl')->nullable();// 
                 $table->string('startdate')->nullable();// 
                 $table->string('hmain')->nullable();// 

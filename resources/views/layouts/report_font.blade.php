@@ -157,12 +157,12 @@
                                 <span>Dashboard Authen</span>
                             </a>
                         </li>  --}}
-                        <li>
+                        {{-- <li>
                             <a href="{{ url('report_authen') }}">
                                 <i class="fa-solid fa-gauge-high text-danger"></i>
                                 <span>Dashboard Authen</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li>
                             <a href="{{ url('report_dashboard') }}">
                                 <i class="fa-solid fa-gauge-high text-danger"></i>
@@ -175,8 +175,11 @@
                                 <span>Check Sit</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('check_sit_day') }}">เช็คสิทธิ์รายวัน</a></li>
-                                <li><a href="{{ url('check_sit_money') }}"> เช็คสิทธิ์ Money PK</a></li>
+                                <li><a href="{{ url('check_dashboard') }}" target="_blank">DB Authen</a></li>
+                                <li><a href="{{ url('check_dashboard_mob') }}" target="_blank">DB Authen Mobile</a></li>
+                                <li><a href="{{ url('check_sit_day') }}" target="_blank">เช็คสิทธิ์+Authen</a></li>
+                                {{-- <li><a href="{{ url('check_authen') }}" target="_blank">Import Excel Authen</a></li> --}}
+                                <li><a href="{{ url('check_sit_money') }}" target="_blank"> เช็คสิทธิ์ Money PK</a></li>
                             </ul>
                         </li>
 
@@ -222,6 +225,15 @@
                             <ul class="sub-menu" aria-expanded="true">
                                 <li ><a href="{{ url('telemedicine') }}" >Telemed นัด</a></li>
                                 <li ><a href="{{ url('telemedicine_visit') }}" >Telemed เปิด Visit</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="fa-solid fa-square-person-confined text-danger"></i>
+                                <span>จิตเวช</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li ><a href="{{ url('kayapap_jitvs_mian') }}" >จิตเวช</a></li> 
                             </ul>
                         </li>
 

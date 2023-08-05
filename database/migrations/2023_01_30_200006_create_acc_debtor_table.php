@@ -25,11 +25,13 @@ return new class extends Migration
                 $table->string('ptname')->nullable();// 
                 $table->date('vstdate')->nullable();//
                 $table->Time('vsttime')->nullable();// 
+                $table->date('regdate')->nullable();//
                 $table->date('dchdate')->nullable();//
                 // $table->Time('dchtime')->nullable();// 
                 $table->string('ptsubtype')->nullable();//  
                 $table->string('pttype_eclaim_id')->nullable();// 
                 $table->string('pttype_eclaim_name')->nullable();// 
+                $table->string('hospmain',10)->nullable();//  
                 $table->string('pttype')->nullable();// 
                 $table->string('pttypename')->nullable();// 
                 $table->string('pttype_spsch')->nullable();//   
@@ -48,13 +50,22 @@ return new class extends Migration
                 $table->string('acc_code')->nullable();// 
                 $table->string('account_code')->nullable();//  
                 $table->string('account_name')->nullable();//  
+                $table->string('income_group')->nullable();// 
                 $table->string('income')->nullable();// 
                 $table->string('uc_money')->nullable();// 
                 $table->string('discount_money')->nullable();// 
                 $table->string('paid_money')->nullable();// 
                 $table->string('rcpt_money')->nullable();// 
                 $table->string('rcpno')->nullable();//  
-                $table->string('debit')->nullable();//  
+                $table->string('debit')->nullable();// 
+
+                $table->string('debit_drug')->nullable();// 
+                $table->string('debit_instument')->nullable();// 
+                $table->string('debit_toa')->nullable();// 
+                $table->string('debit_refer')->nullable();//  
+                $table->string('fokliad')->nullable();// 
+                
+                $table->string('debit_total')->nullable();// 
                 $table->string('max_debt_amount')->nullable();// 
                 $table->string('acc_debtor_filename')->nullable();// 
                 $table->string('acc_debtor_userid')->nullable();// 

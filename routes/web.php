@@ -88,6 +88,7 @@ Route::get('authen_realtime',[App\Http\Controllers\AuthenController::class,'auth
 Route::match(['get','post'],'token_add',[App\Http\Controllers\AUTHENCHECKController::class,'token_add'])->name('aa.token_add');
 Route::match(['get','post'],'token_save',[App\Http\Controllers\AUTHENCHECKController::class,'token_save'])->name('aa.token_save');
 
+Route::match(['get','post'],'authencode_confirm',[App\Http\Controllers\AuthenautoController::class,'authencode_confirm'])->name('authencode_confirm');
 
 Route::match(['get','post'],'authencode_auto',[App\Http\Controllers\AuthenautoController::class,'authencode_auto'])->name('authencode_auto');
 Route::match(['get','post'],'authencode_auto_detail',[App\Http\Controllers\AuthenautoController::class,'authencode_auto_detail'])->name('authencode_auto_detail');
@@ -118,9 +119,31 @@ Route::match(['get','post'],'sit_pullacc_auto',[App\Http\Controllers\AutoControl
 
 Route::match(['get','post'],'dbday_auto',[App\Http\Controllers\AutoController::class, 'dbday_auto'])->name('db.dbday_auto');//
 Route::match(['get','post'],'depauthen_auto',[App\Http\Controllers\AutoController::class, 'depauthen_auto'])->name('db.depauthen_auto');//
+Route::match(['get','post'],'authen_auto_year',[App\Http\Controllers\AutoController::class, 'authen_auto_year'])->name('db.authen_auto_year');//
+Route::match(['get','post'],'db_authen_detail',[App\Http\Controllers\AutoController::class, 'db_authen_detail'])->name('db.db_authen_detail');//
+
+Route::match(['get','post'],'check_authen',[App\Http\Controllers\ChecksitController::class, 'check_authen'])->name('claim.check_authen');//
+Route::match(['get','post'],'check_authen_excel',[App\Http\Controllers\ChecksitController::class, 'check_authen_excel'])->name('claim.check_authen_excel');//
+Route::match(['get','post'],'check_authen_send',[App\Http\Controllers\ChecksitController::class, 'check_authen_send'])->name('claim.check_authen_send');//
 
 Route::match(['get','post'],'check_sit_day',[App\Http\Controllers\ChecksitController::class, 'check_sit_day'])->name('claim.check_sit_day');//
 Route::match(['get','post'],'check_sit_daysearch',[App\Http\Controllers\ChecksitController::class, 'check_sit_daysearch'])->name('claim.check_sit_daysearch');//
+
+Route::match(['get','post'],'check_dashboard',[App\Http\Controllers\ChecksitController::class, 'check_dashboard'])->name('claim.check_dashboard');//
+Route::match(['get','post'],'check_dashboard_authen/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_authen'])->name('claim.check_dashboard_authen');//
+Route::match(['get','post'],'check_dashboard_noauthen/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_noauthen'])->name('claim.check_dashboard_noauthen');//
+Route::match(['get','post'],'check_dashboard_bar',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_bar'])->name('claim.check_dashboard_bar');
+
+Route::match(['get','post'],'check_dashboard_mob',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_mob'])->name('claim.check_dashboard_mob');//
+Route::match(['get','post'],'check_dashboard_authen_mob/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_authen_mob'])->name('claim.check_dashboard_authen_mob');//
+Route::match(['get','post'],'check_dashboard_noauthen_mob/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_noauthen_mob'])->name('claim.check_dashboard_noauthen_mob');//
+
+Route::match(['get','post'],'check_web',[App\Http\Controllers\ChecksitController::class, 'check_web'])->name('claim.check_web');//
+Route::match(['get','post'],'check_spsch',[App\Http\Controllers\ChecksitController::class, 'check_spsch'])->name('claim.check_spsch');//
+Route::match(['get','post'],'check_spsch_detail',[App\Http\Controllers\ChecksitController::class, 'check_spsch_detail'])->name('claim.check_spsch_detail');//
+Route::match(['get','post'],'check_sit_daysitauto',[App\Http\Controllers\ChecksitController::class, 'check_sit_daysitauto'])->name('claim.check_sit_daysitauto');//
+Route::match(['get','post'],'check_sit_daypullauto',[App\Http\Controllers\ChecksitController::class, 'check_sit_daypullauto'])->name('claim.check_sit_daypullauto');//
+
 Route::match(['get','post'],'check_sit_pull',[App\Http\Controllers\ChecksitController::class, 'check_sit_pull'])->name('claim.check_sit_pull');//
 Route::match(['get','post'],'check_sit_font',[App\Http\Controllers\ChecksitController::class, 'check_sit_font'])->name('claim.check_sit_font');//
 Route::match(['get','post'],'check_sit_token',[App\Http\Controllers\ChecksitController::class, 'check_sit_token'])->name('claim.check_sit_token');//
@@ -159,9 +182,39 @@ Route::match(['get','post'],'prisoner_ipd',[App\Http\Controllers\PrisonerControl
 Route::match(['get','post'],'prisoner_ipd_detail/{month}/{startdate}/{endtdate}',[App\Http\Controllers\PrisonerController::class, 'prisoner_ipd_detail'])->name('prisoner.prisoner_ipd_detail');  //นักโทษ 438
 Route::match(['get','post'],'prisoner_ipd_detail_excel/{month}/{startdate}/{endtdate}',[App\Http\Controllers\PrisonerController::class, 'prisoner_ipd_detail_excel'])->name('prisoner.prisoner_ipd_detail_excel');  //นักโทษ 438
 
+Route::match(['get','post'],'kayapap_jitvs_mian',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_mian'])->name('pt.kayapap_jitvs_mian');//
+Route::match(['get','post'],'kayapap_jitvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs'])->name('pt.kayapap_jitvs');//
+Route::match(['get','post'],'kayapap_jitvs_vn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_vn'])->name('pt.kayapap_jitvs_vn');//
+Route::match(['get','post'],'kayapap_jitvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_spsch'])->name('pt.kayapap_jitvs_spsch');//
+Route::match(['get','post'],'kayapap_jitvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_nokey'])->name('pt.kayapap_jitvs_nokey');//
 
+Route::match(['get','post'],'restore',[App\Http\Controllers\PtController::class, 'restore'])->name('pt.restore');//
+Route::match(['get','post'],'kayapap_vs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs'])->name('pt.kayapap_vs');//
+Route::match(['get','post'],'kayapap_vs_sub/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_sub'])->name('pt.kayapap_vs_sub');//
+Route::match(['get','post'],'kayapap_vs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_spsch'])->name('pt.kayapap_vs_spsch');//
+Route::match(['get','post'],'kayapap_vs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_nokey'])->name('pt.kayapap_vs_nokey');//
 
+Route::match(['get','post'],'kayapap_Keyspsch/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_Keyspsch'])->name('pt.kayapap_Keyspsch');//
 
+Route::match(['get','post'],'kayapap_hoocojmokvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs'])->name('pt.kayapap_hoocojmokvs');//
+Route::match(['get','post'],'kayapap_tavs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs'])->name('pt.kayapap_tavs');//
+Route::match(['get','post'],'kayapap_tavs_subvn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subvn'])->name('pt.kayapap_tavs_subvn');//
+Route::match(['get','post'],'kayapap_tavs_subspsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subspsch'])->name('pt.kayapap_tavs_subspsch');//
+Route::match(['get','post'],'kayapap_tavs_subnokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subnokey'])->name('pt.kayapap_tavs_subnokey');//
+
+Route::match(['get','post'],'kayapap_kratoonvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs'])->name('pt.kayapap_kratoonvs');//
+Route::match(['get','post'],'kayapap_kratoonvs_sub/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_sub'])->name('pt.kayapap_kratoonvs_sub');//
+Route::match(['get','post'],'kayapap_kratoonvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_spsch'])->name('pt.kayapap_kratoonvs_spsch');//
+Route::match(['get','post'],'kayapap_kratoonvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_nokey'])->name('pt.kayapap_kratoonvs_nokey');//
+
+Route::match(['get','post'],'kayapap_hoocojmokvs_vs/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_vs'])->name('pt.kayapap_hoocojmokvs_vs');//
+Route::match(['get','post'],'kayapap_hoocojmokvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_spsch'])->name('pt.kayapap_hoocojmokvs_spsch');//
+Route::match(['get','post'],'kayapap_hoocojmokvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_nokey'])->name('pt.kayapap_hoocojmokvs_nokey');//
+
+Route::match(['get','post'],'equipment',[App\Http\Controllers\PtController::class, 'equipment'])->name('pt.equipment');//
+Route::match(['get','post'],'equipment_vn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_vn'])->name('pt.equipment_vn');//
+Route::match(['get','post'],'equipment_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_spsch'])->name('pt.equipment_spsch');//
+Route::match(['get','post'],'equipment_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_nokey'])->name('pt.equipment_nokey');//
 
 
 Route::get('/', function () {
@@ -521,6 +574,7 @@ Route::middleware(['type'])->group(function(){
 
     Route::match(['get','post'],'warehouse_payadd/{id}',[WarehousePayController::class,'warehouse_payadd'])->name('pay.warehouse_payadd');
     Route::match(['get','post'],'warehouse_payadd_save',[WarehousePayController::class,'warehouse_payadd_save'])->name('pay.warehouse_payadd_save');
+    Route::match(['get','post'],'warehouse_payadd_savesub',[WarehousePayController::class,'warehouse_payadd_savesub'])->name('pay.warehouse_payadd_savesub');
     Route::match(['get','post'],'warehouse/warehouse_pay_sub/{id}',[WarehousePayController::class,'warehouse_pay_sub'])->name('pay.warehouse_pay_sub');
 
     Route::get('warehouse/warehouse_plus/{id}',[WarehouseController::class,'warehouse_plus'])->name('pay.warehouse_plus');
@@ -666,6 +720,7 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'user_meetting/meetting_add/{iduser}',[App\Http\Controllers\UsermeettingController::class, 'meetting_add'])->name('meetting.meetting_add');//
     Route::match(['get','post'],'user_meetting/meetting_save',[App\Http\Controllers\UsermeettingController::class, 'meetting_save'])->name('meetting.meetting_save');//
     Route::match(['get','post'],'user_meetting/meetting_choose/{id}',[App\Http\Controllers\UsermeettingController::class, 'meetting_choose'])->name('meetting.meetting_choose');//
+    Route::match(['get','post'],'user_meetting/meetting_choose_add/{id}',[App\Http\Controllers\UsermeettingController::class, 'meetting_choose_add'])->name('meetting.meetting_choose_add');//
     Route::match(['get','post'],'user_meetting/meetting_choose_save',[App\Http\Controllers\UsermeettingController::class, 'meetting_choose_save'])->name('meetting.meetting_choose_save');//
     Route::match(['get','post'],'user_meetting/meetting_choose_linesave',[App\Http\Controllers\UsermeettingController::class, 'meetting_choose_linesave'])->name('meetting.meetting_choose_linesave');//
     Route::match(['get','post'],'user_meetting/meetting_choose_edit/{id}',[App\Http\Controllers\UsermeettingController::class, 'meetting_choose_edit'])->name('meetting.meetting_choose_edit');//
@@ -1332,6 +1387,11 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'upstm_ti_import',[App\Http\Controllers\AccountPKController::class, 'upstm_ti_import'])->name('acc.upstm_ti_import');// ไต
     Route::match(['get','post'],'upstm_ti_importtotal',[App\Http\Controllers\AccountPKController::class, 'upstm_ti_importtotal'])->name('acc.upstm_ti_importtotal');// ไต
     Route::match(['get','post'],'upstm_hn',[App\Http\Controllers\AccountPKController::class, 'upstm_hn'])->name('acc.upstm_hn');// ไต
+    Route::match(['get','post'],'upstm_ti_importexcel',[App\Http\Controllers\AccountPKController::class, 'upstm_ti_importexcel'])->name('acc.upstm_ti_importexcel');// ไต
+
+    Route::match(['get','post'],'upstm_ucs',[App\Http\Controllers\AccountPKController::class, 'upstm_ucs'])->name('acc.upstm_ucs');//
+    Route::match(['get','post'],'upstm_ucs_excel',[App\Http\Controllers\AccountPKController::class, 'upstm_ucs_excel'])->name('acc.upstm_ucs_excel');//
+    Route::match(['get','post'],'upstm_ucs_sendexcel',[App\Http\Controllers\AccountPKController::class, 'upstm_ucs_sendexcel'])->name('acc.upstm_ucs_sendexcel');//
 
     Route::match(['get','post'],'upstm_tixml',[App\Http\Controllers\AccountPKController::class, 'upstm_tixml'])->name('acc.upstm_tixml');// ไต
     Route::match(['get','post'],'upstm_tixml_import',[App\Http\Controllers\AccountPKController::class, 'upstm_tixml_import'])->name('acc.upstm_tixml_import');// ไต
@@ -1362,6 +1422,7 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'account_pk_debtor_ipd',[App\Http\Controllers\AccountPKController::class, 'account_pk_debtor_ipd'])->name('acc.account_pk_debtor_ipd');//  stamp IPD
 
     Route::match(['get','post'],'sit_acc_debtorauto',[App\Http\Controllers\AccountPKController::class, 'sit_acc_debtorauto'])->name('acc.sit_acc_debtorauto');//
+    Route::match(['get','post'],'sit_accpull_auto',[App\Http\Controllers\AccountPKController::class, 'sit_accpull_auto'])->name('sit.sit_accpull_auto');//
 
     Route::match(['get','post'],'account_pkucs202_pull',[App\Http\Controllers\AccountPKController::class, 'account_pkucs202_pull'])->name('acc.account_pkucs202_pull');//
     Route::match(['get','post'],'account_pkucs202_pulldata',[App\Http\Controllers\AccountPKController::class, 'account_pkucs202_pulldata'])->name('acc.account_pkucs202_pulldata');//
@@ -1382,6 +1443,26 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'account_pkucs217_stmnull/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_pkucs217_stmnull'])->name('acc.account_pkucs217_stmnull');//
     Route::match(['get','post'],'account_pkucs217_stam',[App\Http\Controllers\AccountPKController::class, 'account_pkucs217_stam'])->name('acc.account_pkucs217_stam');//  stamp IPD
     Route::match(['get','post'],'account_pkucs217_stmnull_all/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_pkucs217_stmnull_all'])->name('acc.account_pkucs217_stmnull_all');//
+
+    Route::match(['get','post'],'account_301_dash',[App\Http\Controllers\Account301Controller::class, 'account_301_dash'])->name('acc.account_301_dash');//
+    Route::match(['get','post'],'account_301_pull',[App\Http\Controllers\Account301Controller::class, 'account_301_pull'])->name('acc.account_301_pull');//
+    Route::match(['get','post'],'account_301_pulldata',[App\Http\Controllers\Account301Controller::class, 'account_301_pulldata'])->name('acc.account_301_pulldata');//
+    Route::match(['get','post'],'account_301/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301'])->name('acc.account_301');//
+    Route::match(['get','post'],'account_301_detail/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301_detail'])->name('acc.account_301_detail');//
+    Route::match(['get','post'],'account_301_stm/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301_stm'])->name('acc.account_301_stm');//
+    Route::match(['get','post'],'account_301_stmnull/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301_stmnull'])->name('acc.account_301_stmnull');//
+    Route::match(['get','post'],'account_301_stam',[App\Http\Controllers\Account301Controller::class, 'account_301_stam'])->name('acc.account_301_stam');//  stamp OPD
+    Route::match(['get','post'],'account_301_stmnull_all/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301_stmnull_all'])->name('acc.account_301_stmnull_all');//
+
+    Route::match(['get','post'],'account_302_dash',[App\Http\Controllers\Account302Controller::class, 'account_302_dash'])->name('acc.account_302_dash');//
+    Route::match(['get','post'],'account_302_pull',[App\Http\Controllers\Account302Controller::class, 'account_302_pull'])->name('acc.account_302_pull');//
+    Route::match(['get','post'],'account_302_pulldata',[App\Http\Controllers\Account302Controller::class, 'account_302_pulldata'])->name('acc.account_302_pulldata');//
+    Route::match(['get','post'],'account_302/{months}/{year}',[App\Http\Controllers\Account302Controller::class, 'account_302'])->name('acc.account_302');//
+    Route::match(['get','post'],'account_302_detail/{months}/{year}',[App\Http\Controllers\Account302Controller::class, 'account_302_detail'])->name('acc.account_302_detail');//
+    Route::match(['get','post'],'account_302_stm/{months}/{year}',[App\Http\Controllers\Account302Controller::class, 'account_302_stm'])->name('acc.account_302_stm');//
+    Route::match(['get','post'],'account_302_stmnull/{months}/{year}',[App\Http\Controllers\Account302Controller::class, 'account_302_stmnull'])->name('acc.account_302_stmnull');//
+    Route::match(['get','post'],'account_302_stam',[App\Http\Controllers\Account302Controller::class, 'account_302_stam'])->name('acc.account_302_stam');//  stamp IPD
+
     Route::match(['get','post'],'account_304_pull',[App\Http\Controllers\AccountPKController::class, 'account_304_pull'])->name('acc.account_304_pull');//
     Route::match(['get','post'],'account_304_pulldata',[App\Http\Controllers\AccountPKController::class, 'account_304_pulldata'])->name('acc.account_304_pulldata');//
     Route::match(['get','post'],'account_304_dash',[App\Http\Controllers\AccountPKController::class, 'account_304_dash'])->name('acc.account_304_dash');//
@@ -1737,39 +1818,39 @@ Route::match(['get','post'],'report_dep',[App\Http\Controllers\PersonController:
 
 //  *************************** PT *******************************************************
 
-Route::match(['get','post'],'restore',[App\Http\Controllers\PtController::class, 'restore'])->name('pt.restore');//
-Route::match(['get','post'],'kayapap_vs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs'])->name('pt.kayapap_vs');//
-Route::match(['get','post'],'kayapap_vs_sub/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_sub'])->name('pt.kayapap_vs_sub');//
-Route::match(['get','post'],'kayapap_vs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_spsch'])->name('pt.kayapap_vs_spsch');//
-Route::match(['get','post'],'kayapap_vs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_nokey'])->name('pt.kayapap_vs_nokey');//
+// Route::match(['get','post'],'restore',[App\Http\Controllers\PtController::class, 'restore'])->name('pt.restore');//
+// Route::match(['get','post'],'kayapap_vs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs'])->name('pt.kayapap_vs');//
+// Route::match(['get','post'],'kayapap_vs_sub/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_sub'])->name('pt.kayapap_vs_sub');//
+// Route::match(['get','post'],'kayapap_vs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_spsch'])->name('pt.kayapap_vs_spsch');//
+// Route::match(['get','post'],'kayapap_vs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_vs_nokey'])->name('pt.kayapap_vs_nokey');//
 
-Route::match(['get','post'],'kayapap_Keyspsch/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_Keyspsch'])->name('pt.kayapap_Keyspsch');//
+// Route::match(['get','post'],'kayapap_Keyspsch/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_Keyspsch'])->name('pt.kayapap_Keyspsch');//
 
-Route::match(['get','post'],'kayapap_hoocojmokvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs'])->name('pt.kayapap_hoocojmokvs');//
-Route::match(['get','post'],'kayapap_tavs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs'])->name('pt.kayapap_tavs');//
-Route::match(['get','post'],'kayapap_tavs_subvn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subvn'])->name('pt.kayapap_tavs_subvn');//
-Route::match(['get','post'],'kayapap_tavs_subspsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subspsch'])->name('pt.kayapap_tavs_subspsch');//
-Route::match(['get','post'],'kayapap_tavs_subnokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subnokey'])->name('pt.kayapap_tavs_subnokey');//
+// Route::match(['get','post'],'kayapap_hoocojmokvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs'])->name('pt.kayapap_hoocojmokvs');//
+// Route::match(['get','post'],'kayapap_tavs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs'])->name('pt.kayapap_tavs');//
+// Route::match(['get','post'],'kayapap_tavs_subvn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subvn'])->name('pt.kayapap_tavs_subvn');//
+// Route::match(['get','post'],'kayapap_tavs_subspsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subspsch'])->name('pt.kayapap_tavs_subspsch');//
+// Route::match(['get','post'],'kayapap_tavs_subnokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_tavs_subnokey'])->name('pt.kayapap_tavs_subnokey');//
 
 
-Route::match(['get','post'],'kayapap_jitvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs'])->name('pt.kayapap_jitvs');//
-Route::match(['get','post'],'kayapap_jitvs_vn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_vn'])->name('pt.kayapap_jitvs_vn');//
-Route::match(['get','post'],'kayapap_jitvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_spsch'])->name('pt.kayapap_jitvs_spsch');//
-Route::match(['get','post'],'kayapap_jitvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_nokey'])->name('pt.kayapap_jitvs_nokey');//
+// // Route::match(['get','post'],'kayapap_jitvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs'])->name('pt.kayapap_jitvs');//
+// // Route::match(['get','post'],'kayapap_jitvs_vn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_vn'])->name('pt.kayapap_jitvs_vn');//
+// // Route::match(['get','post'],'kayapap_jitvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_spsch'])->name('pt.kayapap_jitvs_spsch');//
+// // Route::match(['get','post'],'kayapap_jitvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_jitvs_nokey'])->name('pt.kayapap_jitvs_nokey');//
 
-Route::match(['get','post'],'kayapap_kratoonvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs'])->name('pt.kayapap_kratoonvs');//
-Route::match(['get','post'],'kayapap_kratoonvs_sub/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_sub'])->name('pt.kayapap_kratoonvs_sub');//
-Route::match(['get','post'],'kayapap_kratoonvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_spsch'])->name('pt.kayapap_kratoonvs_spsch');//
-Route::match(['get','post'],'kayapap_kratoonvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_nokey'])->name('pt.kayapap_kratoonvs_nokey');//
+// Route::match(['get','post'],'kayapap_kratoonvs/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs'])->name('pt.kayapap_kratoonvs');//
+// Route::match(['get','post'],'kayapap_kratoonvs_sub/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_sub'])->name('pt.kayapap_kratoonvs_sub');//
+// Route::match(['get','post'],'kayapap_kratoonvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_spsch'])->name('pt.kayapap_kratoonvs_spsch');//
+// Route::match(['get','post'],'kayapap_kratoonvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_kratoonvs_nokey'])->name('pt.kayapap_kratoonvs_nokey');//
 
-Route::match(['get','post'],'kayapap_hoocojmokvs_vs/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_vs'])->name('pt.kayapap_hoocojmokvs_vs');//
-Route::match(['get','post'],'kayapap_hoocojmokvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_spsch'])->name('pt.kayapap_hoocojmokvs_spsch');//
-Route::match(['get','post'],'kayapap_hoocojmokvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_nokey'])->name('pt.kayapap_hoocojmokvs_nokey');//
+// Route::match(['get','post'],'kayapap_hoocojmokvs_vs/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_vs'])->name('pt.kayapap_hoocojmokvs_vs');//
+// Route::match(['get','post'],'kayapap_hoocojmokvs_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_spsch'])->name('pt.kayapap_hoocojmokvs_spsch');//
+// Route::match(['get','post'],'kayapap_hoocojmokvs_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'kayapap_hoocojmokvs_nokey'])->name('pt.kayapap_hoocojmokvs_nokey');//
 
-Route::match(['get','post'],'equipment',[App\Http\Controllers\PtController::class, 'equipment'])->name('pt.equipment');//
-Route::match(['get','post'],'equipment_vn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_vn'])->name('pt.equipment_vn');//
-Route::match(['get','post'],'equipment_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_spsch'])->name('pt.equipment_spsch');//
-Route::match(['get','post'],'equipment_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_nokey'])->name('pt.equipment_nokey');//
+// Route::match(['get','post'],'equipment',[App\Http\Controllers\PtController::class, 'equipment'])->name('pt.equipment');//
+// Route::match(['get','post'],'equipment_vn/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_vn'])->name('pt.equipment_vn');//
+// Route::match(['get','post'],'equipment_spsch/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_spsch'])->name('pt.equipment_spsch');//
+// Route::match(['get','post'],'equipment_nokey/{months}/{startdate}/{enddate}',[App\Http\Controllers\PtController::class, 'equipment_nokey'])->name('pt.equipment_nokey');//
 
 
 Route::match(['get','post'],'thalassemia_year',[App\Http\Controllers\PctController::class, 'thalassemia_year'])->name('pct.thalassemia_year');//
@@ -1851,14 +1932,40 @@ Route::match(['get','post'],'medicine_salt_sub/{months}/{startdate}/{enddate}',[
 Route::match(['get','post'],'medicine_salt_subhn/{hn}',[App\Http\Controllers\MedicineController::class, 'medicine_salt_subhn'])->name('me.medicine_salt_subhn');//
 
 //********************* */ Claim 16 แฟ้ม ***********************************
-Route::match(['get','post'],'sixteendata',[App\Http\Controllers\ClaimreferController::class, 'sixteendata'])->name('data.sixteendata');//
-Route::match(['get','post'],'sixteendata_pull',[App\Http\Controllers\ClaimreferController::class, 'sixteendata_pull'])->name('data.sixteendata_pull');//
+// Route::match(['get','post'],'sixteendata',[App\Http\Controllers\ClaimreferController::class, 'sixteendata'])->name('data.sixteendata');//
+// Route::match(['get','post'],'sixteendata_pull',[App\Http\Controllers\ClaimreferController::class, 'sixteendata_pull'])->name('data.sixteendata_pull');//
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Route::match(['get','post'],'six',[App\Http\Controllers\SixteenController::class, 'six'])->name('data.six');//
+Route::match(['get','post'],'six_pull_a',[App\Http\Controllers\SixteenController::class, 'six_pull_a'])->name('data.six_pull_a');//
+Route::match(['get','post'],'six_pull_b',[App\Http\Controllers\SixteenController::class, 'six_pull_b'])->name('data.six_pull_b');//
+Route::match(['get','post'],'six_pull_c',[App\Http\Controllers\SixteenController::class, 'six_pull_c'])->name('data.six_pull_c');//
+Route::match(['get','post'],'six_pull_d',[App\Http\Controllers\SixteenController::class, 'six_pull_d'])->name('data.six_pull_d');//
+Route::match(['get','post'],'six_send',[App\Http\Controllers\SixteenController::class, 'six_send'])->name('data.six_send');//
+
+Route::match(['get','post'],'ofc',[App\Http\Controllers\Ofcopd401Controller::class, 'ofc'])->name('data.ofc');//
+Route::match(['get','post'],'ofc_pull_a',[App\Http\Controllers\Ofcopd401Controller::class, 'ofc_pull_a'])->name('data.ofc_pull_a');//
+Route::match(['get','post'],'ofc_pull_b',[App\Http\Controllers\Ofcopd401Controller::class, 'ofc_pull_b'])->name('data.ofc_pull_b');//
+Route::match(['get','post'],'ofc_pull_c',[App\Http\Controllers\Ofcopd401Controller::class, 'ofc_pull_c'])->name('data.ofc_pull_c');//
+Route::match(['get','post'],'ofc_pull_d',[App\Http\Controllers\Ofcopd401Controller::class, 'ofc_pull_d'])->name('data.ofc_pull_d');//
+Route::match(['get','post'],'ofc_send',[App\Http\Controllers\Ofcopd401Controller::class, 'ofc_send'])->name('data.ofc_send');//
 
 
 
@@ -1969,44 +2076,44 @@ Route::match(['get','post'],'ktb_spawn',[App\Http\Controllers\KTBController::cla
 Route::match(['get','post'],'timein',[App\Http\Controllers\TimeINController::class, 'timein'])->name('TT.timein');//ลงเวลา
 Route::match(['get','post'],'timein_save',[App\Http\Controllers\TimeINController::class, 'timein_save'])->name('TT.timein_save');//ลงเวลา
 
- //********************* */ ENV  ***********************************
+//********************* */ ENV  ***********************************
 
- Route::match(['get','post'],'env_dashboard',[App\Http\Controllers\EnvController::class, 'env_dashboard'])->name('env.env_dashboard');//
+Route::match(['get','post'],'env_dashboard',[App\Http\Controllers\EnvController::class, 'env_dashboard'])->name('env.env_dashboard');//
 
- //บ่อบำบัด//////////////////////////////////////////////////////////////
- //ตั้งค่า parameter น้ำ
- Route::match(['get','post'],'env_water_parameter',[App\Http\Controllers\EnvController::class, 'env_water_parameter'])->name('env.env_water_parameter');//หน้าหลักแสดงข้อมูล
- Route::match(['get','post'],'env_water_parameter_add',[App\Http\Controllers\EnvController::class, 'env_water_parameter_add'])->name('env.env_water_parameter_add');//เพิ่มข้อมูล
- Route::match(['get','post'],'env_water_parameter_save',[App\Http\Controllers\EnvController::class, 'env_water_parameter_save'])->name('env.env_water_parameter_save');//บันทึก
- Route::match(['get','post'],'env_water_parameter_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_water_parameter_edit'])->name('env.env_water_parameter_edit');//แก้ไข
- Route::match(['get','post'],'env_water_parameter_update',[App\Http\Controllers\EnvController::class, 'env_water_parameter_update'])->name('env.env_water_parameter_update');//อัพเดท
- Route::match(['get','post'],'env_water_parameter_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_water_parameter_delete'])->name('env.env_water_parameter_delete');//ลบข้อมูล
- 
- //ลงผลข้อมูลน้ำ บ่อบำบัด
- Route::match(['get','post'],'env_water',[App\Http\Controllers\EnvController::class, 'env_water'])->name('env.env_water');//หน้าหลักแสดงข้อมูล
- Route::match(['get','post'],'env_water_add',[App\Http\Controllers\EnvController::class, 'env_water_add'])->name('env.env_water_add');//เพิ่มข้อมูล
- Route::match(['get','post'],'env_water_save',[App\Http\Controllers\EnvController::class, 'env_water_save'])->name('env.env_water_save');//บันทึก
- Route::match(['get','post'],'env_water_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_water_edit'])->name('env.env_water_edit');//แก้ไขข้อมูล
- Route::match(['get','post'],'env_water_update',[App\Http\Controllers\EnvController::class, 'env_water_update'])->name('env.env_water_update');//อัพเดท
- Route::match(['get','post'],'env_water_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_water_delete'])->name('env.env_water_delete');//ลบข้อมูล
- Route::match(['get','post'],'env_water_datetime',[App\Http\Controllers\EnvController::class, 'env_water_datetime'])->name('env.env_water_datetime');//ค้นตามช่วงวันที่
- 
- 
- //ขยะ//////////////////////////////////////////////////////////////
- //ตั้งค่าประเภทขยะ
- Route::match(['get','post'],'env_trash_parameter',[App\Http\Controllers\EnvController::class, 'env_trash_parameter'])->name('env.env_trash_parameter');//หน้าหลักแสดงข้อมูล
- Route::match(['get','post'],'env_trash_parameter_add',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_add'])->name('env.env_trash_parameter_add');//เพิ่ม
- Route::match(['get','post'],'env_trash_parameter_save',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_save'])->name('env.env_trash_parameter_save');//บันทึก
- Route::match(['get','post'],'env_trash_parameter_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_edit'])->name('env.env_trash_parameter_edit');//แก้ไข
- Route::match(['get','post'],'env_trash_parameter_update',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_update'])->name('env.env_trash_parameter_update');//อัพเดท
- Route::match(['get','post'],'env_trash_parameter_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_delete'])->name('env.env_trash_parameter_delete');//ลบข้อมูล
- 
- //ลงผลข้อมูลขยะ
- Route::match(['get','post'],'env_trash',[App\Http\Controllers\EnvController::class, 'env_trash'])->name('env.env_trash');//หน้าหลักแสดงข้อมูล
- Route::match(['get','post'],'env_trash_add',[App\Http\Controllers\EnvController::class, 'env_trash_add'])->name('env.env_trash_add');//เพิ่มข้อมูล
- Route::match(['get','post'],'env_trash_save',[App\Http\Controllers\EnvController::class, 'env_trash_save'])->name('env.env_trash_save');//บันทึก
- Route::match(['get','post'],'env_trash_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_edit'])->name('env.env_trash_edit');//แก้ไข
- Route::match(['get','post'],'env_trash_update',[App\Http\Controllers\EnvController::class, 'env_trash_update'])->name('env.env_trash_update');//อัพเดท
- Route::match(['get','post'],'env_trash_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_delete'])->name('env.env_trash_delete');//ลบข้อมูล
+//บ่อบำบัด//////////////////////////////////////////////////////////////
+//ตั้งค่า parameter น้ำ
+Route::match(['get','post'],'env_water_parameter',[App\Http\Controllers\EnvController::class, 'env_water_parameter'])->name('env.env_water_parameter');//หน้าหลักแสดงข้อมูล
+Route::match(['get','post'],'env_water_parameter_add',[App\Http\Controllers\EnvController::class, 'env_water_parameter_add'])->name('env.env_water_parameter_add');//เพิ่มข้อมูล
+Route::match(['get','post'],'env_water_parameter_save',[App\Http\Controllers\EnvController::class, 'env_water_parameter_save'])->name('env.env_water_parameter_save');//บันทึก
+Route::match(['get','post'],'env_water_parameter_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_water_parameter_edit'])->name('env.env_water_parameter_edit');//แก้ไข
+Route::match(['get','post'],'env_water_parameter_update',[App\Http\Controllers\EnvController::class, 'env_water_parameter_update'])->name('env.env_water_parameter_update');//อัพเดท
+Route::match(['get','post'],'env_water_parameter_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_water_parameter_delete'])->name('env.env_water_parameter_delete');//ลบข้อมูล
+
+//ลงผลข้อมูลน้ำ บ่อบำบัด
+Route::match(['get','post'],'env_water',[App\Http\Controllers\EnvController::class, 'env_water'])->name('env.env_water');//หน้าหลักแสดงข้อมูล
+Route::match(['get','post'],'env_water_add',[App\Http\Controllers\EnvController::class, 'env_water_add'])->name('env.env_water_add');//เพิ่มข้อมูล
+Route::match(['get','post'],'env_water_save',[App\Http\Controllers\EnvController::class, 'env_water_save'])->name('env.env_water_save');//บันทึก
+Route::match(['get','post'],'env_water_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_water_edit'])->name('env.env_water_edit');//แก้ไขข้อมูล
+Route::match(['get','post'],'env_water_update',[App\Http\Controllers\EnvController::class, 'env_water_update'])->name('env.env_water_update');//อัพเดท
+Route::match(['get','post'],'env_water_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_water_delete'])->name('env.env_water_delete');//ลบข้อมูล
+Route::match(['get','post'],'env_water_datetime',[App\Http\Controllers\EnvController::class, 'env_water_datetime'])->name('env.env_water_datetime');//ค้นตามช่วงวันที่
+
+
+//ขยะ//////////////////////////////////////////////////////////////
+//ตั้งค่าประเภทขยะ
+Route::match(['get','post'],'env_trash_parameter',[App\Http\Controllers\EnvController::class, 'env_trash_parameter'])->name('env.env_trash_parameter');//หน้าหลักแสดงข้อมูล
+Route::match(['get','post'],'env_trash_parameter_add',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_add'])->name('env.env_trash_parameter_add');//เพิ่ม
+Route::match(['get','post'],'env_trash_parameter_save',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_save'])->name('env.env_trash_parameter_save');//บันทึก
+Route::match(['get','post'],'env_trash_parameter_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_edit'])->name('env.env_trash_parameter_edit');//แก้ไข
+Route::match(['get','post'],'env_trash_parameter_update',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_update'])->name('env.env_trash_parameter_update');//อัพเดท
+Route::match(['get','post'],'env_trash_parameter_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_delete'])->name('env.env_trash_parameter_delete');//ลบข้อมูล
+
+//ลงผลข้อมูลขยะ
+Route::match(['get','post'],'env_trash',[App\Http\Controllers\EnvController::class, 'env_trash'])->name('env.env_trash');//หน้าหลักแสดงข้อมูล
+Route::match(['get','post'],'env_trash_add',[App\Http\Controllers\EnvController::class, 'env_trash_add'])->name('env.env_trash_add');//เพิ่มข้อมูล
+Route::match(['get','post'],'env_trash_save',[App\Http\Controllers\EnvController::class, 'env_trash_save'])->name('env.env_trash_save');//บันทึก
+Route::match(['get','post'],'env_trash_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_edit'])->name('env.env_trash_edit');//แก้ไข
+Route::match(['get','post'],'env_trash_update',[App\Http\Controllers\EnvController::class, 'env_trash_update'])->name('env.env_trash_update');//อัพเดท
+Route::match(['get','post'],'env_trash_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_delete'])->name('env.env_trash_delete');//ลบข้อมูล
 
 });

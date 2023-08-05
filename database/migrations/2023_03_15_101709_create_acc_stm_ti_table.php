@@ -33,6 +33,22 @@ return new class extends Migration
                 $table->date('date_save')->nullable();//
                 // $table->Time('time_rep')->nullable();// 
                 $table->string('vn')->nullable();//  
+
+                $table->string('invno')->nullable();//  
+                $table->string('dttran',255)->nullable();//   
+                $table->double('hdrate', 12, 4)->nullable();// 
+                $table->double('hdcharge', 12, 4)->nullable();// 
+                $table->double('amount', 12, 4)->nullable();// 
+                $table->double('paid', 12, 4)->nullable();// 
+                $table->string('rid')->nullable();//  
+                $table->string('accp')->nullable();//  
+                $table->string('HDflag')->nullable();//   
+
+                $table->string('AccPeriod')->nullable();//  
+                $table->string('STMdoc')->nullable();//  
+                $table->string('Total_amount')->nullable();//  
+                $table->string('Total_thamount')->nullable();//  
+                
                 $table->enum('active', ['REP','APPROVE','CANCEL','FINISH'])->default('REP')->nullable(); 
                 $table->timestamps();
             });

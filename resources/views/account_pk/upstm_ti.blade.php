@@ -90,15 +90,16 @@
             <div class="col-xl-8 col-md-6">
                 <div class="main-card mb-3 card">
                     <div class="grid-menu-col">
-                        <form action="{{ route('acc.upstm_ti_import') }}" method="POST" id="Upstmti"
-                            enctype="multipart/form-data">
+                        <form action="{{ route('acc.upstm_ti_importexcel') }}" method="POST" id="Upstmti" enctype="multipart/form-data">
+                        {{-- <form action="{{ route('acc.upstm_ti_import') }}" method="POST" id="Upstmti" enctype="multipart/form-data"> --}}
                             @csrf
+                          
                             <div class="row">
 
                                 <div class="col"></div>
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <div class="mb-3 mt-3">
-                                        <label for="formFileLg" class="form-label">UP STM EXCEL</label>
+                                        <label for="formFileLg" class="form-label">UP STM EXCEL => ลบคำอธิบายด้านล่าง =>เพิ่มชื่อไฟล์ไว้คอลัม Y => UP STM => ส่งข้อมูล</label>
                                         <input class="form-control form-control-lg" id="formFileLg" name="file"
                                             type="file" required>
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">

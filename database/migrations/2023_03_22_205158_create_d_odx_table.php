@@ -15,19 +15,17 @@ return new class extends Migration
     { 
         if (!Schema::hasTable('d_odx'))
         {
-            Schema::connection('mysql7')->create('d_odx', function (Blueprint $table) {
+            Schema::connection('mysql')->create('d_odx', function (Blueprint $table) {
                 $table->bigIncrements('d_odx_id');
-
                 $table->string('HN')->nullable();// 
-                $table->string('DATEDX')->nullable();// 
-                 
+                $table->string('DATEDX')->nullable();//                  
                 $table->string('CLINIC')->nullable();//  
                 $table->string('DIAG')->nullable(); //             
                 $table->string('DXTYPE')->nullable(); //  
                 $table->string('DRDX')->nullable(); //  
                 $table->string('PERSON_ID')->nullable(); // 
                 $table->string('SEQ')->nullable(); // 
-                 
+                $table->string('user_id')->nullable(); //  
                 $table->timestamps();
             });
         }

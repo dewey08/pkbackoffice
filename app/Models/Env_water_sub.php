@@ -21,7 +21,6 @@ class Env_water_sub extends Authenticatable
         'water_list_unit',
         'water_qty',
         'water_results',
-        'use_analysis_results',
         'water_list_idd'        
         
         
