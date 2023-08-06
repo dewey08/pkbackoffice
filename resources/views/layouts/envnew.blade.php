@@ -81,7 +81,7 @@
     <div id="layout-wrapper">
 
         <header id="page-topbar">
-            <div class="navbar-header shadow-lg" style="background-color: rgb(252, 252, 252)">
+            <div class="navbar-header shadow-lg" style="background-color: rgb(252, 252, 252)"> 
               
 
                 <div class="d-flex">
@@ -175,7 +175,7 @@
         <!-- ========== Left Sidebar Start ========== -->
         {{-- <div class="vertical-menu "> --}}
             <div class="vertical-menu Bgsidebar">
-        {{-- <div class="vertical-menu" style="background-color: rgb(128, 216, 209)"> --}}
+        {{-- <div class="vertical-menu" style="background-color: rgb(4, 83, 39)"> --}}
             <div data-simplebar class="h-100">
                 {{-- <div data-simplebar class="h-100 nom6"> --}}
                 <!--- Sidemenu -->
@@ -196,10 +196,7 @@
                                 <span>ระบบบ่อบำบัดน้ำเสีย</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('env_water') }}">ผลวิเคราะห์คุณภาพน้ำ</a></li>
-                                <li><a href="{{ url('env_water_parameter') }}">ตั้งค่า Parameter</a></li>
-                                <li><a href="{{ url('') }}">รายงาน</a></li>                                
-                                {{-- <li><a href="{{ url('time_index_day') }}">เวลาเข้า-ออก (รายวัน)</a></li> --}}
+                                <li><a href="{{ url('env_water') }}">บึกทักผลวิเคราะห์คุณภาพน้ำ</a></li>
                             </ul>
                         </li>
 
@@ -209,10 +206,30 @@
                                 <span>ระบบบริหารจัดการขยะ</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('env_trash') }}">รายละเอียดข้อมูลขยะ</a></li>
+                                <li><a href="{{ url('env_trash') }}">บันทึกข้อมูลขยะ</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="fa-solid fa-file-pen text-danger"></i>
+                                <span>รายงาน</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">                                
+                                <li><a href="{{ url('') }}">รายงานระบบบ่อบำบัดน้ำเสีย</a></li>
+                                <li><a href="{{ url('') }}">รายงานระบบบริหารจัดการขยะ</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="fa-solid fa-file-pen text-danger"></i>
+                                <span>ตั้งค่า</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('env_water_parameter') }}">ตั้งค่า Parameter น้ำ</a></li>
                                 <li><a href="{{ url('env_trash_parameter') }}">ตั้งค่าประเภทขยะ</a></li>
-                                <li><a href="{{ url('') }}">รายงาน</a></li>                               
-                                {{-- <li><a href="{{ url('time_index_day') }}">เวลาเข้า-ออก (รายวัน)</a></li> --}}
+                                <li><a href="{{ url('env_vendor') }}">ตั้งค่าบริษัท</a></li>
                             </ul>
                         </li>
                       

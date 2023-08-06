@@ -2081,14 +2081,6 @@ Route::match(['get','post'],'timein_save',[App\Http\Controllers\TimeINController
 Route::match(['get','post'],'env_dashboard',[App\Http\Controllers\EnvController::class, 'env_dashboard'])->name('env.env_dashboard');//
 
 //บ่อบำบัด//////////////////////////////////////////////////////////////
-//ตั้งค่า parameter น้ำ
-Route::match(['get','post'],'env_water_parameter',[App\Http\Controllers\EnvController::class, 'env_water_parameter'])->name('env.env_water_parameter');//หน้าหลักแสดงข้อมูล
-Route::match(['get','post'],'env_water_parameter_add',[App\Http\Controllers\EnvController::class, 'env_water_parameter_add'])->name('env.env_water_parameter_add');//เพิ่มข้อมูล
-Route::match(['get','post'],'env_water_parameter_save',[App\Http\Controllers\EnvController::class, 'env_water_parameter_save'])->name('env.env_water_parameter_save');//บันทึก
-Route::match(['get','post'],'env_water_parameter_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_water_parameter_edit'])->name('env.env_water_parameter_edit');//แก้ไข
-Route::match(['get','post'],'env_water_parameter_update',[App\Http\Controllers\EnvController::class, 'env_water_parameter_update'])->name('env.env_water_parameter_update');//อัพเดท
-Route::match(['get','post'],'env_water_parameter_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_water_parameter_delete'])->name('env.env_water_parameter_delete');//ลบข้อมูล
-
 //ลงผลข้อมูลน้ำ บ่อบำบัด
 Route::match(['get','post'],'env_water',[App\Http\Controllers\EnvController::class, 'env_water'])->name('env.env_water');//หน้าหลักแสดงข้อมูล
 Route::match(['get','post'],'env_water_add',[App\Http\Controllers\EnvController::class, 'env_water_add'])->name('env.env_water_add');//เพิ่มข้อมูล
@@ -2100,6 +2092,23 @@ Route::match(['get','post'],'env_water_datetime',[App\Http\Controllers\EnvContro
 
 
 //ขยะ//////////////////////////////////////////////////////////////
+//ลงผลข้อมูลขยะ
+Route::match(['get','post'],'env_trash',[App\Http\Controllers\EnvController::class, 'env_trash'])->name('env.env_trash');//หน้าหลักแสดงข้อมูล
+Route::match(['get','post'],'env_trash_add',[App\Http\Controllers\EnvController::class, 'env_trash_add'])->name('env.env_trash_add');//เพิ่มข้อมูล
+Route::match(['get','post'],'env_trash_save',[App\Http\Controllers\EnvController::class, 'env_trash_save'])->name('env.env_trash_save');//บันทึก
+Route::match(['get','post'],'env_trash_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_edit'])->name('env.env_trash_edit');//แก้ไข
+Route::match(['get','post'],'env_trash_update',[App\Http\Controllers\EnvController::class, 'env_trash_update'])->name('env.env_trash_update');//อัพเดท
+Route::match(['get','post'],'env_trash_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_delete'])->name('env.env_trash_delete');//ลบข้อมูล
+
+//ตั้งค่า//////////////////////////////////////////////////////////////
+//ตั้งค่า parameter น้ำ
+Route::match(['get','post'],'env_water_parameter',[App\Http\Controllers\EnvController::class, 'env_water_parameter'])->name('env.env_water_parameter');//หน้าหลักแสดงข้อมูล
+Route::match(['get','post'],'env_water_parameter_add',[App\Http\Controllers\EnvController::class, 'env_water_parameter_add'])->name('env.env_water_parameter_add');//เพิ่มข้อมูล
+Route::match(['get','post'],'env_water_parameter_save',[App\Http\Controllers\EnvController::class, 'env_water_parameter_save'])->name('env.env_water_parameter_save');//บันทึก
+Route::match(['get','post'],'env_water_parameter_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_water_parameter_edit'])->name('env.env_water_parameter_edit');//แก้ไข
+Route::match(['get','post'],'env_water_parameter_update',[App\Http\Controllers\EnvController::class, 'env_water_parameter_update'])->name('env.env_water_parameter_update');//อัพเดท
+Route::match(['get','post'],'env_water_parameter_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_water_parameter_delete'])->name('env.env_water_parameter_delete');//ลบข้อมูล
+
 //ตั้งค่าประเภทขยะ
 Route::match(['get','post'],'env_trash_parameter',[App\Http\Controllers\EnvController::class, 'env_trash_parameter'])->name('env.env_trash_parameter');//หน้าหลักแสดงข้อมูล
 Route::match(['get','post'],'env_trash_parameter_add',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_add'])->name('env.env_trash_parameter_add');//เพิ่ม
@@ -2108,12 +2117,13 @@ Route::match(['get','post'],'env_trash_parameter_edit/{id}',[App\Http\Controller
 Route::match(['get','post'],'env_trash_parameter_update',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_update'])->name('env.env_trash_parameter_update');//อัพเดท
 Route::match(['get','post'],'env_trash_parameter_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_delete'])->name('env.env_trash_parameter_delete');//ลบข้อมูล
 
-//ลงผลข้อมูลขยะ
-Route::match(['get','post'],'env_trash',[App\Http\Controllers\EnvController::class, 'env_trash'])->name('env.env_trash');//หน้าหลักแสดงข้อมูล
-Route::match(['get','post'],'env_trash_add',[App\Http\Controllers\EnvController::class, 'env_trash_add'])->name('env.env_trash_add');//เพิ่มข้อมูล
-Route::match(['get','post'],'env_trash_save',[App\Http\Controllers\EnvController::class, 'env_trash_save'])->name('env.env_trash_save');//บันทึก
-Route::match(['get','post'],'env_trash_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_edit'])->name('env.env_trash_edit');//แก้ไข
-Route::match(['get','post'],'env_trash_update',[App\Http\Controllers\EnvController::class, 'env_trash_update'])->name('env.env_trash_update');//อัพเดท
-Route::match(['get','post'],'env_trash_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_delete'])->name('env.env_trash_delete');//ลบข้อมูล
+//ตั่งค่าตัวแทนจำหน่าย
+Route::match(['get','post'],'env_vendor',[App\Http\Controllers\EnvController::class, 'env_vendor'])->name('env.env_vendor');//หน้าหลักแสดงข้อมูล
+Route::match(['get','post'],'env_vendor_add',[App\Http\Controllers\EnvController::class, 'env_env_vendor_add'])->name('env.env_vendor_add');//เพิ่ม
+Route::match(['get','post'],'env_vendor_save',[App\Http\Controllers\EnvController::class, 'env_env_vendor_save'])->name('env.env_vendor_save');//บันทึก
+Route::match(['get','post'],'env_vendor_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_env_vendor_edit'])->name('env.env_vendor_edit');//แก้ไข
+Route::match(['get','post'],'env_vendor_update',[App\Http\Controllers\EnvController::class, 'env_env_vendor_update'])->name('env.env_vendor_update');//อัพเดท
+Route::match(['get','post'],'env_vendor_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_env_vendor_delete'])->name('env.env_vendor_delete');//ลบข้อมูล
+
 
 });

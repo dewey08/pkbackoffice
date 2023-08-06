@@ -284,7 +284,7 @@ if (Auth::check()) {
                                                                         <div class="col-md-4 text-center">รายการพารามิเตอร์</div>
                                                                         <div class="col-md-1 text-center">หน่วย</div>
                                                                         <div class="col-md-2 text-center">ผลการวิเคราะห์</div>
-                                                                        <div class="col-md-2 text-center">วิธี่ที่ใช้วิเคราะห์</div>
+                                                                        {{-- <div class="col-md-2 text-center">วิธี่ที่ใช้วิเคราะห์</div> --}}
                                                                         <div class="col-md-2 text-center">ค่ามาตรฐาน</div>
                                                                     </div>
                                                                     @foreach ($data_ as $item2)
@@ -294,7 +294,7 @@ if (Auth::check()) {
                                                                         <div class="col-md-4">{{$item2->water_list_detail}}</div>
                                                                         <div class="col-md-1 text-center">{{$item2->water_list_unit}}</div>
                                                                         <div class="col-md-2 text-center">{{$item2->water_qty}}</div>
-                                                                        <div class="col-md-2">{{$item2->use_analysis_results}}</div>
+                                                                        {{-- <div class="col-md-2">{{$item2->use_analysis_results}}</div> --}}
                                                                         <div class="col-md-2 ">{{$item2->water_results}}</div>
                                                                     </div>
                                                                     @endforeach

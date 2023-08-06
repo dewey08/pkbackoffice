@@ -75,6 +75,8 @@ use App\Models\Env_water_save;
 use App\Models\Env_water_sub;
 use App\Models\Env_water;
 
+use App\Models\Env_vendor;
+
 use Auth;
 
 class EnvController extends Controller
@@ -89,6 +91,8 @@ class EnvController extends Controller
         $data['leave_month'] = DB::table('leave_month')->get();
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+
+        
 
         $acc_debtors = DB::select('
             SELECT count(*) as I from users u
@@ -226,7 +230,10 @@ class EnvController extends Controller
                     $add_sub->save();                                       
 
                 }
+                
         } 
+
+
 
         $data_parameter = DB::table('env_water_parameter')->get(); 
                 
@@ -660,7 +667,7 @@ class EnvController extends Controller
         return redirect()->back();
     }
 
-//**************************************************************ตั้งค่า   ประเภทขยะ*********************************************
+//**************************************************************ตั้งค่าประเภทขยะ*********************************************
 
     public function env_trash_parameter (Request $request) 
     {
@@ -769,6 +776,58 @@ class EnvController extends Controller
        $del->delete(); 
 
         return redirect()->back();
+    }
+
+//**************************************************************ตั้งค่าตัวแทนจำหน่าย*********************************************
+
+    public function env_vendor(Request $request)
+    {
+        $data['user'] = User::get();
+        // $data['warehouse_inven_person'] = Warehouse_inven_person::get();
+
+        $data['env_vendor'] = Env_vendor::get();
+        return view('env.env_vendor', $data);
+    }
+
+    public function env_vendor_save(Request $request)
+    {
+        $add = new Env_vendor();
+        $add->env_vendor_name = $request->input('env_vendor_name');
+        $add->save();
+
+        return response()->json([
+            'status'     => '200',
+        ]);
+    }
+
+    public function env_vendor_edit(Request $request, $id)
+    {
+        $vendor = Env_vendor::find($id);
+
+        return response()->json([
+            'status'     => '200',
+            'vendor'      =>  $vendor,
+        ]);
+    }
+
+    public function env_vendor_update(Request $request)
+    {
+        $id = $request->input('editvendor_id');
+
+        $updte = Env_vendor::find($id);
+        $updte->env_vendor_name = $request->input('editvendor_name');
+        $updte->save();
+
+        return response()->json([
+            'status'     => '200',
+        ]);
+    }
+
+    public function env_vendor_delete(Request $request, $id)
+    {
+        $del = Env_vendor::find($id);
+        $del->delete();
+        return response()->json(['status' => '200']);
     }
 
 

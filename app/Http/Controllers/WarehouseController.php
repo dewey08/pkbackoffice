@@ -1158,9 +1158,6 @@ class WarehouseController extends Controller
         // $output .= ' <value="' . $infoproduct->unit_id . '" >';
         }
     }
-
-
-
     public function warehouse_inven(Request $request)
     {
         $data['users'] = User::get();

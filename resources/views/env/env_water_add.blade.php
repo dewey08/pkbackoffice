@@ -197,7 +197,7 @@ $count_service = StaticController::count_service();
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">รายการพารามิเตอร์</th>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="7%">หน่วย</th> 
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">ผลการวิเคราะห์</th> 
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th> 
+                                                        {{-- <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th>  --}}
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="15%">ค่ามาตรฐาน</th>                                            
                                                     </tr>
                                                 </thead>
@@ -213,7 +213,7 @@ $count_service = StaticController::count_service();
                                                         </td>                                
                                                         <td><input value="{{ $items->water_parameter_unit }}" name="water_parameter_unit[]" id="water_parameter_unit[]" class="form-control input-sm fo13" readonly ></td>
                                                         <td><input name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" required></td>
-                                                        <td><input value="{{ $items->water_parameter_results }}" name="use_analysis_results[]" id="use_analysis_results[]" class="form-control input-sm fo13" readonly></td> 
+                                                        {{-- <td><input value="{{ $items->water_parameter_results }}" name="use_analysis_results[]" id="use_analysis_results[]" class="form-control input-sm fo13" readonly></td>  --}}
                                                         <td><input value="{{ $items->water_parameter_normal }}" name="water_parameter_normal[]" id="water_parameter_normal[]" class="form-control input-sm fo13" readonly></td>
                                                     </tr>
                                                     @endforeach 
