@@ -1,11 +1,11 @@
 @extends('layouts.envnew')
-@section('title', 'PK-BACKOFFice || ENV')
+@section('title', 'PK-BACKOFFice || ตั้งค่าบริษัท')
 <script>
     function TypeAdmin() {
         window.location.href = '{{ route('index') }}';
     }
 
-    function warehouse_vendor_destroy(vendor_id) {
+    function env_vendor_delete(env_vendor_id) {
         Swal.fire({
             title: 'ต้องการลบใช่ไหม?',
             text: "ข้อมูลนี้จะถูกลบไปเลย !!",
@@ -18,7 +18,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ url('env/warehouse_vendor_destroy') }}" + '/' + vendor_id,
+                    url: "{{ url('env/env_vendor_delete') }}" + '/' + env_vendor_id,
                     type: 'DELETE',
                     data: {
                         _token: $("input[name=_token]").val()
@@ -34,7 +34,7 @@
                             confirmButtonText: 'เรียบร้อย'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                $("#sid" + vendor_id).remove();
+                                $("#sid" + env_vendor_id).remove();
                                 window.location.reload();
                                 //   window.location = "{{ url('supplies/supplies_index') }}"; //     
                             }
@@ -114,7 +114,7 @@ $pos = strrpos($url, '/') + 1;
             <div class="col-md-12">
                 <div class="main-card mb-3 card shadow">
                     <div class="card-header">
-                        รายการบริษัท
+                        ตั้งค่าบริษัท
                         <div class="btn-actions-pane-right">
                             <div role="group" class="btn-group-sm btn-group">
 
@@ -138,10 +138,10 @@ $pos = strrpos($url, '/') + 1;
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($products_vendor as $key => $item)
-                                    <tr id="sid{{ $item->vendor_id }}">
+                                @foreach ($env_vendor as $key => $item)
+                                    <tr id="sid{{ $item->env_vendor_id }}">
                                         <td class="text-center" width="5%">{{ $key + 1 }}</td>
-                                        <td class="p-2">{{ $item->vendor_name }}</td>
+                                        <td class="p-2">{{ $item->env_vendor_name }}</td>
                                         </td>
                                         <td class="text-center" width="10%">
                                             <div class="dropdown">
@@ -150,14 +150,14 @@ $pos = strrpos($url, '/') + 1;
                                                     aria-expanded="false">ทำรายการ</button>
                                                 <ul class="dropdown-menu">
                                                     <button type="button"class="dropdown-item menu edit_vendor"
-                                                        value="{{ $item->vendor_id }}" data-bs-toggle="tooltip"
+                                                        value="{{ $item->env_vendor_id }}" data-bs-toggle="tooltip"
                                                         data-bs-placement="left" title="แก้ไข">
                                                         <i
                                                             class="fa-solid fa-pen-to-square mt-2 ms-2 mb-2 me-2 text-warning"></i>
                                                         <label for="" style="color: rgb(243, 168, 7)">แก้ไข</label>
                                                     </button>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0)"
-                                                        onclick="warehouse_vendor_destroy({{ $item->vendor_id }})"
+                                                        onclick="env_vendor_delete({{ $item->env_vendor_id }})"
                                                         data-bs-toggle="tooltip" data-bs-placement="left" title="ลบ">
                                                         <i class="fa-solid fa-trash-can  ms-2 mb-2 me-2"></i>
                                                         <label for=""
@@ -272,15 +272,15 @@ $pos = strrpos($url, '/') + 1;
             $('#saveBtn').click(function() {
 
                 // var warehouse_inven_id = $('#warehouse_inven_id').val();
-                var vendor_name = $('#vendor_name').val();
+                var env_vendor_name = $('#env_vendor_name').val();
                 // alert(warehouse_inven_name);
                 $.ajax({
-                    url: "{{ route('ware.warehouse_vendorsave') }}",
+                    url: "{{ route('env.env_vendor_save') }}",
                     type: "POST",
                     dataType: 'json',
                     data: {
                         // warehouse_inven_person_userid,
-                        vendor_name
+                        env_vendor_name
                     },
                     success: function(data) {
                         if (data.status == 200) {
@@ -316,7 +316,7 @@ $pos = strrpos($url, '/') + 1;
                 var editvendor_name = $('#editvendor_name').val();
                 // alert(editvendor_id);
                 $.ajax({
-                    url: "{{ route('ware.warehouse_vendorupdte') }}",
+                    url: "{{ route('env.env_vendor_update') }}",
                     type: "POST",
                     dataType: 'json',
                     data: {
@@ -354,16 +354,16 @@ $pos = strrpos($url, '/') + 1;
         });
 
         $(document).on('click', '.edit_vendor', function() {
-            var vendor_id = $(this).val();
+            var env_vendor_id = $(this).val();
             // alert(vendor_id);
             $('#updteinvenModal').modal('show');
             $.ajax({
                 type: "GET",
-                url: "{{ url('warehouse/warehouse_vendor_edit') }}" + '/' + vendor_id,
+                url: "{{ url('env/env_vendor_edit') }}" + '/' + env_vendor_id,
                 success: function(data) {
-                    console.log(data.vendor.vendor_name);
-                    $('#editvendor_name').val(data.vendor.vendor_name)
-                    $('#editvendor_id').val(data.vendor.vendor_id)
+                    console.log(data.vendor.env_vendor_name);
+                    $('#editvendor_name').val(data.vendor.env_vendor_name)
+                    $('#editvendor_id').val(data.vendor.env_vendor_id)
                 },
             });
         });

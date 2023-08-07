@@ -165,12 +165,14 @@ class EnvController extends Controller
 
 
         $data_parameter = DB::table('env_water_parameter')->get();
+        $data_water_icon = DB::table('env_water_icon')->get();
          
 
         return view('env.env_water_add', $data,[
             'start'           => $startdate,
             'end'             => $enddate, 
             'dataparameters'  => $data_parameter, 
+            'data_water_icon'   => $data_water_icon,
         ]);
     }
 
@@ -183,6 +185,8 @@ class EnvController extends Controller
         $data['leave_month'] = DB::table('leave_month')->get();
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+
+        $data_water_icon = DB::table('env_water_icon')->get();
 
         $acc_debtors = DB::select('
             SELECT count(*) as I from users u
@@ -257,6 +261,8 @@ class EnvController extends Controller
         $data['env_water_sub']  = DB::table('env_water_sub')->where('water_id','=',$id)->get();
   
         $data['water_parameter']  = DB::table('env_water_parameter')->get();
+
+        $data_water_icon = DB::table('env_water_icon')->get();
        
         $data['products_vendor'] = Products_vendor::get();
 
@@ -264,7 +270,8 @@ class EnvController extends Controller
             'startdate'        => $datestart,
             'enddate'          => $dateend, 
             'water'            => $water,
-            'data'             => $data,  
+            'data'             => $data,
+            'data_water_icon'   => $data_water_icon,  
         ]);
     }
 
@@ -372,12 +379,14 @@ class EnvController extends Controller
         ');
 
         $data_water_parameter = DB::table('env_water_parameter')->get();
+      
          
 
         return view('env.env_water_parameter_add', $data,[
             'startdate'        => $datestart,
-            'enddate'          => $dateend, 
-            'data_water_parameter'   => $data_water_parameter, 
+            'enddate'                 => $dateend, 
+            'data_water_parameter'   => $data_water_parameter,
+            
         ]);
     }
 
@@ -436,6 +445,14 @@ class EnvController extends Controller
         // return view('env.env_water_parameter',[ 
         //     'dataparameterlist' => $data_parameter_list, 
         // ]);
+    }
+
+    function env_water_parameter_switchactive(Request $request)
+    {  
+        $id = $request->idfunc; 
+        $active = P4p_workset::find($id);
+        $active->p4p_workset_active = $request->onoff;
+        $active->save();
     }
 
     public function env_water_parameter_delete (Request $request,$id)
@@ -785,14 +802,14 @@ class EnvController extends Controller
         $data['user'] = User::get();
         // $data['warehouse_inven_person'] = Warehouse_inven_person::get();
 
-        $data['env_vendor'] = Env_vendor::get();
+        $data['products_vendor'] = Products_vendor::get();
         return view('env.env_vendor', $data);
     }
 
-    public function env_vendor_save(Request $request)
+    public function env_vendor_add(Request $request)
     {
-        $add = new Env_vendor();
-        $add->env_vendor_name = $request->input('env_vendor_name');
+        $add = new Products_vendor();
+        $add->vendor_name = $request->input('vendor_name');
         $add->save();
 
         return response()->json([
@@ -800,9 +817,9 @@ class EnvController extends Controller
         ]);
     }
 
-    public function env_vendor_edit(Request $request, $id)
+    public function env_vendor_save(Request $request, $id)
     {
-        $vendor = Env_vendor::find($id);
+        $vendor = Products_vendor::find($id);
 
         return response()->json([
             'status'     => '200',
@@ -814,18 +831,18 @@ class EnvController extends Controller
     {
         $id = $request->input('editvendor_id');
 
-        $updte = Env_vendor::find($id);
-        $updte->env_vendor_name = $request->input('editvendor_name');
+        $updte = Products_vendor::find($id);
+        $updte->vendor_name = $request->input('editvendor_name');
         $updte->save();
 
         return response()->json([
             'status'     => '200',
         ]);
     }
-
-    public function env_vendor_delete(Request $request, $id)
+    
+    public function env_vendor_destroy(Request $request, $id)
     {
-        $del = Env_vendor::find($id);
+        $del = Products_vendor::find($id);
         $del->delete();
         return response()->json(['status' => '200']);
     }

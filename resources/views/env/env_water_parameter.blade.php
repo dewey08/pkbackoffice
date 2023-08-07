@@ -105,8 +105,10 @@ if (Auth::check()) {
                                             <th>ลำดับ</th> 
                                             <th>ชื่อพารามิเตอร์</th>
                                             <th>หน่วย</th>
-                                            <th>วิธีวิเคราะห์</th> 
+                                            <th>วิธีวิเคราะห์</th>
+                                            <th>ค่าที่กำหนด</th> 
                                             <th>ค่ามาตรฐาน</th>
+                                            <th>สถานะ</th>
                                             <th>ตั้งค่า</th> 
                                         </tr>
                                     </thead>
@@ -120,8 +122,16 @@ if (Auth::check()) {
                                                 <td class="p-2" width="18%">{{ $item->water_parameter_name }} </td>
                                                 <td class="p-2" width="5%">{{ $item->water_parameter_unit }}</td>
                                                 <td class="p-2" width="13%">{{ $item->water_parameter_results }}</td>
-                                                <td class="p-2" width="10%">{{ $item->water_parameter_normal }}</td>
-                                                {{-- <td class="p-2" width="17%">{{ $item->parameter_list_normal }}</td> --}}
+                                                <td class="p-2" width="5%">{{ $item->water_parameter_icon }}</td>
+                                                <td class="p-2" width="5%">{{ $item->water_parameter_normal }}</td>
+                                                <td class="p-2" width="5%">
+                                                    @if($item-> water_parameter_active == 'TRUE' )
+                                                        <input type="checkbox" id="{{ $item-> water_parameter_id }}" name="{{ $item-> water_parameter_id }}" switch="none" onchange="switchactive({{ $item-> water_parameter_id }});" checked />
+                                                        @else
+                                                        <input type="checkbox" id="{{ $item-> water_parameter_id }}" name="{{ $item-> water_parameter_id }}" switch="none" onchange="switchactive({{ $item-> water_parameter_id }});" />
+                                                        @endif
+                                                        <label for="{{ $item-> water_parameter_id }}" data-on-label="On" data-off-label="Off"></label>
+                                                </td>
                                                 <td class="text-center" width="7%">
     
                                                     {{-- <div class="dropdown">
@@ -190,7 +200,26 @@ if (Auth::check()) {
       
 @endsection
 @section('footer')
-
+<script>
+    function switchactive(idfunc){
+            // var nameVar = document.getElementById("name").value;
+            var checkBox = document.getElementById(idfunc);
+            var onoff;
+            
+            if (checkBox.checked == true){
+                onoff = "TRUE";
+            } else {
+                onoff = "FALSE";
+            }
+ 
+            var _token=$('input[name="_token"]').val();
+                $.ajax({
+                        url:"{{route('env.env_water_parameter_switchactive')}}",
+                        method:"GET",
+                        data:{onoff:onoff,idfunc:idfunc,_token:_token}
+                })
+       }
+</script>
 <script>
     
     $(document).ready(function() {
