@@ -106,7 +106,7 @@ if (Auth::check()) {
                                             <th>ชื่อพารามิเตอร์</th>
                                             <th>หน่วย</th>
                                             <th>วิธีวิเคราะห์</th>
-                                            <th>ค่าที่กำหนด</th> 
+                                            <th>เกณฑ์มาตรฐาน</th> 
                                             <th>ค่ามาตรฐาน</th>
                                             <th>สถานะ</th>
                                             <th>ตั้งค่า</th> 
@@ -118,7 +118,7 @@ if (Auth::check()) {
                                         ?>
                                         @foreach ($data_water_parameter as $item)
                                             <tr id="sid{{ $item->water_parameter_id }}">
-                                                <td class="text-center" width="4%">{{ $i++ }}</td>
+                                                <td class="text-center" width="3%">{{ $i++ }}</td>
                                                 <td class="p-2" width="18%">{{ $item->water_parameter_name }} </td>
                                                 <td class="p-2" width="5%">{{ $item->water_parameter_unit }}</td>
                                                 <td class="p-2" width="13%">{{ $item->water_parameter_results }}</td>

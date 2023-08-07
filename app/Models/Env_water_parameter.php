@@ -19,8 +19,10 @@ class Env_water_parameter extends Authenticatable
         'water_parameter_name',
         'water_parameter_icon',
         'water_parameter_unit',
-        'water_parameter_normal',
-        'water_parameter_results'   
+        'water_parameter_icon',
+        'water_parameter_normal',        
+        'water_parameter_results',
+        'water_parameter_active'   
         
         
     ];

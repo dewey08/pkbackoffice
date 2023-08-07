@@ -78,7 +78,7 @@ $count_service = StaticController::count_service();
                             <div class="row">
 
                            
-                                    <div class="col-md-8">
+                                    <div class="col-md-12">
     
                                         <!-- <input type="hidden" id="article_decline_id" name="article_decline_id" class="form-control" value="6"/>
                                             <input type="hidden" id="article_categoryid" name="article_categoryid" class="form-control" value="26"/>
@@ -93,40 +93,78 @@ $count_service = StaticController::count_service();
                                             <div class="col-md-2 text-end">
                                                 <label for="land_tonnage_number">รายการพารามิเตอร์ :</label>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-10">
                                                 <div class="form-group">
                                                     <input id="water_parameter_name" type="text"
                                                         class="form-control form-control-sm" name="water_parameter_name" value="{{$data_edit->water_parameter_name}}">
                                                 </div>
                                             </div>
+                                            {{-- <div class="col-md-1 text-end">
+                                                <label for="article_name">หน่วย :</label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <input id="water_parameter_unit" type="text" 
+                                                        class="form-control form-control-sm" name="water_parameter_unit" value="{{$data_edit->water_parameter_unit}}">                                                        
+                                                </div>
+                                            </div> --}}
+                                        </div>
+    
+                                        <div class="row mt-3">
                                             <div class="col-md-2 text-end">
                                                 <label for="article_name">หน่วย :</label>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 <div class="form-group">
                                                     <input id="water_parameter_unit" type="text" 
                                                         class="form-control form-control-sm" name="water_parameter_unit" value="{{$data_edit->water_parameter_unit}}">                                                        
                                                 </div>
                                             </div>
-                                        </div>
-    
-                                        <div class="row mt-3">
                                             <div class="col-md-2 text-end">
+                                                <label for="water_parameter_icon">เกณฑ์มาตรฐาน :</label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <select id="env_water_icon_name" name="env_water_icon_name"class="form-control form-control-sm" style="width: 100%">
+                                                            <option value="">--เลือก--</option>
+                                                            @foreach ($data_water_icon as $icon)
+                                                            @if ($env_water_icon_name->env_water_icon_name == $icon->id)
+                                                                <option value="{{ $icon->env_water_icon_name }}" selected> {{ $icon->env_water_icon_name }}  </option>    
+                                                            @else
+                                                                <option value="{{ $icon->env_water_icon_name }}"> {{ $icon->env_water_icon_name }}  </option>    
+                                                            @endif                                         
+                                                            @endforeach
+                                                    </select>                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 text-end">
+                                                <label for="land_tonnage_no">ค่ามาตรฐาน :</label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <input id="water_parameter_normal" type="text"
+                                                        class="form-control form-control-sm" name="water_parameter_normal" value="{{$data_edit->water_parameter_normal}}">
+                                                </div>
+                                            </div>                                            
+                                        </div>
+                                        
+                                        <div class="row mt-3">
+                                            {{-- <div class="col-md-2 text-end">
                                                 <label for="land_tonnage_no">ค่ามาตรฐาน :</label>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <input id="water_parameter_normal" type="text"
-                                                        class="form-control form-control-sm" name="water_parameter_normal" value="{{$data_edit->water_parameter_normal}}">
+                                                        class="form-control form-control-sm" name="water_parameter_normal">
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <div class="col-md-2 text-end">
                                                 <label for="land_explore_page">วิธีที่ใช้วิเคราะห์ :</label>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-10">
                                                 <div class="form-group">
                                                     <input id="water_parameter_results" type="text"
-                                                        class="form-control form-control-sm" name="water_parameter_results" value="{{$data_edit->water_parameter_results}}">
+                                                        class="form-control form-control-sm" name="water_parameter_results"value="{{$data_edit->water_parameter_results}}">
                                                 </div>
                                             </div>
                                         </div>   
