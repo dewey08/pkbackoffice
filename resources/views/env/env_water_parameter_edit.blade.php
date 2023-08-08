@@ -87,7 +87,7 @@ $count_service = StaticController::count_service();
                                             <input type="hidden" name="store_id" id="store_id" value=" {{ Auth::user()->store_id }}"> -->
     
 
-                                            <input type="hidden" id="water_parameter_id" name="water_parameter_id" class="form-control" value="{{$data_edit->water_parameter_id}}"/>
+                                            <input type="hidden" id="water_parameter_id" name="water_parameter_id" class="form-control" value="{{$water_parameter->water_parameter_id}}"/>
 
                                         <div class="row">
                                             <div class="col-md-2 text-end">
@@ -96,7 +96,7 @@ $count_service = StaticController::count_service();
                                             <div class="col-md-10">
                                                 <div class="form-group">
                                                     <input id="water_parameter_name" type="text"
-                                                        class="form-control form-control-sm" name="water_parameter_name" value="{{$data_edit->water_parameter_name}}">
+                                                        class="form-control form-control-sm" name="water_parameter_name" value="{{$water_parameter->water_parameter_name}}">
                                                 </div>
                                             </div>
                                             {{-- <div class="col-md-1 text-end">
@@ -105,7 +105,7 @@ $count_service = StaticController::count_service();
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     <input id="water_parameter_unit" type="text" 
-                                                        class="form-control form-control-sm" name="water_parameter_unit" value="{{$data_edit->water_parameter_unit}}">                                                        
+                                                        class="form-control form-control-sm" name="water_parameter_unit" value="{{$water_parameter->water_parameter_unit}}">                                                        
                                                 </div>
                                             </div> --}}
                                         </div>
@@ -117,7 +117,7 @@ $count_service = StaticController::count_service();
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     <input id="water_parameter_unit" type="text" 
-                                                        class="form-control form-control-sm" name="water_parameter_unit" value="{{$data_edit->water_parameter_unit}}">                                                        
+                                                        class="form-control form-control-sm" name="water_parameter_unit" value="{{$water_parameter->water_parameter_unit}}">                                                        
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-end">
@@ -125,14 +125,14 @@ $count_service = StaticController::count_service();
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="form-group">
-                                                    <select id="env_water_icon_name" name="env_water_icon_name"class="form-control form-control-sm" style="width: 100%">
+                                                    <select id="env_water_icon_name" name="env_water_icon_name" class="form-control form-control-sm" style="width: 100%">
                                                             <option value="">--เลือก--</option>
-                                                            @foreach ($data_water_icon as $icon)
-                                                            @if ($env_water_icon_name->env_water_icon_name == $icon->id)
-                                                                <option value="{{ $icon->env_water_icon_name }}" selected> {{ $icon->env_water_icon_name }}  </option>    
-                                                            @else
-                                                                <option value="{{ $icon->env_water_icon_name }}"> {{ $icon->env_water_icon_name }}  </option>    
-                                                            @endif                                         
+                                                            @foreach ($env_water_icon as $icon)
+                                                                @if ($water_parameter->water_parameter_icon == $icon->env_water_icon_name)
+                                                                    <option value="{{ $icon->env_water_icon_id }}" selected> {{ $icon->env_water_icon_name }} </option>    
+                                                                @else
+                                                                    <option value="{{ $icon->env_water_icon_id }}"> {{ $icon->env_water_icon_name }} </option>     
+                                                                @endif                                         
                                                             @endforeach
                                                     </select>                                                    
                                                 </div>
@@ -143,7 +143,7 @@ $count_service = StaticController::count_service();
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     <input id="water_parameter_normal" type="text"
-                                                        class="form-control form-control-sm" name="water_parameter_normal" value="{{$data_edit->water_parameter_normal}}">
+                                                        class="form-control form-control-sm" name="water_parameter_normal" value="{{$water_parameter->water_parameter_normal}}">
                                                 </div>
                                             </div>                                            
                                         </div>
@@ -164,7 +164,7 @@ $count_service = StaticController::count_service();
                                             <div class="col-md-10">
                                                 <div class="form-group">
                                                     <input id="water_parameter_results" type="text"
-                                                        class="form-control form-control-sm" name="water_parameter_results"value="{{$data_edit->water_parameter_results}}">
+                                                        class="form-control form-control-sm" name="water_parameter_results"value="{{$water_parameter->water_parameter_results}}">
                                                 </div>
                                             </div>
                                         </div>   

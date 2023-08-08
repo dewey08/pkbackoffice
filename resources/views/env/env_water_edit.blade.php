@@ -163,10 +163,10 @@ $count_service = StaticController::count_service();
                                                     <tr height="40">
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="3%">ลำดับ</td>
                                                         <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="25%">รายการพารามิเตอร์</th>
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="7%">หน่วย</th> 
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">ผลการวิเคราะห์</th> 
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="10%">ผลการวิเคราะห์</th>
+                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="7%">หน่วย</th>                                                         
                                                         {{-- <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="20%">วิธี่ที่ใช้วิเคราะห์</th>  --}}
-                                                        <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="15%">ค่ามาตรฐาน</th>                                                        
+                                                        {{-- <th style="text-align: center;font-family: 'Kanit', sans-serif;font-size: 14px;" width="15%">ค่ามาตรฐาน</th>                                                         --}}
                                                     </tr>
                                                 </thead>
                                                 <tbody class="tbody">
@@ -178,10 +178,11 @@ $count_service = StaticController::count_service();
                                                             <input type="hidden" value="{{ $items2->water_sub_id }}" name="water_sub_id[]" id="water_sub_id[]" class="form-control input-sm fo13" >
                                                             <input value="{{ $items2->water_list_detail }}" name="" id="" class="form-control input-sm fo13" readonly>
                                                         </td>
+                                                        <td><input value="{{ $items2->water_qty }}"  name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" ></td> 
                                                         <td><input value="{{ $items2->water_list_unit }}"  name="water_list_unit[]" id="water_list_unit[]" class="form-control input-sm fo13" readonly ></td>
-                                                        <td><input value="{{ $items2->water_qty }}"  name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" ></td>  
+                                                         
                                                         {{-- <td><input value="{{ $items2->use_analysis_results }}" name="use_analysis_results[]" id="use_analysis_results[]" class="form-control input-sm fo13" readonly></td> --}}
-                                                        <td><input value="{{ $items2->water_results }}" name="water_results[]" id="water_results[]" class="form-control input-sm fo13" readonly></td>   
+                                                        {{-- <td><input value="{{ $items2->water_results }}" name="water_results[]" id="water_results[]" class="form-control input-sm fo13" readonly></td>    --}}
                                                     </tr>
                                                     @endforeach 
                                                 </tbody>

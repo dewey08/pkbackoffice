@@ -210,23 +210,13 @@ $count_service = StaticController::count_service();
                                                         <td>
                                                             <input type="hidden" value="{{ $items->water_parameter_id }}" name="water_parameter_id[]" id="water_parameter_id[]" class="form-control input-sm fo13" >
                                                             <input value="{{ $items->water_parameter_name }}" name="" id="" class="form-control input-sm fo13" readonly>
-                                                        </td>                                                         
-                                                        
-                                                        {{-- <td>
-                                                            <select id="env_water_icon_name" name="env_water_icon_name"
-                                                            class="form-control form-control-sm" style="width: 100%">
-                                                            <option value="">--เลือก--</option>
-                                                            @foreach ($data_water_icon as $icon)                                               
-                                                                <option value="{{ $icon->env_water_icon_id }}"> {{ $icon->env_water_icon_name }}  </option>                                             
-                                                            @endforeach
-                                                            </select>
-                                                        </td> --}}
+                                                        </td>
                                                         
                                                         <td><input name="water_qty[]" id="water_qty[]" class="form-control input-sm fo13" type="number" required></td>
                                                         
                                                         <td><input value="{{ $items->water_parameter_unit }}" name="water_parameter_unit[]" id="water_parameter_unit[]" class="form-control input-sm fo13" readonly ></td>
                                                         
-                                                        {{-- <td><input value="{{ $items->water_parameter_normal }}" name="water_parameter_normal[]" id="water_parameter_normal[]" class="form-control input-sm fo13" readonly></td> --}}
+                                                        {{-- <td><input type="hidden" value="{{ $items->water_parameter_normal }}" name="water_parameter_normal[]" id="water_parameter_normal[]" class="form-control input-sm fo13" readonly></td> --}}
                                                     </tr>
                                                     @endforeach 
                                                 </tbody>

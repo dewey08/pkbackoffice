@@ -163,8 +163,8 @@ class EnvController extends Controller
             group by u.dep_subsubtrueid;
         ');
 
-
-        $data_parameter = DB::table('env_water_parameter')->get();
+       
+        $data_parameter = DB::table('env_water_parameter')->where('water_parameter_active','=','TRUE')->get();
         $data_water_icon = DB::table('env_water_icon')->get();
          
 
@@ -186,7 +186,7 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
-        $data_water_icon = DB::table('env_water_icon')->get();
+        
 
         $acc_debtors = DB::select('
             SELECT count(*) as I from users u
@@ -211,8 +211,8 @@ class EnvController extends Controller
             $water_parameter_id         = $request->water_parameter_id;
             $water_parameter_unit       = $request->water_parameter_unit;
 
-            $use_analysis_results       = $request->use_analysis_results;
-            $water_parameter_normal     = $request->water_parameter_normal;
+            // $use_analysis_results       = $request->use_analysis_results;
+            // $water_parameter_normal     = $request->water_parameter_normal;
             $water_qty                  = $request->water_qty;     
             
             
@@ -228,8 +228,8 @@ class EnvController extends Controller
                     $add_sub->water_list_idd           = $idwater->water_parameter_id;
                     $add_sub->water_list_detail        = $idwater->water_parameter_name;
                     $add_sub->water_list_unit          = $water_parameter_unit[$count];
-                    $add_sub->water_results            = $water_parameter_normal[$count];
-                    $add_sub->use_analysis_results     = $use_analysis_results[$count];
+                    // $add_sub->water_results            = $water_parameter_normal[$count];
+                    // $add_sub->use_analysis_results     = $use_analysis_results[$count];
                     $add_sub->water_qty                = $water_qty[$count];
                     $add_sub->save();                                       
 
@@ -260,9 +260,9 @@ class EnvController extends Controller
 
         $data['env_water_sub']  = DB::table('env_water_sub')->where('water_id','=',$id)->get();
   
-        $data['water_parameter']  = DB::table('env_water_parameter')->get();
+        $data['water_parameter']  = DB::table('env_water_parameter')->where('water_parameter_active','=','TRUE')->get();
 
-        $data_water_icon = DB::table('env_water_icon')->get();
+        
        
         $data['products_vendor'] = Products_vendor::get();
 
@@ -271,7 +271,7 @@ class EnvController extends Controller
             'enddate'          => $dateend, 
             'water'            => $water,
             'data'             => $data,
-            'data_water_icon'  => $data_water_icon,  
+              
         ]);
     }
 
@@ -391,32 +391,7 @@ class EnvController extends Controller
             'data_water_icon'       => $data_water_icon,
             
         ]);
-    }
-
-    public function env_water_parameter_edit (Request $request,$id)
-    {
-        $datestart = $request->startdate;
-        $dateend = $request->enddate;
-        $iduser = Auth::user()->id;
-        $data['users'] = User::get();
-        $data['leave_month'] = DB::table('leave_month')->get();
-        $data['users_group'] = DB::table('users_group')->get();
-        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();        
- 
-        $data_edit = DB::table('env_water_parameter')->where('water_parameter_id','=',$id)->first();
-
-        // $data['env_water_sub']  = DB::table('env_water_sub')->where('water_id','=',$id)->get();
-
-        // $data_water_icon['env_water_icon'] = DB::table('env_water_icon')->when('env_water_icon_id','=',$id) ->get();
-
-        return view('env.env_water_parameter_edit', $data,[
-            'startdate'             => $datestart,
-            'enddate'               => $dateend, 
-            'data_edit'             => $data_edit,
-            // 'data_water_icon'       => $data_water_icon, 
-        ]);
-    }
-
+    } 
     public function env_water_parameter_save (Request $request)
     {  
         $datenow = date('Y-m-d H:m:s');
@@ -433,6 +408,23 @@ class EnvController extends Controller
     
         return redirect()->route('env.env_water_parameter');
 
+    }
+
+    public function env_water_parameter_edit (Request $request,$id)
+    {
+        $datestart = $request->startdate;
+        $dateend = $request->enddate; 
+     
+        $env_water_icon = DB::table('env_water_icon')->get();
+
+        $water_parameter = DB::table('env_water_parameter')->where('water_parameter_id','=',$id)->first(); 
+                
+        return view('env.env_water_parameter_edit',[
+            'startdate'             => $datestart,
+            'enddate'               => $dateend,  
+            'env_water_icon'        => $env_water_icon,
+            'water_parameter'       => $water_parameter,
+        ]);
     }
 
     public function env_water_parameter_update  (Request $request)
@@ -461,8 +453,8 @@ class EnvController extends Controller
     function env_water_parameter_switchactive(Request $request)
     {  
         $id = $request->idfunc; 
-        $active = P4p_workset::find($id);
-        $active->p4p_workset_active = $request->onoff;
+        $active = Env_water_parameter::find($id);
+        $active->water_parameter_active = $request->onoff;
         $active->save();
     }
 
