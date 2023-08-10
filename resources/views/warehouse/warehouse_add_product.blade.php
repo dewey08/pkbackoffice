@@ -140,8 +140,8 @@
                                             <td style="text-align: center;" width="8%">ประเภท</td>
                                             <td style="text-align: center;" width="6%">หน่วย</td>
                                             <td style="text-align: center;" width="6%">จำนวน</td>
-                                            <td style="text-align: center;" width="8%">ราคาต่อหน่วย</td>
-                                            <td style="text-align: center;" width="12%">มูลค่า</td>
+                                            <td style="text-align: center;" width="8%">ราคา</td>
+                                            <td style="text-align: center;" width="12%">รวม</td>
                                             <td style="text-align: center;" width="12%">Lot</td>
                                             <td style="text-align: center;" width="6%">วันผลิต</td>
                                             <td style="text-align: center;" width="6%">วันหมดอายุ</td>
@@ -153,87 +153,88 @@
                                         </tr>
                                     </thead>
                                     <tbody class="tbody1">
-                                        <tr height="30" style="font-size:13px">
-                                            <td style="text-align: center;"> 1 </td>
-                                            <td>
-                                                <select name="product_id[]" id="product_id0"
-                                                    class="form-control form-control-sm " style="width: 100%;"
-                                                    onchange="checkunitref(0);" required>
-                                                    <option value="" selected>--รายการวัสดุ--</option>
-                                                    @foreach ($product_data as $list)
-                                                        <?php $countcheck = Warehouse_rep_sub::where('product_code', '=', $list->product_code)
-                                                            ->where('warehouse_rep_sub_status', '=', 1)
-                                                            ->count(); ?>
-                                                        @if ($countcheck == 0)
-                                                            <option value="{{ $list->product_id }}">
-                                                                {{ $list->product_code }}{{ $list->product_name }}</option>
-                                                        @endif
-                                                    @endforeach
+                                        @if ( $count > 0)
+                                                @foreach ($data_sub as $item) 
+                                                    <tr height="30" style="font-size:13px">
+                                                        <td style="text-align: center;"> 1 </td>
+                                                        <td width="20%">
+                                                            <select name="product_id[]" id="product_id0"
+                                                                class="form-control form-control-sm " style="font-size:13px;font-family:'Kanit', sans-serif;width: 100%;"
+                                                                onchange="checkunitref(0);" required>
+                                                                <option value="" selected>--รายการวัสดุ--</option>
+                                                                @foreach ($product_data as $list)
+                                                                
+                                                                    <option value="{{ $list->product_id }}">{{ $list->product_code }}{{ $list->product_name }}</option>
+                                                                
+                                                                @endforeach
 
 
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="product_type_id[]" id="product_type_id0"
-                                                    class="form-control form-control-sm" style="width: 100%;">
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select name="product_type_id[]" id="product_type_id0"
+                                                                class="form-control form-control-sm" style="font-size:13px;font-family:'Kanit', sans-serif;width: 100%;">
 
-                                                    @foreach ($products_typefree as $free)
-                                                        <option value="{{ $free->products_typefree_id }}">
-                                                            {{ $free->products_typefree_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <div class="showunit0">
-                                                    <select name="product_unit_subid[]" id="product_unit_subid[]"
-                                                        class="form-control form-control-sm" style="width: 100%;">
-                                                        <option value="" selected>--หน่วย--</option>
-                                                        @foreach ($product_unit as $uni)
-                                                            <option value="{{ $uni->unit_id }}">{{ $uni->unit_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <input name="product_qty[]" id="product_qty0" type="number"
-                                                    class="form-control form-control-sm" onkeyup="checksummoney(0)">
-                                            </td>
+                                                                @foreach ($products_typefree as $free)
+                                                                    <option value="{{ $free->products_typefree_id }}">
+                                                                        {{ $free->products_typefree_name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <div class="showunit0">
+                                                                <select name="product_unit_subid[]" id="product_unit_subid[]"
+                                                                    class="form-control form-control-sm" style="font-size:13px;font-family:'Kanit',sans-serif;width: 100%;">
+                                                                    <option value="" selected>--หน่วย--</option>
+                                                                    @foreach ($product_unit as $uni)
+                                                                        <option value="{{ $uni->unit_id }}">{{ $uni->unit_name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <input name="product_qty[]" id="product_qty0" type="text"
+                                                                class="form-control form-control-sm text-center" style="font-size:13px;font-family:'Kanit', sans-serif;" onkeyup="checksummoney(0)">
+                                                        </td>
 
-                                            <td>
-                                                <input name="product_price[]" id="product_price0" type="text"
-                                                    class="form-control form-control-sm" onkeyup="checksummoney(0)">
+                                                        <td>
+                                                            <input name="product_price[]" id="product_price0" type="text"
+                                                                class="form-control form-control-sm text-end" style="font-size:13px;font-family:'Kanit', sans-serif;" onkeyup="checksummoney(0)">
 
-                                            <td>
-                                                <div class="summoney0"></div>
-                                            </td>
-                                            <td>
-                                                <?php $detallot = 'L' . substr(date('Ymd'), 2) . '' . date('His'); ?>
-                                                <input name="product_lot[]" id="product_lot[]"
-                                                    class="form-control form-control-sm" value="{{ $detallot }}">
-                                            </td>
-                                            <td>
-                                                <input name="warehouse_rep_sub_exedate[]" id="warehouse_rep_sub_exedate[]"
-                                                    class="form-control form-control-sm" type="date">
-                                            </td>
-                                            <td>
-                                                <input name="warehouse_rep_sub_expdate[]" id="warehouse_rep_sub_expdate[]"
-                                                    class="form-control form-control-sm" type="date">
-                                            </td>
-                                            <td>
-                                                <select name="warehouse_rep_sub_status[]" id="warehouse_rep_sub_status0"
-                                                    class="form-control form-control-sm" style="width: 100%;">
-                                                    <option value="1">ครบ</option>
-                                                    <option value="2">ไม่ครบ</option>
-                                                </select>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <a class="btn btn-sm btn-danger fa fa-trash-alt remove1"
-                                                    style="color:#FFFFFF;">
-                                                </a>
-                                            </td>
+                                                        <td>
+                                                            <div class="summoney0"></div>
+                                                        </td>
+                                                        <td width="7%"> 
+                                                            <?php $detallot = 'L' . substr(date('Ymd'), 2) . '' . date('His'); ?>
+                                                            <input name="product_lot[]" id="product_lot[]"
+                                                                class="form-control form-control-sm text-center" style="font-size:13px;font-family:'Kanit', sans-serif;" value="{{ $detallot }}">
+                                                        </td>
+                                                        <td width="7%">
+                                                            <input name="warehouse_rep_sub_exedate[]" id="warehouse_rep_sub_exedate[]"
+                                                                class="form-control form-control-sm text-center" type="date" style="font-size:13px;font-family:'Kanit', sans-serif;">
+                                                        </td>
+                                                        <td width="7%">
+                                                            <input name="warehouse_rep_sub_expdate[]" id="warehouse_rep_sub_expdate[]"
+                                                                class="form-control form-control-sm text-center" type="date" style="font-size:13px;font-family:'Kanit', sans-serif;">
+                                                        </td>
+                                                        <td width="5%">
+                                                            <select name="warehouse_rep_sub_status[]" id="warehouse_rep_sub_status0"
+                                                                class="form-control form-control-sm" style="font-size:13px;font-family:'Kanit', sans-serif;width: 100%;">
+                                                                <option value="1">ครบ</option>
+                                                                <option value="2">ไม่ครบ</option>
+                                                            </select>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <a class="btn btn-sm btn-danger fa fa-trash-alt remove1"
+                                                                style="color:#FFFFFF;">
+                                                            </a>
+                                                        </td>
 
-                                        </tr>
+                                                    </tr>
+                                                @endforeach
+                                        @else
+                                        @endif
                                     </tbody>
                                 </table>
 
@@ -343,9 +344,9 @@
                         '<td style="text-align: center;">' +
                         number +
                         '</td>' +
-                        '<td>' +
+                        '<td width="20%">' +
                         '<select name="product_id[]" id="product_id' + number +
-                        '" class="form-control form-control-sm js-example-basic-single" style="width: 100%;" onchange="checkunitref(' +
+                        '" class="form-control form-control-sm js-example-basic-single" style="font-size:13px;font-family: \'Kanit\', sans-serif;width: 100%;" onchange="checkunitref(' +
                         number + ')">' +
                         '<option value="" selected>--รายการวัสดุ--</option>' +
                         '@foreach ($product_data as $list)' +
@@ -355,7 +356,7 @@
                         '</td>' +
                         '<td>' +
                         '<select name="product_type_id[]" id="product_type_id' + number +
-                        '" class="form-control form-control-sm js-example-basic-single" style="width: 100%;">' +
+                        '" class="form-control form-control-sm js-example-basic-single" style="font-size:13px;font-family: \'Kanit\', sans-serif;width: 100%;">' +
                         '@foreach ($products_typefree as $free)' +
                         '<option value="{{ $free->products_typefree_id }}">{{ $free->products_typefree_name }}</option>' +
                         '@endforeach' +
@@ -363,7 +364,7 @@
                         '</td>' +
                         '<td><div class="showunit' + number + '">' +
                         '<select name="product_unit_subid[]" id="product_unit_subid' + number +
-                        '" class="form-control form-control-sm js-example-basic-single" style="width: 100%;">' +
+                        '" class="form-control form-control-sm js-example-basic-single" style="font-size:13px;font-family: \'Kanit\', sans-serif;width: 100%;">' +
                         '<option value="" selected>--หน่วย--</option>' +
                         '@foreach ($product_unit as $uni)' +
                         '<option value="{{ $uni->unit_id }}">{{ $uni->unit_name }}</option>' +
@@ -372,31 +373,31 @@
                         '</td>' +
                         '<td>' +
                         '<input name="product_qty[]" id="product_qty' + number +
-                        '" type="number" class="form-control form-control-sm" onkeyup="checksummoney(' + number +
+                        '" type="text" class="form-control form-control-sm text-center" style="font-size:13px;font-family: \'Kanit\', sans-serif;" onkeyup="checksummoney(' + number +
                         ');">' +
                         '</td>' +
                         '<td>' +
                         '<input name="product_price[]" id="product_price' + number +
-                        '" type="text" class="form-control form-control-sm" onkeyup="checksummoney(' + number + ');">' +
+                        '" type="text" class="form-control form-control-sm text-end" style="font-size:13px;font-family: \'Kanit\', sans-serif;" onkeyup="checksummoney(' + number + ');">' +
                         '</td>' +
                         '<td>' +
                         '<div class="summoney' + number + '"></div>' +
                         '</td>' +
-                        '<td>' +
+                        '<td width="7%">' +
                         '<input name="product_lot[]" id="product_lot' + number +
-                        '" class="form-control form-control-sm" value="' + dateTime + '">' +
+                        '" class="form-control form-control-sm" value="' + dateTime + '" style="font-size:13px;font-family: \'Kanit\', sans-serif;">' +
                         '</td>' +
-                        '<td>' +
+                        '<td width="7%">' +
                         '<input name="warehouse_rep_sub_exedate[]" id="warehouse_rep_sub_exedate' + number +
-                        '" class="form-control form-control-sm" type="date">' +
+                        '" class="form-control form-control-sm text-center" type="date" style="font-size:13px;font-family: \'Kanit\', sans-serif;">' +
                         '</td>' +
-                        '<td>' +
+                        '<td width="7%">' +
                         '<input name="warehouse_rep_sub_expdate[]" id="warehouse_rep_sub_expdate' + number +
-                        '" class="form-control form-control-sm" type="date">' +
+                        '" class="form-control form-control-sm text-center" type="date" style="font-size:13px;font-family: \'Kanit\', sans-serif;">' +
                         '</td>' +
-                        '<td>' +
+                        '<td width="5%">' +
                         '<select name="warehouse_rep_sub_status[]" id="warehouse_rep_sub_status' + number +
-                        '" class="form-control form-control-sm" style="width: 100%;">' +
+                        '" class="form-control form-control-sm" style="font-size:13px;font-family: \'Kanit\', sans-serif;width: 100%;">' +
                         '<option value="1">ครบ</option>' +
                         '<option value="2">ไม่ครบ</option>' +
                         '</select>' +

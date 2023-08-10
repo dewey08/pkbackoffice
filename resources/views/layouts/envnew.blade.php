@@ -74,7 +74,21 @@
 		background-repeat: no-repeat;
 	}
   </style>
-
+    <?php
+        if (Auth::check()) {
+            $type = Auth::user()->type;
+            $iduser = Auth::user()->id;
+        } else {
+            echo "<body onload=\"TypeAdmin()\"></body>";
+            exit();
+        }
+        $url = Request::url();
+        $pos = strrpos($url, '/') + 1;
+         
+        use App\Http\Controllers\StaticController;
+        use App\Models\Products_request_sub;
+        $permiss_setting = StaticController::permiss_setting($iduser); 
+   ?>
 <body data-topbar="dark">
     {{-- <body style="background-image: url('my_bg.jpg');"> --}}
     <!-- Begin page -->
@@ -221,6 +235,7 @@
                             </ul>
                         </li>
 
+                        @if ($permiss_setting !=0)
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="fa-solid fa-file-pen text-danger"></i>
@@ -232,6 +247,9 @@
                                 <li><a href="{{ url('env_vendor') }}">ตั้งค่าบริษัท</a></li>
                             </ul>
                         </li>
+                        @endif
+
+                        
                       
                     </ul>
                 </div>

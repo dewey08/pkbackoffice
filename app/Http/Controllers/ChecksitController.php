@@ -59,6 +59,7 @@ use App\Models\Check_authen;
 use App\Models\Check_authen_temp;
 use App\Models\Visit_pttype_authen_report;
 use App\Models\Db_authen_detail;
+use App\Models\Api_neweclaim;
 use Auth;
 use ZipArchive;
 use Storage;
@@ -1183,8 +1184,8 @@ class ChecksitController extends Controller
     public function check_spsch_detail(Request $request)
     {
         $date_now = date('Y-m-d');
-        $date_start = "2023-08-01";
-        $date_end = "2023-08-02";
+        $date_start = "2023-07-02";
+        $date_end = "2023-07-02";
         $url = "https://authenservice.nhso.go.th/authencode/api/authencode-report?hcode=10978&provinceCode=3600&zoneCode=09&claimDateFrom=$date_now&claimDateTo=$date_now&page=0&size=1000&sort=transId,desc";
 
         $curl = curl_init();
@@ -1308,7 +1309,7 @@ class ChecksitController extends Controller
             SELECT month,year,countvn,authen_opd
             FROM db_authen
             WHERE year = "'.$y.'" and authen_opd <> 0
-            and month > 7
+            and month > 6
         ');
         $data_year3 = DB::connection('mysql')->select('
                 SELECT
@@ -1324,7 +1325,7 @@ class ChecksitController extends Controller
                 GROUP BY day
         ');
         $data_staff = DB::connection('mysql')->select('
-                SELECT 
+                SELECT
                  MONTH(c.vstdate) as month
                 ,YEAR(c.vstdate) as year
                 ,DAY(c.vstdate) as day
@@ -1334,12 +1335,12 @@ class ChecksitController extends Controller
                 ,COUNT(c.vn)-COUNT(c.claimcode) as Noauthen
                 from check_sit_auto c
                 LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
-                WHERE month(c.vstdate) = "'.$m.'"
+                WHERE c.vstdate = CURDATE()
                 GROUP BY c.staff
-			    ORDER BY Noauthen DESC 
+			    ORDER BY Noauthen DESC
         ');
         $data_dep = DB::connection('mysql')->select('
-                SELECT 
+                SELECT
                  MONTH(c.vstdate) as month
                 ,YEAR(c.vstdate) as year
                 ,DAY(c.vstdate) as day
@@ -1349,12 +1350,13 @@ class ChecksitController extends Controller
                 ,COUNT(c.vn)-COUNT(c.claimcode) as Noauthen
                 from check_sit_auto c
                 LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
-                WHERE month(c.vstdate) = "'.$m.'"
+                WHERE c.vstdate = CURDATE()
                 GROUP BY c.main_dep
-			    ORDER BY Noauthen DESC 
+			    ORDER BY Noauthen DESC
         ');
+        // WHERE month(c.vstdate) = "'.$m.'"
         $data_staff_max = DB::connection('mysql')->select('
-                SELECT 
+                SELECT
                 MONTH(c.vstdate) as month
                 ,YEAR(c.vstdate) as year
                 ,DAY(c.vstdate) as day
@@ -1364,9 +1366,9 @@ class ChecksitController extends Controller
                 ,COUNT(c.vn)-COUNT(c.claimcode) as Noauthen
                 from check_sit_auto c
                 LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
-                WHERE c.vstdate = CURDATE() 
+                WHERE c.vstdate = CURDATE()
                 GROUP BY c.staff
-                ORDER BY Noauthen DESC LIMIT 5 
+                ORDER BY Noauthen DESC LIMIT 5
         ');
 
         return view('dashboard.check_dashboard',[
@@ -1391,7 +1393,7 @@ class ChecksitController extends Controller
         ');
 
         return view('dashboard.check_dashboard_authen',[
-            'data_sit'       => $data_sit, 
+            'data_sit'       => $data_sit,
         ] );
     }
     public function check_dashboard_noauthen(Request $request,$day,$month,$year)
@@ -1408,6 +1410,42 @@ class ChecksitController extends Controller
         ');
 
         return view('dashboard.check_dashboard_noauthen',[
+            'data_sit'       => $data_sit,
+            // 'data_year3'       => $data_year3,
+        ] );
+    }
+    public function check_dashboard_staff(Request $request,$staff,$day,$month,$year)
+    {
+        $date = date('Y-m-d');
+        $y = date('Y');
+        $m = date('m');
+
+        $data_sit = DB::connection('mysql')->select('
+            SELECT c.vn,c.hn,c.cid,c.vstdate,c.fullname,c.pttype,c.subinscl,c.debit,c.claimcode,c.claimtype,c.hospmain,c.hometel,c.hospsub,c.main_dep,c.hmain,c.hsub,c.subinscl_name,c.staff,k.department
+            from check_sit_auto c
+            LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
+            WHERE DAY(vstdate) = "'.$day.'" AND MONTH(vstdate) = "'.$month.'" AND YEAR(vstdate) = "'.$year.'" AND c.staff = "'.$staff.'"  AND c.claimcode <> ""
+        ');
+
+        return view('dashboard.check_dashboard_staff',[
+            'data_sit'       => $data_sit,
+            // 'data_year3'       => $data_year3,
+        ] );
+    }
+    public function check_dashboard_staffno(Request $request,$staff,$day,$month,$year)
+    {
+        $date = date('Y-m-d');
+        $y = date('Y');
+        $m = date('m');
+
+        $data_sit = DB::connection('mysql')->select('
+            SELECT c.vn,c.hn,c.cid,c.vstdate,c.fullname,c.pttype,c.subinscl,c.debit,c.claimcode,c.claimtype,c.hospmain,c.hometel,c.hospsub,c.main_dep,c.hmain,c.hsub,c.subinscl_name,c.staff,k.department
+            from check_sit_auto c
+            LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
+            WHERE DAY(vstdate) = "'.$day.'" AND MONTH(vstdate) = "'.$month.'" AND YEAR(vstdate) = "'.$year.'" AND c.staff = "'.$staff.'"  AND c.claimcode is null
+        ');
+
+        return view('dashboard.check_dashboard_staffno',[
             'data_sit'       => $data_sit,
             // 'data_year3'       => $data_year3,
         ] );
@@ -1440,7 +1478,7 @@ class ChecksitController extends Controller
                 GROUP BY day
         ');
         $data_staff = DB::connection('mysql')->select('
-                SELECT 
+                SELECT
                  MONTH(c.vstdate) as month
                 ,YEAR(c.vstdate) as year
                 ,DAY(c.vstdate) as day
@@ -1452,10 +1490,10 @@ class ChecksitController extends Controller
                 LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
                 WHERE month(c.vstdate) = "'.$m.'"
                 GROUP BY c.staff
-			    ORDER BY Noauthen DESC 
+			    ORDER BY Noauthen DESC
         ');
         $data_dep = DB::connection('mysql')->select('
-                SELECT 
+                SELECT
                  MONTH(c.vstdate) as month
                 ,YEAR(c.vstdate) as year
                 ,DAY(c.vstdate) as day
@@ -1467,10 +1505,10 @@ class ChecksitController extends Controller
                 LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
                 WHERE month(c.vstdate) = "'.$m.'"
                 GROUP BY c.main_dep
-			    ORDER BY Noauthen DESC 
+			    ORDER BY Noauthen DESC
         ');
         $data_staff_max = DB::connection('mysql')->select('
-                SELECT 
+                SELECT
                 MONTH(c.vstdate) as month
                 ,YEAR(c.vstdate) as year
                 ,DAY(c.vstdate) as day
@@ -1480,9 +1518,9 @@ class ChecksitController extends Controller
                 ,COUNT(c.vn)-COUNT(c.claimcode) as Noauthen
                 from check_sit_auto c
                 LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
-                WHERE c.vstdate = CURDATE() 
+                WHERE c.vstdate = CURDATE()
                 GROUP BY c.staff
-                ORDER BY Noauthen DESC LIMIT 5 
+                ORDER BY Noauthen DESC LIMIT 5
         ');
 
         return view('dashboard.check_dashboard_mob',[
@@ -1505,7 +1543,7 @@ class ChecksitController extends Controller
             $enddate = $value->date_end;
         }
         $chart = DB::connection('mysql')->select('
-            
+
             SELECT
             MONTH(c.vstdate) as month
             ,YEAR(c.vstdate) as year
@@ -1515,10 +1553,10 @@ class ChecksitController extends Controller
             ,COUNT(c.vn)-COUNT(c.claimcode) as Noauthen
             from check_sit_auto c
             LEFT JOIN kskdepartment k ON k.depcode = c.main_dep
-            WHERE year(c.vstdate) = "'.$y.'" AND MONTH(c.vstdate) > 7            
+            WHERE year(c.vstdate) = "'.$y.'" AND MONTH(c.vstdate) > 7
             GROUP BY month
         ');
-       
+
         // SELECT * FROM db_authen WHERE year = "'.$y.'"
         $labels = [
           1 => "ม.ค", "ก.พ", "มี.ค", "เม.ย", "พ.ย", "มิ.ย", "ก.ค","ส.ค","ก.ย","ต.ค","พ.ย","ธ.ค"
@@ -1576,5 +1614,94 @@ class ChecksitController extends Controller
         // 255, 26, 104 ชมพู
         // 255, 205, 86
     }
+
+    // public function check_api(Request $request)
+    // {
+    //     // $username        = $request->username;
+    //     // $password        = $request->password;
+    //     $username        = '6508634296688';
+    //     $password        = 'a12345';
+    //     $ch = curl_init();
+    //     $headers  = [
+    //                 'User-Agent:<platform>/<version> <10978>',
+    //                 'Content-Type: application/json'
+    //             ];
+    //     $postData = [
+    //         'username' => $username,
+    //         'password' => $password
+    //     ];
+    //     curl_setopt($ch, CURLOPT_URL,"https://nhsoapi.nhso.go.th/FMU/ecimp/v1/auth");
+    //     curl_setopt($ch, CURLOPT_POST, 1);
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    //     $response     = curl_exec ($ch);
+    //     $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); //200
+    //     $contents = $response;
+
+    //     $result = json_decode($contents, true);
+    //     @$content = $result['content'];
+    //     // dd($content);
+
+    //     @$status = $result['status'];
+    //     @$message = $result['message'];
+    //     $token = $result['token'];
+
+    //     // dd($contents);
+    //     // dd($statusCode);
+    //     // dd($token);
+    //     // dd($result);
+    //     $check = Api_neweclaim::where('api_neweclaim_user',$username)->where('api_neweclaim_pass',$password)->count();
+    //     if ($check > 0) {
+    //         return response()->json([
+    //             'status'       => '100',
+    //              'response'    => $response,
+    //              'result'      => $result,
+    //         ]);
+    //     } else {
+    //         Api_neweclaim::insert([
+    //             'api_neweclaim_user'        => $username,
+    //             'api_neweclaim_pass'        => $password,
+    //             'api_neweclaim_token'       => $token,
+    //         ]);
+    //         return response()->json([
+    //             'status'       => '200',
+    //              'response'    => $response,
+    //              'result'      => $result,
+    //         ]);
+    //     }
+
+
+    //     // $authen = Http::post("https://nhsoapi.nhso.go.th/FMU/ecimp/v1/auth",
+    //     // [
+    //     //     'username' => $username,
+    //     //     'password' => $password
+    //     // ]);
+    //     // dd($authen);
+
+    //     // $curl = curl_init();
+    //     // curl_setopt_array($curl, array(
+    //     //     CURLOPT_URL => "https://nhsoapi.nhso.go.th/FMU/ecimp/v1/auth/$username/$password",
+    //     //     CURLOPT_RETURNTRANSFER => 1,
+    //     //     CURLOPT_SSL_VERIFYHOST => 0,
+    //     //     CURLOPT_SSL_VERIFYPEER => 0,
+    //     //     CURLOPT_CUSTOMREQUEST => 'GET',
+    //     // ));
+    //     // // dd($curl);
+    //     // $response = curl_exec($curl);
+    //     // curl_close($curl);
+    //     // $content = $response;
+    //     // $result = json_decode($content, true);
+    //     // //  dd($result);
+    //     // @$hcode = $result['hcode'];
+
+    //     // return view('authen.check_api',[
+    //     //     'response'  => $response,
+    //     //     'result'  => $result,
+    //     // ]);
+
+    // }
+
+
 }
- 
+

@@ -81,11 +81,10 @@
             </div>
         </div>
     </div>
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
-
                             <div class="row">
                                 <div class="col-md-1 text-end">
                                     <p for="pay_code">เลขที่บิล :</p>
@@ -147,7 +146,6 @@
 
 
                             </div>
-
                             <div class="row mt-3">
                                 <div class="col-md-1 text-end">
                                     <p for="pay_payuser_id">ผู้จ่าย :</p>
@@ -201,7 +199,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <input type="hidden" name="store_id" id="store_id" value="{{$storeid}}">
                             <input type="hidden" name="warehouse_pay_id" id="editwarehouse_pay_id" >
 
@@ -211,27 +208,14 @@
                                         <button type="button" id="Savebtn" class="me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary btn-sm">
                                             <i class="fa-solid fa-floppy-disk me-2"></i>
                                             สร้างใบจ่าย
-                                        </button> 
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
-                           
-                            {{-- <div class="card-footer">
-                                <div class="col-md-12 text-end">
-                                    <div class="form-group">
-                                        <button type="button" id="Savebtn" class="me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary btn-sm">
-                                            <i class="fa-solid fa-floppy-disk me-2"></i>
-                                            สร้างใบเบิก
-                                        </button> 
-                                    </div>
-                                </div>
-                            </div> --}}
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="row">
                 <div class="col-md-12">
@@ -242,17 +226,15 @@
                             <div class="btn-actions-pane-right">
                                 <div role="group" class="btn-group-sm btn-group">
 
-                                    {{-- <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info"
+                                    <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info"
                                         data-bs-toggle="modal" data-bs-target="#insertpaydata">
                                         <i class="pe-7s-shuffle btn-icon-wrapper"></i>สร้างใบเบิก
-                                    </button> --}}
+                                    </button>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body shadow-lg">
-                                {{-- <table style="width: 100%;" id="example"
-                                    class="table table-hover table-striped table-bordered myTable"
-                                    > --}}
+
                                     <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
                                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
@@ -282,13 +264,15 @@
                                                     <?php
                                                     //จ่ายจากคลัง
                                                     $pay_frominven = DB::table('warehouse_inven')->where('warehouse_inven_id', '=', $item->payout_inven_id)->first();
-                                                    $pay_frominven_name = $pay_frominven->warehouse_inven_name;
+                                                    // $pay_frominven_name = $pay_frominven->warehouse_inven_name;
 
                                                     //ผู้จ่าย
                                                     $pay_fromuser = DB::table('users')->where('id', '=', $item->pay_payuser_id)->first();
                                                     $pay_fromuser_name = $pay_fromuser->fname.' '.$pay_fromuser->lname;
                                                     ?>
-                                                    <td class="p-2">{{ $pay_frominven_name }}</td>
+                                                    <td class="p-2">
+                                                        {{-- {{ $pay_frominven_name }} --}}
+                                                    </td>
                                                     <td class="p-2" width="14%">{{ $item->DEPARTMENT_SUB_SUB_NAME }}</td>
                                                     <td class="text-center" width="9%">{{ $item->pay_status }}</td>
                                                     <td class="text-center" width="10%">{{ $item->fname }} {{ $item->lname }}</td>
@@ -296,23 +280,6 @@
 
                                                     <td class="text-center" width="5%">
 
-                                                        {{-- <div class="btn-group">
-                                                            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <p for="" style="color: rgb(57, 57, 57);font-size:13px">ทำรายการ</p>
-                                                            </button>
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item text-warning" href="{{url('warehouse/warehouse_pay_edit/'.$item->warehouse_pay_id)}}"
-                                                                    data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip" title="แก้ไข">
-                                                                    <i class="fa-solid fa-pen-to-square me-2"></i>
-                                                                    <p for="" style="color: rgb(252, 185, 0);font-size:13px">แก้ไข</p>
-                                                                </a>
-                                                                <div class="dropdown-divider"></div>
-                                                                <a class="dropdown-item text-warning" href="{{url('warehouse/warehouse_pay_sub/'.$item->warehouse_pay_id)}}"
-                                                                    data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="custom-tooltip" title="เพิ่มรายการจ่าย">
-                                                                    <i class="fa-solid fa-folder-plus me-2" style="color: rgb(112, 34, 238)"></i>
-                                                                    <p for="" style="color: rgb(112, 34, 238);font-size:13px">เพิ่มรายการจ่าย</p>
-                                                                </a>
-                                                        </div> --}}
                                                         <div class="dropdown d-inline-block">
                                                             <button type="button" aria-haspopup="true" aria-expanded="false"
                                                                 data-bs-toggle="dropdown"
@@ -320,16 +287,38 @@
                                                                 ทำรายการ
                                                             </button>
                                                             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-hover-link dropdown-menu">
-                                                                <a class="dropdown-item text-warning"
+                                                                {{-- <a class="dropdown-item text-warning"
                                                                         href="{{url('warehouse_payedit/'.$item->warehouse_pay_id)}}" style="font-size:13px" target="blank">
                                                                         <i class="fa-solid fa-clipboard-check me-2 text-warning"
                                                                             style="font-size:13px"></i>
                                                                         <span>แก้ไข</span>
-                                                                    </a>
-                                                                    {{-- <button class="dropdown-item text-warning" style="font-size:13px" data-bs-toggle="modal" data-bs-target=".editModal{{ $item->warehouse_pay_id }}">
-                                                                        <i class="fa-solid fa-pen-to-square me-2 text-warning" style="font-size:13px"></i>
+                                                                    </a> --}}
+                                                                    {{-- <a class="dropdown-item text-warning"
+                                                                        href="{{url('warehouse_payedit/'.$item->warehouse_pay_id)}}" style="font-size:13px" target="blank">
+                                                                        <i class="fa-solid fa-clipboard-check me-2 text-warning"
+                                                                            style="font-size:13px"></i>
                                                                         <span>แก้ไข</span>
-                                                                    </button> --}}
+                                                                    </a> --}}
+                                                                    {{-- <button type="button"class="dropdown-item menu"
+                                                                            data-bs-toggle="modal" data-bs-target="#Editpaydata{{ $item->warehouse_pay_id }}"
+                                                                            data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                            title="แก้ไข">
+                                                                            <i class="fa-solid fa-pen-to-square ms-2 me-2 text-warning"></i>
+                                                                            <label for=""
+                                                                                style="font-size:13px;color: rgb(255, 185, 34)">แก้ไข</label>
+                                                                        </button> --}}
+                                                                        <button type="button"class="dropdown-item menu edit_data"
+                                                                        value="{{ $item->warehouse_pay_id }}" data-bs-toggle="tooltip"
+                                                                        data-bs-placement="left" title="แก้ไข">
+                                                                        <i class="fa-solid fa-pen-to-square ms-2 me-2 text-warning"></i>
+                                                                        <label for="" style="font-size:13px;color: rgb(255, 185, 34)">แก้ไข</label>
+                                                                    </button>
+                                                                        {{-- <button type="button"class="dropdown-item menu edit_button" data-id="{{ $item->warehouse_pay_id }}" data-bs-toggle="modal"
+                                                                            data-bs-target="#EditModal">
+                                                                            <i class="fa-solid fa-pen-to-square ms-2 me-2 text-warning"></i>
+                                                                            <label for="" style="font-size:13px;color: rgb(255, 185, 34)">แก้ไข</label>
+                                                                        </button> --}}
+
                                                                 <div class="dropdown-divider"></div>
                                                                     <a class="dropdown-item text-primary"
                                                                     href="{{ url('warehouse_payadd/' . $item->warehouse_pay_id) }}"
@@ -344,163 +333,161 @@
                                                     </td>
                                                 </tr>
 
-
-                                                  <!-- Modal Edit-->
-                                        <div class="modal fade editModal{{ $item->warehouse_pay_id }}" id="editModal" tabindex="-1" role="dialog" aria-pledby="editModalp" aria-hidden="true">
-                                            <div class="modal-dialog modal-xl" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="myExtraLargeModalp">แก้ไขใบเบิก</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-p="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="row">
-                                                                <div class="col-md-2 text-end">
-                                                                    <p for="pay_code">เลขที่บิล :</p>
+                                                <!--  Modal content for the Editpaydata example -->
+                                                {{-- <div class="modal fade" id="Editpaydata" tabindex="-1" role="dialog" aria-pledby="myExtraLargeModalp" aria-hidden="true">
+                                                        <div class="modal-dialog modal-xl">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="myExtraLargeModalp">แก้ไขใบเบิก</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-p="Close"></button>
                                                                 </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <input id="editpay_code" type="text"
-                                                                            class="form-control form-control-sm" name="pay_code"
-                                                                            value="{{ $item->pay_code }}"
-                                                                             readonly>
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2 text-end">
+                                                                            <p for="pay_code">เลขที่บิล :</p>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <div class="form-group">
+                                                                                <input id="edit_pay_code" type="text" class="form-control form-control-sm" name="pay_code" readonly>
+                                                                            </div>
+                                                                        </div>
+
+
+                                                                        <div class="col-md-2 text-end">
+                                                                            <p for="pay_year">ปีงบ :</p>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <div class="form-group">
+                                                                                <select id="edit_pay_year" name="pay_year" class="form-select form-select-lg" style="width: 100%">
+                                                                                    <option value="">--เลือก--</option>
+                                                                                    @foreach ($budget_year as $ye)
+                                                                                        @if ($ye->leave_year_id == $item->pay_year)
+                                                                                            <option value="{{ $ye->leave_year_id }}" selected> {{ $ye->leave_year_id }} </option>
+                                                                                        @else
+                                                                                            <option value="{{ $ye->leave_year_id }}"> {{ $ye->leave_year_id }} </option>
+                                                                                        @endif
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-2 text-end">
+                                                                            <p for="pay_date">วันที่จ่าย  :</p>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <div class="form-group">
+                                                                                <input type="date" class="form-control form-control-sm datepicker" name="pay_date" id="edit_pay_date">
+                                                                            </div>
+                                                                        </div>
+
+
                                                                     </div>
-                                                                </div>
 
-
-                                                                <div class="col-md-2 text-end">
-                                                                    <p for="pay_year">ปีงบ :</p>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <select id="editpay_year" name="pay_year"
-                                                                            class="form-select form-select-lg" style="width: 100%">
-                                                                            <option value="">--เลือก--</option>
-                                                                            @foreach ($budget_year as $ye)
-                                                                                @if ($ye->leave_year_id ==  $item->pay_year)
-                                                                                    <option value="{{ $ye->leave_year_id }}" selected> {{ $ye->leave_year_id }} </option>
-                                                                                @else
-                                                                                    <option value="{{ $ye->leave_year_id }}"> {{ $ye->leave_year_id }} </option>
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-2 text-end">
-                                                                    <p for="pay_date">วันที่จ่าย  :</p>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <input id="editpay_date" type="date" class="form-control form-control-sm" name="pay_date" value="{{ $item->pay_date }}">
-                                                                    </div>
-                                                                </div>
-
-
-                                                            </div>
-
-                                                            <div class="row mt-3">
-                                                                <div class="col-md-2 text-end">
-                                                                    <p for="editpay_payuser_id">ผู้จ่าย :</p>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                            <select id="editpay_payuser_id" name="pay_payuser_id"
-                                                                            class="form-select form-select-lg" style="width: 100%">
-                                                                            <option value="">--เลือก--</option>
-                                                                            @foreach ($users as $ue)
-                                                                                @if ($ue->id == $item->pay_payuser_id)
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-2 text-end">
+                                                                            <p for="pay_payuser_id">ผู้จ่าย :</p>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                    <select id="edit_pay_payuser_id" name="pay_payuser_id"
+                                                                                    class="form-select form-select-lg" style="width: 100%">
+                                                                                    <option value="">--เลือก--</option>
+                                                                                    @foreach ($users as $ue)
+                                                                                        @if ($ue->id == $item->pay_payuser_id)
+                                                                                            <option value="{{ $ue->id }}" selected> {{ $ue->fname }}  {{ $ue->lname }} </option>
+                                                                                        @else
+                                                                                            <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>
+                                                                                        @endif
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2 text-end">
+                                                                            <p for="pay_user_id">ผู้รับ :</p>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <select id="edit_pay_user_id" name="pay_user_id"
+                                                                                    class="form-select form-select-lg" style="width: 100%">
+                                                                                    <option value="">--เลือก--</option>
+                                                                                    @foreach ($users as $ue)
+                                                                                    @if ($item->pay_user_id == $ue->id)
                                                                                     <option value="{{ $ue->id }}" selected> {{ $ue->fname }}  {{ $ue->lname }} </option>
-                                                                                @else
+                                                                                    @else
                                                                                     <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </select>
+                                                                                    @endif
+
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+
                                                                     </div>
-                                                                </div>
-                                                                <div class="col-md-2 text-end">
-                                                                    <p for="pay_user_id">ผู้รับ :</p>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <select id="editpay_user_id" name="pay_user_id"
-                                                                            class="form-select form-select-lg" style="width: 100%">
-                                                                            <option value="">--เลือก--</option>
-                                                                            @foreach ($users as $uee)
-                                                                                @if ($uee->id == $item->pay_user_id)
-                                                                                    <option value="{{ $uee->id }}" selected> {{ $uee->fname }}  {{ $uee->lname }} </option>
+
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-2 text-end">
+                                                                            <p for="payout_inven_id">จ่ายจากคลัง :</p>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <select id="edit_payout_inven_id" name="payout_inven_id"
+                                                                                class="form-select form-select-lg" style="width: 100%">
+                                                                                <option value="">--เลือก--</option>
+                                                                                @foreach ($warehouse_inven as $inven)
+                                                                                @if ($item->payout_inven_id == $inven->warehouse_inven_id)
+                                                                                <option value="{{ $inven->warehouse_inven_id }}" selected> {{ $inven->warehouse_inven_name }} </option>
                                                                                 @else
-                                                                                    <option value="{{ $uee->id }}"> {{ $uee->fname }}  {{ $uee->lname }} </option>
+                                                                                <option value="{{ $inven->warehouse_inven_id }}"> {{ $inven->warehouse_inven_name }} </option>
                                                                                 @endif
-                                                                            @endforeach
-                                                                        </select>
+
+                                                                                @endforeach
+                                                                            </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2 text-end">
+                                                                            <p for="payin_inven_id">รับเข้าคลัง :</p>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <select id="edit_payin_inven_id" name="payin_inven_id"
+                                                                                class="form-select form-select-lg" style="width: 100%">
+                                                                                <option value="">--เลือก--</option>
+                                                                                @foreach ($department_sub_sub as $dep)
+                                                                                @if ($item->payin_inven_id == $dep->DEPARTMENT_SUB_SUB_ID)
+                                                                                <option value="{{ $dep->DEPARTMENT_SUB_SUB_ID }}" selected> {{ $dep->DEPARTMENT_SUB_SUB_NAME }} </option>
+                                                                                @else
+                                                                                <option value="{{ $dep->DEPARTMENT_SUB_SUB_ID }}"> {{ $dep->DEPARTMENT_SUB_SUB_NAME }} </option>
+                                                                                @endif
+
+                                                                                @endforeach
+                                                                            </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <input type="hidden" name="store_id" id="edit_store_id">
+                                                                <input id="edit_warehouse_pay_id" type="hidden" class="form-control form-control-sm" name="edit_warehouse_pay_id">
+
+                                                                <div class="modal-footer">
+                                                                    <div class="col-md-12 text-end">
+                                                                        <div class="form-group">
+                                                                            <button type="button" id="Updatebtn" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary btn-sm">
+                                                                                <i class="fa-solid fa-floppy-disk me-2"></i>
+                                                                                แก้ไขข้อมูล
+                                                                            </button>
+                                                                            <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-danger btn-sm" data-bs-dismiss="modal"><i
+                                                                                    class="fa-solid fa-xmark me-2"></i>Close</button>
+
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
-                                                            </div>
-
-                                                            <div class="row mt-3">
-                                                                <div class="col-md-2 text-end">
-                                                                    <p for="payout_inven_id">จ่ายจากคลัง :</p>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <select id="editpayout_inven_id" name="payout_inven_id"
-                                                                        class="form-select form-select-lg" style="width: 100%">
-                                                                        <option value="">--เลือก--</option>
-                                                                        @foreach ($warehouse_inven as $inven)
-                                                                        @if ($item->payout_inven_id ==$inven->warehouse_inven_id )
-                                                                        <option value="{{ $inven->warehouse_inven_id }}" selected>{{ $inven->warehouse_inven_name }}</option>
-                                                                        @else
-                                                                        <option value="{{ $inven->warehouse_inven_id }}">{{ $inven->warehouse_inven_name }}</option>
-                                                                        @endif
-
-                                                                        @endforeach
-                                                                    </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2 text-end">
-                                                                    <p for="payin_inven_id">รับเข้าคลัง :</p>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <select id="editpayin_inven_id" name="payin_inven_id"
-                                                                        class="form-select form-select-lg" style="width: 100%">
-                                                                        <option value="">--เลือก--</option>
-                                                                        @foreach ($department_sub_sub as $dep)
-                                                                        @if ($item->payin_inven_id == $dep->DEPARTMENT_SUB_SUB_ID)
-                                                                        <option value="{{ $dep->DEPARTMENT_SUB_SUB_ID }}" selected> {{ $dep->DEPARTMENT_SUB_SUB_NAME }} </option>
-                                                                        @else
-                                                                        <option value="{{ $dep->DEPARTMENT_SUB_SUB_ID }}"> {{ $dep->DEPARTMENT_SUB_SUB_NAME }} </option>
-                                                                        @endif
-
-                                                                        @endforeach
-                                                                    </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                        <input type="hidden" name="store_id" id="editstore_id" value="{{$storeid}}">
-                                                        <input type="hidden" name="warehouse_pay_id" id="editwarehouse_pay_id" value="{{$item->warehouse_pay_id}}">
-                                                        <div class="modal-footer">
-                                                            <div class="col-md-12 text-end">
-                                                                <div class="form-group">
-                                                                    <button type="button" id="Updatebtn" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary btn-sm">
-                                                                        <i class="fa-solid fa-floppy-disk me-2"></i>
-                                                                        บันทึกข้อมูล
-                                                                    </button>
-                                                                    <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-danger btn-sm" data-bs-dismiss="modal"><i
-                                                                            class="fa-solid fa-xmark me-2"></i>Close</button>
-
-                                                                </div>
                                                             </div>
                                                         </div>
+                                                </div> --}}
 
-                                                    </div>
 
-                                            </div>
-                                        </div>
 
                                             @endforeach
                                         </tbody>
@@ -562,8 +549,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <input id="pay_date" type="date"
-                                        class="form-control form-control-sm" name="pay_date" value="{{ $date }}">
+                                    <input type="date" class="form-control form-control-sm datepicker" name="pay_date" id="pay_date" value="{{ $date }}">
                                 </div>
                             </div>
 
@@ -661,58 +647,209 @@
                 </div>
             </div>
         </div>
+
+         <!--  Modal content for the Editpaydata example -->
+         <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-pledby="myExtraLargeModalp" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myExtraLargeModalp">แก้ไขใบเบิก</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-p="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-2 text-end">
+                                <p for="pay_code">เลขที่บิล :</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input id="edit_pay_code" type="text" class="form-control form-control-sm" name="pay_code" readonly>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-2 text-end">
+                                <p for="pay_year">ปีงบ :</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select id="edit_pay_year" name="pay_year" class="form-select form-select-lg" style="width: 100%">
+                                        <option value="">--เลือก--</option>
+                                        {{-- @foreach ($budget_year as $ye)
+                                                <option value="{{ $ye->leave_year_id }}"> {{ $ye->leave_year_id }} </option>
+                                        @endforeach --}}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 text-end">
+                                <p for="pay_date">วันที่จ่าย  :</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input type="date" class="form-control form-control-sm datepicker" name="pay_date" id="edit_pay_date">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-2 text-end">
+                                <p for="pay_payuser_id">ผู้จ่าย :</p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                        <select id="edit_pay_payuser_id" name="pay_payuser_id"
+                                        class="form-select form-select-lg" style="width: 100%">
+                                        <option value="">--เลือก--</option>
+                                        @foreach ($users as $ue)
+
+                                                <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>
+
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <p for="pay_user_id">ผู้รับ :</p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select id="edit_pay_user_id" name="pay_user_id"
+                                        class="form-select form-select-lg" style="width: 100%">
+                                        <option value="">--เลือก--</option>
+                                        {{-- @foreach ($users as $ue)
+                                        <option value="{{ $ue->id }}"> {{ $ue->fname }}  {{ $ue->lname }} </option>
+                                        @endforeach --}}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-2 text-end">
+                                <p for="payout_inven_id">จ่ายจากคลัง :</p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select id="edit_payout_inven_id" name="payout_inven_id"
+                                    class="form-select form-select-lg" style="width: 100%">
+                                    <option value="">--เลือก--</option>
+                                    @foreach ($warehouse_inven as $inven)
+
+                                    <option value="{{ $inven->warehouse_inven_id }}"> {{ $inven->warehouse_inven_name }} </option>
+
+
+                                    @endforeach
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <p for="payin_inven_id">รับเข้าคลัง :</p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select id="edit_payin_inven_id" name="payin_inven_id"
+                                    class="form-select form-select-lg" style="width: 100%">
+                                    <option value="">--เลือก--</option>
+                                    @foreach ($department_sub_sub as $dep)
+
+                                    <option value="{{ $dep->DEPARTMENT_SUB_SUB_ID }}"> {{ $dep->DEPARTMENT_SUB_SUB_NAME }} </option>
+
+                                    @endforeach
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <input type="hidden" name="store_id" id="edit_store_id">
+                    <input id="edit_warehouse_pay_id" type="hidden" class="form-control form-control-sm" name="warehouse_pay_id" value="">
+                    {{-- <input id="edit_warehouse_pay_id" type="hidden" class="form-control form-control-sm" name="warehouse_pay_id" value=""> --}}
+
+                    <div class="modal-footer">
+                        <div class="col-md-12 text-end">
+                            <div class="form-group">
+                                <button type="button" id="Updatebtn" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary btn-sm">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>
+                                    แก้ไขข้อมูล
+                                </button>
+                                <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-danger btn-sm" data-bs-dismiss="modal"><i
+                                        class="fa-solid fa-xmark me-2"></i>Close</button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+    </div>
+
+
+
+
+
     @endsection
     @section('footer')
         <script>
             $(document).ready(function() {
+                // $(function () {
+                //     $("#datepicker").datepicker();
+                // });
                 $('#example').DataTable();
                 $('#example2').DataTable();
                 // $('select').select2();
+                // $('#pay_year').select2({
+                // // dropdownParent: $('#insertpaydata')
+                // placeholder: "--เลือก--",
+                //     allowClear: true
+                // });
+                // Editpaydata
                 $('#pay_year').select2({
-                // dropdownParent: $('#insertpaydata')
-                placeholder: "--เลือก--",
-                    allowClear: true
+                    dropdownParent: $('#insertpaydata')
                 });
                 $('#pay_user_id').select2({
-                // dropdownParent: $('#insertpaydata')
-                placeholder: "--เลือก--",
-                    allowClear: true
+                dropdownParent: $('#insertpaydata')
+                // placeholder: "--เลือก--",
+                    // allowClear: true
                 });
                 $('#pay_payuser_id').select2({
-                // dropdownParent: $('#insertpaydata')
-                placeholder: "--เลือก--",
-                    allowClear: true
+                dropdownParent: $('#insertpaydata')
+                // placeholder: "--เลือก--",
+                //     allowClear: true
                 });
                 $('#payin_inven_id').select2({
-                // dropdownParent: $('#insertpaydata')
-                placeholder: "--เลือก--",
-                    allowClear: true
+                dropdownParent: $('#insertpaydata')
+                // placeholder: "--เลือก--",
+                    // allowClear: true
                 });
                 $('#payout_inven_id').select2({
-                // dropdownParent: $('#insertpaydata')
-                placeholder: "--เลือก--",
-                    allowClear: true
+                dropdownParent: $('#insertpaydata')
+                // placeholder: "--เลือก--",
+                    // allowClear: true
                 });
-                $('#warehouse_pay_year2').select2({
-                    placeholder: "--เลือก--",
-                    allowClear: true
+                // $('#warehouse_pay_year2').select2({
+                //     placeholder: "--เลือก--",
+                //     allowClear: true
+                // });
+
+                $('#edit_pay_year').select2({
+                    dropdownParent: $('#EditModal')
+                });
+                $('#edit_pay_payuser_id').select2({
+                    dropdownParent: $('#EditModal')
+                });
+                $('#edit_pay_user_id').select2({
+                    dropdownParent: $('#EditModal')
                 });
 
-                $('#editpay_year').select2({
-                    dropdownParent: $('#editModal')
+                $('#edit_payout_inven_id').select2({
+                    dropdownParent: $('#EditModal')
                 });
-                $('#editpay_payuser_id').select2({
-                    dropdownParent: $('#editModal')
-                });
-                $('#editpay_user_id').select2({
-                    dropdownParent: $('#editModal')
-                });
-
-                $('#editpayout_inven_id').select2({
-                    dropdownParent: $('#editModal')
-                });
-                $('#editpayin_inven_id').select2({
-                    dropdownParent: $('#editModal')
+                $('#edit_payin_inven_id').select2({
+                    dropdownParent: $('#EditModal')
                 });
                 $.ajaxSetup({
                     headers: {
@@ -768,6 +905,74 @@
                         },
                     });
                 });
+
+                // $('.edit_button').click(function() {
+                //     var warehouse_pay_id = $(this).attr('data-id');
+                //     $.ajax({
+                //         url: "{{ url('warehouse_paymodal_edit') }}",
+                //         type: "GET",
+                //         data:{id:warehouse_pay_id},
+                //         success: function(data) {
+                //             var warehouse_pay = data.warehouse_pay;
+                //             var budgetyear = data.budget_year;
+                //             var users = data.users;
+                //             var htmlSubject = "<option value=''>Select Subject</option>";
+                //             var htmlUsers = "<option value=''>Select Users</option>";
+
+                //             $('#edit_pay_user_id').val(budgetyear[0]['pay_user_id']);
+
+
+                //             // // console.log(data.warehouse_pay.warehouse_pay_id);
+                //             // $('#edit_pay_code').val(data.warehouse_pay.pay_code)
+                //             // $('#edit_warehouse_pay_id').val(data.warehouse_pay.warehouse_pay_id)
+                //             // $('#edit_pay_date').val(data.warehouse_pay.pay_date)
+                //             // // $('#edit_pay_year').val(data.warehouse_pay.pay_year)
+                //             // $('#edit_pay_user_id').val(data.warehouse_pay.pay_user_id)
+
+                //         },
+                //     });
+                // });
+
+                $(document).on('click', '.edit_data', function() {
+                    var warehouse_pay_id = $(this).val();
+                    $('#EditModal').modal('show');
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ url('warehouse_paymodal_edit') }}" + '/' + warehouse_pay_id,
+                        success: function(data) {
+                            // console.log(data.warehouse_pays.warehouse_pay_id);
+                            $('#edit_pay_code').val(data.warehouse_pays.pay_code)
+                            $('#edit_warehouse_pay_id').val(data.warehouse_pays.warehouse_pay_id)
+                            $('#edit_pay_date').val(data.warehouse_pays.pay_date)
+                            // $('#edit_pay_year').val(data.warehouse_pay.pay_year)
+                            $('#edit_pay_user_id').val(data.warehouse_pays.pay_user_id)
+
+                        },
+                    });
+                });
+
+                // $('#edit_pay_year').change(function() {
+                //     var leave_year_id = $(this).val();
+                //     if (leave_year_id == "") {
+                //         $("#budget_year").html("<option value=''>Select Year</option>")
+                //     }
+                //     $.ajax({
+                //         type: "GET",
+                //         url: "{{ url('get_year') }}" + '/' + leave_year_id,
+                //         success: function(data) {
+                //             var budgetyear = data.budgetyear;
+                //             var html = "<option value=''>Select Year</option>"
+                //             for (let i = 0; i < budgetyear.length; i++) {
+                //                 // const element = budget_year[i];
+                //                 html += `
+                //                 <option value="`+budgetyear[i]['leave_year_id']+`">`+budgetyear[i]['leave_year_id']+`</option>
+                //                 `;
+
+                //             }
+                //             // $("#edit_pay_year").html(html);
+                //         },
+                //     });
+                // });
 
 
                 $('#Updatebtn').click(function() {

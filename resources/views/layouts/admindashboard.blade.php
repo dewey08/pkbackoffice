@@ -13,8 +13,8 @@
     <link rel="shortcut icon" href="{{ asset('pkclaim/images/logo150.ico') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
-   
+
+
 
     {{-- <link href="{{ asset('pkclaim/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css"> --}}
     <link href="{{ asset('pkclaim/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
@@ -55,20 +55,20 @@
 <link href="{{ asset('css/loginheader.css') }}" rel="stylesheet" />
 </head>
  <style>
-    body{   
+    body{
         background:
             /* url(/pkbackoffice/public/images/bg2.jpg); */
             /* -webkit-background-size: cover; */
         background-repeat: no-repeat;
 		background-attachment: fixed;
 		/* background-size: cover; */
-        background-size: 100% 100%; 
+        background-size: 100% 100%;
         }
  </style>
 
 
 <style>
-      
+
     *{
         margin: 0;
         padding: 0;
@@ -92,8 +92,8 @@
             background-position: 0 50%;
         }
     }
-    
-    
+
+
 </style>
 
  <body data-topbar="dark">
@@ -103,7 +103,7 @@
 
          <header id="page-topbar">
             <div class="navbar-header shadow-lg" style="background-color: rgb(252, 252, 252)" >
-              
+
 
                 <div class="d-flex">
                     <!-- LOGO -->
@@ -118,11 +118,11 @@
                         </a>
 
                         <a href="{{url('admin/home')}}" class="logo logo-light">
-                            <span class="logo-sm"> 
+                            <span class="logo-sm">
                                 <img src="{{ asset('pkclaim/images/logo150.png') }}" alt="logo-sm-light" height="40">
                             </span>
                             <span class="logo-lg">
-                                <h4 style="color:rgb(41, 41, 41)" class="mt-4">PK-BACKOFFice</h4> 
+                                <h4 style="color:rgb(41, 41, 41)" class="mt-4">PK-BACKOFFice</h4>
                             </span>
                         </a>
                     </div>
@@ -130,42 +130,45 @@
                     <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect" id="vertical-menu-btn">
                         <i class="ri-menu-2-line align-middle" style="color: black"></i>
                     </button>
-                    <?php  
-                        $org = DB::connection('mysql')->select(                                                            '   
-                                select * from orginfo 
+                    <?php
+                        $org = DB::connection('mysql')->select(                                                            '
+                                select * from orginfo
                                 where orginfo_id = 1                                                                                                                      ',
-                        ); 
+                        );
                     ?>
                     <form class="app-search d-none d-lg-block">
                         <div class="position-relative">
                             @foreach ($org as $item)
                             <h4 style="color:rgb(48, 46, 46)" class="mt-2">{{$item->orginfo_name}}</h4>
                             @endforeach
-                            
+
                         </div>
-                    </form>                                         
+                    </form>
                 </div>
 
 
 
                 <div class="d-flex">
                     <div class="dropdown d-none d-lg-inline-block ms-1">
-                        <a href="{{url("admin/home")}}">   
+                        <a href="{{url("admin/home")}}">
                             <i class="fa-solid fa-gauge-high text-success ms-4" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Dashboard"></i>
                           </a>
-                        <a href="{{url("setting/setting_index")}}" target="_blank">  
+                          <a href="{{url("backups")}}">
+                            <i class="fas fa-database text-secondary ms-4" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Backup Database"></i>
+                          </a>
+                        <a href="{{url("setting/setting_index")}}" target="_blank">
                             <i class="fa-solid fa-gear text-danger ms-4" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="ตั้งค่า"></i>
                           </a>
-                          <a href="{{url("user/home")}}" target="_blank">  
+                          <a href="{{url("user/home")}}" target="_blank">
                             <i class="fa-solid fa-user-group text-info ms-4 me-2" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="ผู้ใช้งานทั่วไป"></i>
-                          </a> 
-    
+                          </a>
+
                         <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
                             <i class="ri-fullscreen-line" style="color: rgb(9, 75, 129)"></i>
                         </button>
 
                         <div class="dropdown d-none d-lg-inline-block ms-1">
-                            <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="modal" data-bs-target="#Keypassword"> 
+                            <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="modal" data-bs-target="#Keypassword">
                                 <i class="fa-solid fa-key" style="color: rgb(207, 34, 115)"></i>
                             </button>
                         </div>
@@ -219,20 +222,20 @@
                         <h5 class="modal-title" id="myExtraLargeModalLabel">เปลี่ยนรหัสผ่าน </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body"> 
-                        <div class="row">                    
+                    <div class="modal-body">
+                        <div class="row">
                             <div class="col-md-4 text-end"><label for="">รหัสผ่าน New</label></div>
-                            <div class="col-md-7"> 
+                            <div class="col-md-7">
                                 <div class="form-group text-center">
                                     <input type="password" class="form-control form-control-sm" id="password" name="password">
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-md-12 text-end">
-                            <div class="form-group"> 
-                                <button type="button" id="SaveChang" class="btn btn-outline-info btn-sm" > 
+                            <div class="form-group">
+                                <button type="button" id="SaveChang" class="btn btn-outline-info btn-sm" >
                                     <i class="fa-solid fa-floppy-disk me-1"></i>
                                     เปลี่ยน
                                 </button>
@@ -241,7 +244,7 @@
 
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>
@@ -251,8 +254,8 @@
             @yield('content')
          </div>
 
-               
- 
+
+
         {{-- <footer class="footer">
             <div class="container-fluid">
                 <div class="row">
@@ -281,7 +284,7 @@
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
- 
+
 
     <!-- JAVASCRIPT -->
     <script src="{{ asset('pkclaim/libs/jquery/jquery.min.js') }}"></script>
@@ -361,7 +364,7 @@
             //     }
             // });
         });
- 
+
     </script>
 </body>
 

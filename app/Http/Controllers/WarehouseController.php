@@ -438,7 +438,7 @@ class WarehouseController extends Controller
         $rep = Warehouse_rep::where('warehouse_rep_id','=',$id)->first();
         $checkproduct = Warehouse_rep_sub::where('warehouse_rep_id', '=', $id)->get();
         $couninven = DB::table('warehouse_stock')->where('warehouse_inven_id', '=', $rep->warehouse_rep_inven_id)->count();
-
+        $inven = $rep->warehouse_rep_inven_id;
         $datashow_ = DB::connection('mysql')->select('
                 SELECT * from warehouse_rep WHERE warehouse_rep_id = "'.$id.'"
         ');
@@ -485,8 +485,32 @@ class WarehouseController extends Controller
                 'warehouse_recieve_sub_status'       => '2',
                 'warehouse_recieve_sub_total'        => $value2->warehouse_rep_sub_total,
             ]);
-        }
+       
 
+            $check_stock = Warehouse_stock::where('product_id','=',$value2->product_id)->where('warehouse_inven_id', $inven)->count();
+            if ($check_stock > 0) {
+                $pro = DB::table('warehouse_stock')->where('product_id', '=', $value2->product_id)->where('warehouse_inven_id', $inven)->first();
+                        Warehouse_stock::where('warehouse_inven_id', $inven)->where('product_id', $value2->product_id)->update([
+                            'product_qty_recieve'         => $pro->product_qty_recieve + $value2->product_qty,
+                            'product_qty_total'           => $pro->product_qty_total + $value2->product_qty,
+                            'product_price_total'         => $pro->product_price_total + $value2->product_price_total, 
+                        ]);
+            } else {      
+                $add3 = new Warehouse_stock();
+                $add3->warehouse_inven_id     = $inven;
+                $add3->product_id             = $value2->product_id;
+                $add3->product_code           = $value2->product_code;
+                $add3->product_name           = $value2->product_name;
+                $add3->product_type_id        = $value2->product_type_id;
+                $add3->product_unit_subid     = $value2->product_unit_subid;
+                $add3->product_qty_insert     = $value2->product_qty;
+                $add3->product_price          = $value2->product_price;
+                $add3->product_qty_recieve    = $value2->product_qty; 
+                $add3->product_qty_total      = $value2->product_qty;
+                $add3->product_price_total    = $value2->product_qty * $value2->product_price;
+                $add3->save(); 
+            }
+        }
         return response()->json([
             'status'     => '200'
         ]);
@@ -803,19 +827,29 @@ class WarehouseController extends Controller
         $data['product_data'] = Products::where('product_groupid', '=', 1)->orwhere('product_groupid', '=', 2)->orderBy('product_id', 'DESC')->get();
         $data['countsttus'] = DB::table('warehouse_rep_sub')->where('warehouse_rep_sub_status', '=','2')->count();
 
-        $data['warehouse_stock'] = DB::connection('mysql')->select('
-            SELECT wr.warehouse_recieve_id,wr.warehouse_recieve_inven_id,wi.warehouse_inven_name,pc.category_name
-                    ,wrs.product_id,wrs.product_code,pd.product_name,pu.unit_name,wr.warehouse_recieve_date,wrs.product_lot,wrs.product_price
-                    ,SUM(wrs.product_qty) as qty_recieve,SUM(wrs.product_price_total) as totalprice_recieve,wrs.warehouse_recieve_sub_status
-                    from warehouse_recieve wr
-                    left outer join warehouse_recieve_sub wrs on wrs.warehouse_recieve_id=wr.warehouse_recieve_id
-                    left outer join product_data pd on pd.product_id=wrs.product_id
-                    left outer join product_category pc on pc.category_id=pd.product_categoryid
-                    left outer join warehouse_inven wi on wi.warehouse_inven_id=wr.warehouse_recieve_inven_id
-                    left outer join product_unit pu on pu.unit_id=wrs.product_unit_subid
-                    where wr.warehouse_recieve_inven_id = "'.$id.'"
-					GROUP BY wrs.product_code
-            ');
+        // $data['warehouse_stock'] = DB::connection('mysql')->select('
+        //     SELECT wr.warehouse_recieve_id,wr.warehouse_recieve_inven_id,wi.warehouse_inven_name,pc.category_name
+        //             ,wrs.product_id,wrs.product_code,pd.product_name,pu.unit_name,wr.warehouse_recieve_date,wrs.product_lot,wrs.product_price
+        //             ,SUM(wrs.product_qty) as qty_recieve,SUM(wrs.product_price_total) as totalprice_recieve,wrs.warehouse_recieve_sub_status
+        //             from warehouse_recieve wr
+        //             left outer join warehouse_recieve_sub wrs on wrs.warehouse_recieve_id=wr.warehouse_recieve_id
+        //             left outer join product_data pd on pd.product_id=wrs.product_id
+        //             left outer join product_category pc on pc.category_id=pd.product_categoryid
+        //             left outer join warehouse_inven wi on wi.warehouse_inven_id=wr.warehouse_recieve_inven_id
+        //             left outer join product_unit pu on pu.unit_id=wrs.product_unit_subid
+        //             where wr.warehouse_recieve_inven_id = "'.$id.'"
+		// 			GROUP BY wrs.product_code
+        //     ');
+            $data['warehouse_stock'] = DB::connection('mysql')->select('
+                        SELECT ws.warehouse_stock_id,ws.product_id,ws.product_code,pd.product_name,wi.warehouse_inven_name,pc.category_name,pu.unit_name
+                        ,ws.product_price,ws.product_qty_recieve,ws.product_qty_pay,ws.product_qty_total,ws.product_price_total
+                        FROM warehouse_stock ws
+                        left outer join product_data pd on pd.product_id = ws.product_id
+                        left outer join product_category pc on pc.category_id = pd.product_categoryid
+                        left outer join warehouse_inven wi on wi.warehouse_inven_id = ws.warehouse_inven_id
+                        left outer join product_unit pu on pu.unit_id = ws.product_unit_subid
+                        where ws.warehouse_inven_id = "'.$id.'" 
+                ');
 
             $data['data_invent'] = DB::table('warehouse_inven')
             ->leftjoin('warehouse_recieve','warehouse_recieve.warehouse_recieve_inven_id','=','warehouse_inven.warehouse_inven_id')
@@ -871,13 +905,13 @@ class WarehouseController extends Controller
 
         $count = DB::table('warehouse_rep_sub')->where('warehouse_rep_id','=',$id)->count();
 
-        $counproduct = DB::table('warehouse_rep_sub')->where('warehouse_rep_id','=',$id)->where('warehouse_rep_sub_status','=','2')->count();
-
+        // $counproduct = DB::table('warehouse_rep_sub')->where('warehouse_rep_id','=',$id)->where('warehouse_rep_sub_status','=','2')->count();
+        $counproduct = DB::table('warehouse_rep_sub')->where('warehouse_rep_id','=',$id)->count();
         $inven = DB::table('warehouse_rep')
         ->leftjoin('warehouse_inven','warehouse_inven.warehouse_inven_id','=','warehouse_rep.warehouse_rep_inven_id')
         ->where('warehouse_rep_id','=',$id)->first();
 
-
+        $data_sub = DB::table('warehouse_rep_sub')->where('warehouse_rep_id','=',$id)->get();
         // $data['product_data'] = Products::where('store_id', '=', Auth::user()->store_id)->where('warehouse_rep_id','=',$id)->orderBy('product_id', 'DESC')->get();
         $data['product_data'] = Products::where('store_id', '=', Auth::user()->store_id)->orderBy('product_id', 'DESC')->get();
         // $product_data = DB::table('product_data')
@@ -892,7 +926,7 @@ class WarehouseController extends Controller
             'count'               => $count,
             'counproduct'         => $counproduct,
             'inven'               => $inven,
-
+            'data_sub'            => $data_sub,
         ]);
     }
     public function warehouse_addsave(Request $request)
@@ -901,7 +935,7 @@ class WarehouseController extends Controller
         $store_id            = $request->store_id;
         $warehouse_inven_id  = $request->warehouse_inven_id;
         // $proid = $request->product_id;
-
+        // Warehouse_recieve_sub::where('warehouse_rep_id','=',$warehouse_rep_id)->delete();
             if ($request->product_id != '' || $request->product_id != null) {
                 $product_id = $request->product_id;
                 $product_type_id = $request->product_type_id;
@@ -924,6 +958,8 @@ class WarehouseController extends Controller
                     $idtype = DB::table('products_typefree')->where('products_typefree_id','=', $product_type_id[$count])->first();
                     $idunit = DB::table('product_unit')->where('unit_id','=', $product_unit_subid[$count])->first();
 
+                    // Warehouse_rep_sub::where('warehouse_rep_id','=',$warehouse_rep_id)->where('product_id','=',$idpro->product_id)->delete();
+
                     $add2 = new Warehouse_rep_sub();
                     $add2->warehouse_rep_id = $warehouse_rep_id;
                     $add2->warehouse_rep_code = $maxcode;
@@ -942,12 +978,72 @@ class WarehouseController extends Controller
                     $add2->warehouse_rep_sub_status = $warehouse_rep_sub_status[$count];
                     $total = $product_qty[$count] * $product_price[$count];
                     $add2->product_price_total = $total;
-                    $add2->save();
+                    $add2->save(); 
+
+                    // เก็บไปไว้เป็นประวัติการรับเข้า
+                    //     $check_recieve_sub = Warehouse_recieve_sub::where('warehouse_rep_id','=',$warehouse_rep_id)->where('product_id','=',$idpro->product_id)->count();
+                    //    if ($check_recieve_sub > 0) {
+                    //         $pro_d = DB::table('Warehouse_recieve_sub')->where('warehouse_rep_id','=',$warehouse_rep_id)->where('product_id', '=', $product_id[$count])->first();
+                    //                 Warehouse_recieve_sub::where('product_id', $idpro->product_id)->where('warehouse_rep_id', $warehouse_rep_id)->update([
+                    //                     'product_type_id'                     =>  $idtype->products_typefree_id, 
+                    //                     'product_lot'                         =>  $product_lot[$count], 
+                    //                     'product_unit_subid'                  =>  $idunit->unit_id, 
+                    //                     'warehouse_recieve_sub_exedate'       =>  $warehouse_rep_sub_exedate[$count], 
+                    //                     'warehouse_recieve_sub_expdate'       =>  $warehouse_rep_sub_expdate[$count], 
+                    //                     'product_qty'                         =>  $pro_d->product_qty + $product_qty[$count],
+                    //                     'product_price'                       =>  $product_price[$count],
+                    //                     'product_price_total'                 =>  $pro_d->product_price_total +( $product_qty[$count] * $product_price[$count]),                                 
+                    //             ]);
+                    //    } else {                     
+                    //         $add4 = new Warehouse_recieve_sub();
+                    //         $add4->warehouse_recieve_code = $maxcode; 
+                    //         $add4->product_id = $idpro->product_id;
+                    //         $add4->product_code = $idpro->product_code;
+                    //         $add4->product_name = $idpro->product_name;
+                    //         $add4->product_type_id = $idtype->products_typefree_id; 
+                    //         $add4->product_unit_subid = $idunit->unit_id; 
+                    //         $add4->product_lot = $product_lot[$count];
+                    //         $add4->product_qty = $product_qty[$count];
+                    //         $add4->product_price = $product_price[$count];
+                    //         $add4->warehouse_recieve_sub_exedate = $warehouse_rep_sub_exedate[$count];
+                    //         $add4->warehouse_recieve_sub_expdate = $warehouse_rep_sub_expdate[$count];
+                    //         $add4->warehouse_recieve_sub_status = '2';
+                    //         $total4 = $product_qty[$count] * $product_price[$count];
+                    //         $add4->product_price_total = $total4;
+                    //         $add4->warehouse_rep_id = $warehouse_rep_id;
+                    //         $add4->save(); 
+                    //     }
 
 
+                    // $check_stock = Warehouse_stock::where('product_id','=',$idpro->product_id)->count();
+                    // if ($check_stock > 0) {
+                    //     $pro = DB::table('warehouse_stock')->where('product_id', '=', $product_id[$count])->where('warehouse_inven_id', $warehouse_inven_id)->first();
+                    //             Warehouse_stock::where('product_id', $idpro->product_id)->where('warehouse_inven_id', $warehouse_inven_id)->update([
+                    //                 'product_qty_recieve'         => $pro->product_qty_recieve + $product_qty[$count],
+                    //                 'product_qty_total'           => $pro->product_qty_total + $product_qty[$count],
+                    //                 'product_price_total'         => $pro->product_price_total + ($product_qty[$count] * $product_price[$count]), 
+                    //             ]);
+                    // } else {      
+                    //     $add3 = new Warehouse_stock();
+                    //     $add3->warehouse_inven_id     = $warehouse_inven_id;
+                    //     $add3->product_id             = $idpro->product_id;
+                    //     $add3->product_code           = $idpro->product_code;
+                    //     $add3->product_name           = $idpro->product_name;
+                    //     $add3->product_type_id        = $idtype->products_typefree_id;
+                    //     $add3->product_unit_subid     = $idunit->unit_id;
+                    //     $add3->product_qty            = $product_qty[$count];
+                    //     $add3->product_price          = $product_price[$count];
+                    //     $add3->product_qty_recieve    = $product_qty[$count]; 
+                    //     $add3->product_qty_total      = $product_qty[$count];
+                    //     $add3->product_price_total      = $product_qty[$count] * $product_price[$count];
+                    //     $add3->save(); 
+                    // }
+                    
+                     
                 }
                 $sumrecieve  =  Warehouse_rep_sub::where('warehouse_rep_id','=',$warehouse_rep_id)->sum('product_price_total');
                 $countsttus = DB::table('warehouse_rep_sub')->where('warehouse_rep_id', '=',$warehouse_rep_id)->where('warehouse_rep_sub_status', '=','2')->count();
+               
                 $update = Warehouse_rep::find($warehouse_rep_id);
                 $update->warehouse_rep_total = $sumrecieve;
                 if ($countsttus == '0') {
@@ -957,8 +1053,12 @@ class WarehouseController extends Controller
                 }
 
                 $update->save();
-
             }
+
+            
+            
+            
+
             return response()->json([
                 'status'     => '200'
             ]);
@@ -1000,7 +1100,7 @@ class WarehouseController extends Controller
     public function warehouse_update_product(Request $request)
     {
         $id = $request->warehouse_rep_id;
-
+        $warehouse_inven_id  = $request->warehouse_inven_id;
         $code = $request->warehouse_rep_code;
         $update = Warehouse_rep::find($id);
         $update->warehouse_rep_status = 'recieve';
@@ -1054,9 +1154,37 @@ class WarehouseController extends Controller
                         $add2->warehouse_rep_sub_exedate = $warehouse_rep_sub_exedate[$count];
                         $add2->warehouse_rep_sub_expdate = $warehouse_rep_sub_expdate[$count];
                         $add2->warehouse_rep_sub_status = $warehouse_rep_sub_status[$count];
-                        $total = $product_qty[$count] * $product_price[$count];
-                        $add2->product_price_total = $total;
+                        // $total = $product_qty[$count] * $product_price[$count];
+                        $add2->product_price_total = $product_qty[$count] * $product_price[$count];
                         $add2->save();
+
+                        // $check_stock = Warehouse_stock::where('product_id','=',$idpro->product_id)->where('warehouse_inven_id', $warehouse_inven_id)->count();
+                        // $pro = DB::table('warehouse_stock')->where('product_id', '=', $product_id[$count])->where('warehouse_inven_id', $warehouse_inven_id)->first();    
+
+                        // if ($check_stock > 0) {
+                                         
+                        //             // Warehouse_stock::where('product_id', $idpro->product_id)->where('warehouse_inven_id', $warehouse_inven_id)->update([
+                        //             //     'product_qty_update'          =>  $product_qty[$count],
+                        //             //     // 'product_qty_recieve'         => ($pro->product_qty_recieve - $pro->product_qty_insert + $pro->product_qty_update) + $product_qty[$count],
+                        //             //     'product_qty_recieve'         => $product_qty[$count],
+                        //             //     'product_qty_total'           => ($pro->product_qty_total - $pro->product_qty_insert) + $product_qty[$count],
+                        //             //     'product_price_total'         => ($pro->product_price_total - ($pro->product_qty_insert * $pro->product_price)) + ($product_qty[$count] * $product_price[$count]), 
+                        //             // ]);
+                        // } else {      
+                        //     $add3 = new Warehouse_stock();
+                        //     $add3->warehouse_inven_id     = $warehouse_inven_id;
+                        //     $add3->product_id             = $idpro->product_id;
+                        //     $add3->product_code           = $idpro->product_code;
+                        //     $add3->product_name           = $idpro->product_name;
+                        //     $add3->product_type_id        = $idtype->products_typefree_id;
+                        //     $add3->product_unit_subid     = $idunit->unit_id;
+                        //     $add3->product_qty_insert     = $product_qty[$count];
+                        //     $add3->product_price          = $product_price[$count];
+                        //     $add3->product_qty_recieve    = $product_qty[$count]; 
+                        //     $add3->product_qty_total      = $product_qty[$count];
+                        //     $add3->product_price_total    = $product_qty[$count] * $product_price[$count];
+                        //     $add3->save(); 
+                        // }
 
                     }
                     $sumrecieve  =  Warehouse_rep_sub::where('warehouse_rep_id','=',$id)->sum('product_price_total');
@@ -1097,7 +1225,7 @@ class WarehouseController extends Controller
 
         $sum = $SUP_TOTAL * $PRICE_PER_UNIT;
 
-        $output = '<input type="hidden" type="text" name="sum" value="' . $sum . '" /><div style="text-align: right; margin-right: 10px;font-size: 14px;">' . number_format($sum, 5) . '</div>';
+        $output = '<input type="hidden" type="text" name="sum" value="' . $sum . '" /><div style="text-align: right; margin-right: 10px;font-size: 14px;">' . number_format($sum, 2) . '</div>';
         echo $output;
     }
 
@@ -1158,6 +1286,9 @@ class WarehouseController extends Controller
         // $output .= ' <value="' . $infoproduct->unit_id . '" >';
         }
     }
+
+
+
     public function warehouse_inven(Request $request)
     {
         $data['users'] = User::get();

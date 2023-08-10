@@ -115,7 +115,7 @@ Route::match(['get','post'],'sit_auto',[App\Http\Controllers\AutoController::cla
 Route::match(['get','post'],'repage',[App\Http\Controllers\AutoController::class, 'repage'])->name('sit.repage');//
 Route::match(['get','post'],'sit_pullacc_auto',[App\Http\Controllers\AutoController::class, 'sit_pullacc_auto'])->name('auto.sit_pullacc_auto');//
 
-
+Route::match(['get','post'],'sss_check_claimcode',[App\Http\Controllers\AutoController::class, 'sss_check_claimcode'])->name('check.sss_check_claimcode');//
 
 Route::match(['get','post'],'dbday_auto',[App\Http\Controllers\AutoController::class, 'dbday_auto'])->name('db.dbday_auto');//
 Route::match(['get','post'],'depauthen_auto',[App\Http\Controllers\AutoController::class, 'depauthen_auto'])->name('db.depauthen_auto');//
@@ -138,11 +138,16 @@ Route::match(['get','post'],'check_dashboard_mob',[App\Http\Controllers\Checksit
 Route::match(['get','post'],'check_dashboard_authen_mob/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_authen_mob'])->name('claim.check_dashboard_authen_mob');//
 Route::match(['get','post'],'check_dashboard_noauthen_mob/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_noauthen_mob'])->name('claim.check_dashboard_noauthen_mob');//
 
+Route::match(['get','post'],'check_dashboard_staff/{staff}/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_staff'])->name('claim.check_dashboard_staff');//
+Route::match(['get','post'],'check_dashboard_staffno/{staff}/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_staffno'])->name('claim.check_dashboard_staffno');//
+
 Route::match(['get','post'],'check_web',[App\Http\Controllers\ChecksitController::class, 'check_web'])->name('claim.check_web');//
 Route::match(['get','post'],'check_spsch',[App\Http\Controllers\ChecksitController::class, 'check_spsch'])->name('claim.check_spsch');//
 Route::match(['get','post'],'check_spsch_detail',[App\Http\Controllers\ChecksitController::class, 'check_spsch_detail'])->name('claim.check_spsch_detail');//
 Route::match(['get','post'],'check_sit_daysitauto',[App\Http\Controllers\ChecksitController::class, 'check_sit_daysitauto'])->name('claim.check_sit_daysitauto');//
 Route::match(['get','post'],'check_sit_daypullauto',[App\Http\Controllers\ChecksitController::class, 'check_sit_daypullauto'])->name('claim.check_sit_daypullauto');//
+
+Route::match(['get','post'],'check_api',[App\Http\Controllers\ChecksitController::class, 'check_api'])->name('claim.check_api');//
 
 Route::match(['get','post'],'check_sit_pull',[App\Http\Controllers\ChecksitController::class, 'check_sit_pull'])->name('claim.check_sit_pull');//
 Route::match(['get','post'],'check_sit_font',[App\Http\Controllers\ChecksitController::class, 'check_sit_font'])->name('claim.check_sit_font');//
@@ -227,9 +232,18 @@ Route::get('/', function () {
 })->name('index');
 
 
+
 Auth::routes();
 
 
+// ฺbackup Database
+
+Route::get('backups', [App\Http\Controllers\BackupController::class, 'index']);
+Route::get('backupnow', [App\Http\Controllers\BackupController::class, 'backupnow'])->name('backupnow');
+Route::get('backups/getbody', [App\Http\Controllers\BackupController::class, 'listbody'])->name('listbody');
+Route::get('backups/total-unit', [App\Http\Controllers\BackupController::class, 'totalUnit'])->name('totalUnit');
+Route::get('backup/download/{name}', [App\Http\Controllers\BackupController::class, 'download'])->name('backup.download');
+Route::delete('backup/delete', [App\Http\Controllers\BackupController::class, 'delete'])->name('backup.delete');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('admin/home', [App\Http\Controllers\HomeController::class, 'adminHome'])->name('admin.home')->middleware('type');
@@ -569,6 +583,10 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'warehouse/warehouse_pay',[WarehousePayController::class,'warehouse_pay'])->name('pay.warehouse_pay');
     Route::match(['get','post'],'warehouse/warehouse_pay_edit/{id}',[WarehousePayController::class,'warehouse_pay_edit'])->name('pay.warehouse_pay_edit');
     Route::match(['get','post'],'warehouse_payedit/{id}',[WarehousePayController::class,'warehouse_payedit'])->name('pay.warehouse_payedit');
+    Route::match(['get','post'],'warehouse_paymodal_edit/{id}',[WarehousePayController::class,'warehouse_paymodal_edit'])->name('pay.warehouse_paymodal_edit');
+
+    Route::match(['get','post'],'get_year/{id}',[WarehousePayController::class,'get_year'])->name('pay.get_year');
+
     Route::match(['get','post'],'warehouse/warehouse_paysave',[WarehousePayController::class,'warehouse_paysave'])->name('pay.warehouse_paysave');
     Route::match(['get','post'],'warehouse/warehouse_payupdate',[WarehousePayController::class,'warehouse_payupdate'])->name('pay.warehouse_payupdate');
 
@@ -1608,6 +1626,9 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'account_804_stmnull_all/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_804_stmnull_all'])->name('acc.account_804_stmnull_all');//
     Route::match(['get','post'],'account_804_stam',[App\Http\Controllers\AccountPKController::class, 'account_804_stam'])->name('acc.account_804_stam');//
 
+    Route::match(['get','post'],'check_auth',[App\Http\Controllers\NeweclaimController::class, 'check_auth'])->name('api.check_auth');//
+    Route::match(['get','post'],'check_authapi',[App\Http\Controllers\NeweclaimController::class, 'check_authapi'])->name('api.check_authapi');//
+
     Route::match(['get','post'],'acc_stm',[App\Http\Controllers\AccountPKController::class, 'acc_stm'])->name('acc.acc_stm');//
     Route::match(['get','post'],'acc_repstm',[App\Http\Controllers\AccountPKController::class, 'acc_repstm'])->name('acc.acc_repstm');//
 
@@ -1904,7 +1925,7 @@ Route::match(['get','post'],'p4p_work_position',[App\Http\Controllers\P4pControl
 Route::match(['get','post'],'p4p_work_position_save',[App\Http\Controllers\P4pController::class, 'p4p_work_position_save'])->name('p4.p4p_work_position_save');//
 Route::match(['get','post'],'p4p_work_position_edit/{id}',[App\Http\Controllers\P4pController::class, 'p4p_work_position_edit'])->name('p4.p4p_work_position_edit');//
 Route::match(['get','post'],'p4p_work_position_update',[App\Http\Controllers\P4pController::class, 'p4p_work_position_update'])->name('p4.p4p_work_position_update');//
-Route::match(['get','post'],'p4p_work_position_switchactive',[App\Http\Controllers\P4pController::class, 'p4p_work_position_switchactive'])->name('p4.p4p_work_position_switchactive');//
+Route::match(['get','post'],'p4p_work_position_switchactive',[App\Http\Controllers\P4pController::class, 'p4p_work_position_switchactive'])->name('p4.p4p_work_position_switchactive');// switchactive
 
 Route::match(['get','post'],'p4p_work_position_sub/{id}',[App\Http\Controllers\P4pController::class, 'p4p_work_position_sub'])->name('p4.p4p_work_position_sub');//
 
@@ -1934,6 +1955,18 @@ Route::match(['get','post'],'medicine_salt_subhn/{hn}',[App\Http\Controllers\Med
 //********************* */ Claim 16 แฟ้ม ***********************************
 // Route::match(['get','post'],'sixteendata',[App\Http\Controllers\ClaimreferController::class, 'sixteendata'])->name('data.sixteendata');//
 // Route::match(['get','post'],'sixteendata_pull',[App\Http\Controllers\ClaimreferController::class, 'sixteendata_pull'])->name('data.sixteendata_pull');//
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2064,8 +2097,23 @@ Route::match(['get','post'],'ktb_spawn',[App\Http\Controllers\KTBController::cla
 Route::match(['get','post'],'timein',[App\Http\Controllers\TimeINController::class, 'timein'])->name('TT.timein');//ลงเวลา
 Route::match(['get','post'],'timein_save',[App\Http\Controllers\TimeINController::class, 'timein_save'])->name('TT.timein_save');//ลงเวลา
 
-//********************* */ ENV  ***********************************
 
+//********************* */ DENTAL  ***********************************
+Route::match(['get','post'],'dental',[App\Http\Controllers\DentalController::class, 'dental'])->name('den.dental');//
+Route::match(['get','post'],'dental_detail/{id}',[App\Http\Controllers\DentalController::class, 'dental_detail'])->name('den.dental_detail');//
+Route::match(['get','post'],'dental_save',[App\Http\Controllers\DentalController::class, 'dental_save'])->name('den.dental_save');//
+Route::match(['get','post'],'dental_edit/{id}',[App\Http\Controllers\DentalController::class, 'dental_edit'])->name('den.dental_edit');//
+Route::match(['get','post'],'dental_update',[App\Http\Controllers\DentalController::class, 'dental_update'])->name('den.dental_update');//
+Route::match(['get','post'],'dental_switchactive',[App\Http\Controllers\DentalController::class, 'dental_switchactive'])->name('den.dental_switchactive');// switchactive
+
+
+//********************* */ OPD IPD  ***********************************
+Route::match(['get','post'],'opdtoipd',[App\Http\Controllers\OpipController::class, 'opdtoipd'])->name('op.opdtoipd');//
+Route::match(['get','post'],'opdtoipd_sub/{vn}',[App\Http\Controllers\OpipController::class, 'opdtoipd_sub'])->name('op.opdtoipd_sub');//
+Route::match(['get','post'],'opdtoipd_subsubclaim/{vn}/{income}',[App\Http\Controllers\OpipController::class, 'opdtoipd_subsubclaim'])->name('op.opdtoipd_subsubclaim');//
+Route::match(['get','post'],'opdtoipd_subsub/{vn}/{income}',[App\Http\Controllers\OpipController::class, 'opdtoipd_subsub'])->name('op.opdtoipd_subsub');//
+// Route::match(['get','post'],'opdtoipd_sub/{month}/{year}',[App\Http\Controllers\OpipController::class, 'opdtoipd_sub'])->name('op.opdtoipd_sub');//
+//********************* */ ENV  ***********************************
 Route::match(['get','post'],'env_dashboard',[App\Http\Controllers\EnvController::class, 'env_dashboard'])->name('env.env_dashboard');//
 
 //บ่อบำบัด//////////////////////////////////////////////////////////////
@@ -2113,10 +2161,5 @@ Route::match(['get','post'],'env_vendor_save',[App\Http\Controllers\EnvControlle
 Route::match(['get','post'],'env_vendor_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_env_vendor_edit'])->name('env.env_vendor_edit');//แก้ไข
 Route::match(['get','post'],'env_vendor_update',[App\Http\Controllers\EnvController::class, 'env_env_vendor_update'])->name('env.env_vendor_update');//อัพเดท
 Route::match(['get','post'],'env_vendor_destroy/{id}',[App\Http\Controllers\EnvController::class, 'env_env_vendor_destroy'])->name('env.env_vendor_destroy');//ลบข้อมูล
-
-
-
-
-
 
 });
