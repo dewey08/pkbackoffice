@@ -160,7 +160,7 @@ class EnvController extends Controller
         ');
 
 
-        $data_parameter = DB::table('env_water_parameter')->get();
+        $data_parameter = DB::table('env_water_parameter')->where('water_parameter_active','=','TRUE')->get();
          
 
         return view('env.env_water_add', $data,[
