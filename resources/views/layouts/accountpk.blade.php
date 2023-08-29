@@ -48,15 +48,17 @@
    <!-- select2 -->
     <link rel="stylesheet" href="{{asset('asset/js/plugins/select2/css/select2.min.css')}}">
    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+   <link rel="stylesheet" href="{{ asset('disacc/vendors/pixeden-stroke-7-icon-master/pe-icon-7-stroke/dist/pe-icon-7-stroke.css') }}">
+   <link href="{{ asset('acccph/styles/css/base.css') }}" rel="stylesheet">
 <!-- Plugins css -->
 {{-- <link href="assets/libs/dropzone/min/dropzone.min.css" rel="stylesheet" type="text/css" /> --}}
 </head>
 <style>
     body{
-        background:
+        /* background: */
             /* url(/pkbackoffice/public/images/bg7.png);  */
             /* -webkit-background-size: cover; */
+        background-color:rgb(245, 240, 240);
         background-repeat: no-repeat;
 		background-attachment: fixed;
 		/* background-size: cover; */
@@ -75,7 +77,7 @@
   		background-image: url('/pkbackoffice/public/images/bgheader.jpg');
 		background-repeat: no-repeat;
 	}
-    .myTable thead tr{
+    /* .myTable thead tr{
     background-color: #b56fca;
     color: #ffffff;
     text-align: center;
@@ -97,7 +99,7 @@
     }
     .myTable tbody tr .active-row{
         color: #ccbcd1;
-    }
+    } */
 </style>
 
 
@@ -117,9 +119,9 @@
     <!-- Begin page -->
     <div id="layout-wrapper">
 
-        <header id="page-topbar">
-            {{-- <div class="navbar-header shadow-lg Bgheader"> --}}
-                <div class="navbar-header shadow-lg" style="background-color: rgb(255, 255, 255)">
+        <header id="page-topbar ">
+            {{-- <div class="navbar-header"> --}}
+                <div class="navbar-header shadow" style="background-color: rgba(237, 199, 247)">
                 {{-- <div class="d-flex">
                     <div class="navbar-brand-box">
                         <h4 style="color:rgb(255, 255, 255)" class="mt-4">PK-BACKOFFice</h4>
@@ -146,7 +148,7 @@
 
                 <div class="d-flex">
                     <!-- LOGO -->
-                    <div class="navbar-brand-box">
+                    <div class="navbar-brand-box" style="background-color: rgb(255, 255, 255)">
                         <a href="" class="logo logo-dark">
                             <span class="logo-sm">
                                 <img src="assets/images/logo-sm.png" alt="logo-sm" height="22">
@@ -161,28 +163,30 @@
                                 <img src="{{ asset('pkclaim/images/logo150.png') }}" alt="logo-sm-light" height="40">
                             </span>
                             <span class="logo-lg">
-                                <h4 style="color:rgb(3, 3, 3)" class="mt-4">PK-BACKOFFice</h4>
+                                <h4 style="color:rgba(237, 199, 247, 0.781)" class="mt-4">PK-BACKOFFice</h4>
                             </span>
                         </a>
                     </div>
 
                     <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect" id="vertical-menu-btn">
-                        <i class="ri-menu-2-line align-middle" style="color:rgb(7, 7, 7)"></i>
+                        <i class="ri-menu-2-line align-middle" style="color:rgb(255, 255, 255)"></i>
                     </button>
+
+                    <h4 style="color:rgb(255, 255, 255)" class="mt-4">ACCOUNT</h4>
                     <?php
                         $org = DB::connection('mysql')->select(                                                            '
                                 select * from orginfo
                                 where orginfo_id = 1                                                                                                                      ',
                         );
                     ?>
-                    <form class="app-search d-none d-lg-block">
+                    {{-- <form class="app-search d-none d-lg-block">
                         <div class="position-relative">
                             @foreach ($org as $item)
-                            <h4 style="color:rgb(7, 7, 7)" class="mt-2">{{$item->orginfo_name}}</h4>
+                            <h4 style="color:rgb(255, 255, 255)" class="mt-2">{{$item->orginfo_name}}</h4>
                             @endforeach
-
+                            <h4 style="color:rgb(255, 255, 255)" class="mt-3">ACCOUNT</h4>
                         </div>
-                    </form>
+                    </form> --}}
                 </div>
 
 
@@ -190,7 +194,7 @@
                 <div class="d-flex">
                     <div class="dropdown d-none d-lg-inline-block ms-1">
                         <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
-                            <i class="ri-fullscreen-line" style="color: rgb(175, 171, 171)"></i>
+                            <i class="ri-fullscreen-line" style="color: rgb(39, 38, 38)"></i>
                         </button>
                     </div>
 
@@ -204,10 +208,10 @@
                                 <img src="{{ asset('storage/person/' . Auth::user()->img) }}" height="32px"
                                     width="32px" alt="Header Avatar" class="rounded-circle header-profile-user">
                             @endif
-                            <span class="d-none d-xl-inline-block ms-1" style="color: rgb(175, 171, 171)">
+                            <span class="d-none d-xl-inline-block ms-1" style="color: rgb(49, 48, 48)">
                                 {{ Auth::user()->fname }} {{ Auth::user()->lname }}
                             </span>
-                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block" style="color: rgb(175, 171, 171)"></i>
+                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block" style="color: rgb(44, 43, 43)"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
@@ -237,7 +241,9 @@
         </header>
 
         <!-- ========== Left Sidebar Start ========== -->
-        <div class="vertical-menu Bgsidebar">
+        {{-- <div class="vertical-menu" style="background-color: rgb(255, 255, 255)"> --}}
+        <div class="vertical-menu">
+            {{-- <div class="vertical-menu Bgsidebar"> --}}
 
             <div data-simplebar class="h-100">
 
@@ -315,10 +321,12 @@
                                 <span>ประกันสังคม</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{ url('account_301_dash') }}">ผัง-301</a></li>
-                                {{-- <li><a href="{{ url('account_302_dash') }}">ผัง-302</a></li> --}}
-                                {{-- <li><a href="{{ url('account_304_dash') }}">ผัง-304</a></li> --}}
-                                {{-- <li><a href="{{ url('account_308_dash') }}">ผัง-308</a></li> --}}
+                                <li><a href="{{ url('account_301_dash') }}">301-OPเครือข่าย</a></li>
+                                <li><a href="{{ url('account_302_dash') }}">302-IPเครือข่าย</a></li>
+                                <li><a href="{{ url('account_304_dash') }}">304-IPนอกเครือข่าย</a></li>
+                                <li><a href="{{ url('account_307_dash') }}">307-กองทุนทดแทน</a></li>
+                                <li><a href="{{ url('account_308_dash') }}">308-72ชั่วโมงแรก</a></li>
+                                <li><a href="{{ url('account_309_dash') }}">309-ค่าใช้จ่ายสูง/อุบัติเหตุ/ฉุกเฉินOP</a></li>
                             </ul>
                         </li>
                         <li>
@@ -383,8 +391,17 @@
                                 <li><a href="{{ url('upstm_lgoexcel') }}">LGO-OP(Excel)</a></li>
                                 <li><a href="{{ url('upstm_lgoipexcel') }}">LGO-IP(Excel)</a></li>
 
-                                <li><a href="{{ url('upstm_ti') }}">UCS(Excel-ไต)</a></li>
+                                <li><a href="{{ url('upstm_ti') }}">UCS(Excel-ไต)OK</a></li>
                                 <li><a href="{{ url('upstm_tixml') }}">OFC(Xml-ไต)OK</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect"> 
+                                <i class="fa-solid fa-cloud-arrow-up text-warning"></i>
+                                <span>ใบเสร็จรับเงิน</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true"> 
+                                <li><a href="{{ url('uprep_money') }}">ลงใบเสร็จรับเงิน</a></li> 
                             </ul>
                         </li>
                         <li>
@@ -403,7 +420,9 @@
                                 <span>ตั้งค่า</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('aset_trimart') }}">ไตรมาส</a></li> 
                                 <li><a href="{{ url('acc_setting') }}">Mapping Pttype</a></li>
+
                             </ul>
                         </li>
                         {{-- <li>
@@ -438,8 +457,8 @@
         <!-- Start right Content here -->
         <!-- ============================================================== -->
         <div class="main-content">
-
-            <div class="page-content">
+            {{-- <div class="page-content"> --}}
+            <div class="page-content Backgroupbody">
 
                 @yield('content')
 
@@ -532,11 +551,17 @@
     <script type="text/javascript" src="{{ asset('fullcalendar/fullcalendar.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('fullcalendar/lang/th.js') }}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- <script type="text/javascript" src="{{ asset('acccph/vendors/@chenfengyuan/datepicker/dist/datepicker.min.js') }}"></script> --}}
+    <script type="text/javascript" src="{{ asset('acccph/vendors/daterangepicker/daterangepicker.js') }}"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/jquery-tabledit/jquery.tabledit.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ asset('acccph/js/form-components/toggle-switch.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('acccph/js/form-components/datepicker.js') }}"></script>
     <!-- App js -->
     <script src="{{ asset('pkclaim/js/app.js') }}"></script>
-    <link href="{{ asset('acccph/styles/css/base.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('acccph/styles/css/base.css') }}" rel="stylesheet"> --}}
     @yield('footer')
 
 

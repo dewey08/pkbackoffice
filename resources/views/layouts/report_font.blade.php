@@ -54,6 +54,9 @@
    <link rel="stylesheet" href="{{ asset('global.css') }}" />
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/styles/github.min.css" />
    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js"></script>
+
+   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+ 
 </head>
 <style>
     body{
@@ -79,8 +82,8 @@
     <div id="layout-wrapper">
 
         <header id="page-topbar">
-            <div class="navbar-header shadow-lg Bgheader">
-
+            <div class="navbar-header shadow-lg bg-white">
+                {{-- <div class="navbar-header shadow-lg Bgheader"> --}}
 
                 <div class="d-flex">
                     <!-- LOGO -->
@@ -144,7 +147,8 @@
         </style>
 
         <!-- ========== Left Sidebar Start ========== -->
-        <div class="vertical-menu Bgsidebar">
+        {{-- <div class="vertical-menu Bgsidebar"> --}}
+            <div class="vertical-menu">
             <div data-simplebar class="h-100">
                 <!--- Sidemenu -->
                 <div id="sidebar-menu">
@@ -176,8 +180,9 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="{{ url('check_dashboard') }}" target="_blank">DB Authen</a></li>
-                                <li><a href="{{ url('check_dashboard_mob') }}" target="_blank">DB Authen Mobile</a></li>
-                                <li><a href="{{ url('check_sit_day') }}" target="_blank">เช็คสิทธิ์+Authen</a></li>
+                                {{-- <li><a href="{{ url('check_dashboard_mob') }}" target="_blank">DB Authen Mobile</a></li> --}}
+                                <li><a href="{{ url('check_sit_day') }}" target="_blank">เช็คสิทธิ์</a></li>
+                                <li><a href="{{ url('check_authen_day') }}" target="_blank">Authen</a></li>
                                 {{-- <li><a href="{{ url('check_authen') }}" target="_blank">Import Excel Authen</a></li> --}}
                                 <li><a href="{{ url('check_sit_money') }}" target="_blank"> เช็คสิทธิ์ Money PK</a></li>
                             </ul>
@@ -361,8 +366,8 @@
     <script src="{{ asset('pkclaim/js/app.js') }}"></script>
     <link href="{{ asset('acccph/styles/css/base.css') }}" rel="stylesheet">
 
-    <script src="{{ asset('presentation.js') }}"></script>
-    <script src="{{ asset('circularProgressBar.min.js') }}"></script>
+    {{-- <script src="{{ asset('presentation.js') }}"></script> --}}
+    {{-- <script src="{{ asset('circularProgressBar.min.js') }}"></script> --}}
     @yield('footer')
 
 

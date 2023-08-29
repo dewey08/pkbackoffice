@@ -187,6 +187,7 @@ class EnvController extends Controller
             left join p4p_workload l on l.p4p_workload_user=u.id
             group by u.dep_subsubtrueid;
         ');        
+       
         $add = new Env_water();
         $add->water_date            = $request->input('water_date');
         $add->water_user            = $request->input('water_user');
@@ -211,13 +212,92 @@ class EnvController extends Controller
                 for($count = 0; $count< $number; $count++)
                 {
                     $idwater = Env_water_parameter::where('water_parameter_id','=',$water_parameter_id[$count])->first();
-
+                    
                     $add_sub = new Env_water_sub();
                     $add_sub->water_id                              = $waterid;
                     $add_sub->water_list_idd                        = $idwater->water_parameter_id;
                     $add_sub->water_list_detail                     = $idwater->water_parameter_name;
                     $add_sub->water_list_unit                       = $water_parameter_unit[$count]; 
                     $add_sub->water_qty                             = $water_qty[$count];
+                    $add_sub->water_results                         = $idwater->water_parameter_icon.''.$idwater->water_parameter_normal;
+
+                    if ($idwater->water_parameter_id == 1 || $water_qty[$count]  <= 20) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 2 || $water_qty[$count]  <= 120) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 3 || $water_qty[$count]  <= 500) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 4 || $water_qty[$count]  <= 30) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 5 || $water_qty[$count]  <= 0.5) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 6 || $water_qty[$count]  <= 35) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }  
+                    if ($idwater->water_parameter_id == 7 || $water_qty[$count]  == 5 || $water_qty[$count]  == 6 || $water_qty[$count]  == 7 || $water_qty[$count]  == 8 || $water_qty[$count]  == 9 ) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 8 || $water_qty[$count]  <= 1.0) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 9 || $water_qty[$count]  <= 20) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 10 || $water_qty[$count]  <= 5000) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 11 || $water_qty[$count]  <= 1000) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 12 || $water_qty[$count]  <= 1) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 13 || $water_qty[$count]  <= 1000) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 14 || $water_qty[$count]  >= 5) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    if ($idwater->water_parameter_id == 15 || $water_qty[$count]  >= 400) {
+                        $status = 'ผิดปกติ';
+                    } else {
+                        $status = 'ปกติ';
+                    }
+                    
+                    $add_sub->status                         = $status;
                     $add_sub->water_parameter_short_name            = $water_parameter_short_name[$count];
                     $add_sub->save();        
                 }
@@ -225,60 +305,72 @@ class EnvController extends Controller
 
         // $idsub = Env_water_parameter::max('water_parameter_id');
         $data_loob = Env_water_sub::where('water_id','=',$waterid)->get();
-        $name = User::where('id','=',$iduser)->first();
+        // $name = User::where('id','=',$iduser)->first();
+        $data_users = User::where('id','=',$request->water_user)->first();
+        $name = $data_users->fname.' '.$data_users->lname;
 
-        $event = array();
-        foreach ($data_loob as $key => $value) {
-            // $ff = $value->water_list_detail;
-           $event[] = [
-            'water_parameter_short_name'          => $value->water_parameter_short_name,
-            'water_qty'                           => $value->water_qty,           
-        ];
-      
-        }   
-     
-        // dd($event);
-        // dd($event[1]);
-        // foreach ($data_loob as $key => $value) { 
-            $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว        
-            $datesend = date('Y-m-d'); 
+        $mMessage = array();
+        foreach ($data_loob as $key => $value) { 
+
+               $mMessage[] = [
+                    'water_parameter_short_name'    => $value->water_parameter_short_name,
+                    'water_qty'                     => $value->water_qty, 
+                    'status'                        => $value->status,           
+                ];   
+            }   
+       
+            // $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
+            $linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
+           
+            // $smessage = [];
             $header = "ข้อมูลตรวจน้ำ";
+            $message =  $header. 
+                    "\n"."วันที่บันทึก : "      . $request->input('water_date'). 
+                   "\n"."ผู้บันทึก  : "        . $name . 
+                   "\n"."สถานที่เก็บตัวอย่าง : " . $request->input('water_location'); 
  
+            foreach ($mMessage as $key => $smes) {
+                $na_mesage           = $smes['water_parameter_short_name'];
+                $qt_mesage           = $smes['water_qty'];
+                $status_mesage       = $smes['status'];
 
-            $message = $header.
-                // "\n"."วันที่แจ้ง : "        . $request->input('water_date').    
-                // "\n"."เวลาแจ้ง : "        . date('H:i:s').
-                // "\n"."สถานที่ตรวจ : "     . $request->input('water_location').        
-                // "\n"."ผู้ตรวจน้ำ : "       . $name->fname.''.$name->lname .  
-                                                
-                "\n"."พารามิเตอร์ : "      . $event[0];
-                // "\n"."ค่าที่ตรวจได้ : "     . $qty ;             
-                    
-                        
+                $message.="\n"."รายการพารามิเตอร์ : ". $na_mesage .
+                          "\n"."ผลการวิเคราะห์ : " . $qt_mesage . 
+                          "\n"."สถานะ : "       . $status_mesage;  
+            } 
+              
+
                 if($linetoken == null){
                     $send_line ='';
                 }else{
                     $send_line = $linetoken;
-                }
+                }  
+                if($send_line !== '' && $send_line !== null){ 
 
-            if($send_line !== '' && $send_line !== null){  
-                    $chOne = curl_init();
-                    curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
-                    curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
-                    curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
-                    curl_setopt( $chOne, CURLOPT_POST, 1);
-                    curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
-                    curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
-                    curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
-                    $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$send_line.'', );
-                    curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
-                    $result = curl_exec( $chOne );
-                    
-                    curl_close( $chOne );
-                    
-            }
-              
+                    // function notify_message($smessage,$linetoken)
+                    // {
+                        $chOne = curl_init();
+                        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
+                        curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
+                        curl_setopt( $chOne, CURLOPT_POST, 1);
+                        // curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
+                        curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
+                        curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
+                        $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$linetoken.'', );
+                        curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
+                        $result = curl_exec($chOne);
+                        if (curl_error($chOne)) {echo 'error:' . curl_error($chOne);} else { $result_ = json_decode($result, true);
+                            echo "status : " . $result_['status'];
+                            echo "message : " . $result_['message'];}
+                        curl_close($chOne);
+                    // } 
+                    // foreach ($mMessage as $linetoken) {
+                    //     notify_message($linetoken,$smessage);
+                    // } 
+
+                }              
                     
         // } 
         return redirect()->route('env.env_water');
@@ -452,6 +544,7 @@ class EnvController extends Controller
 
     public function env_water_parameter_save (Request $request)
     {  
+        // env_water_icon_name
         $datenow = date('Y-m-d H:m:s');
         Env_water_parameter::insert([
             'water_parameter_name'                   => $request->water_parameter_name,

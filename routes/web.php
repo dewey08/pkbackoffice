@@ -18,6 +18,8 @@ use App\Http\Controllers\UserComController;
 //     return view('welcome');
 // });
 
+Route::match(['get','post'],'contact_save',[App\Http\Controllers\CustormerController::class, 'contact_save'])->name('Cus.contact_save');//
+
 Route::match(['get','post'],'connectdb',[App\Http\Controllers\ConfigDatabaseController::class, 'connectdb'])->name('db.connectdb');//
 Route::match(['get','post'],'connectdb_save',[App\Http\Controllers\ConfigDatabaseController::class, 'connectdb_save'])->name('db.connectdb_save');//
 
@@ -117,6 +119,14 @@ Route::match(['get','post'],'sit_pullacc_auto',[App\Http\Controllers\AutoControl
 
 Route::match(['get','post'],'sss_check_claimcode',[App\Http\Controllers\AutoController::class, 'sss_check_claimcode'])->name('check.sss_check_claimcode');//
 
+Route::match(['get','post'],'pull_hosauto',[App\Http\Controllers\Auto_authenController::class, 'pull_hosauto'])->name('auto.pull_hosauto');//
+Route::match(['get','post'],'checksit_auto',[App\Http\Controllers\Auto_authenController::class, 'checksit_auto'])->name('auto.checksit_auto');//
+Route::match(['get','post'],'pullauthen_spsch',[App\Http\Controllers\Auto_authenController::class, 'pullauthen_spsch'])->name('auto.pullauthen_spsch');//
+Route::match(['get','post'],'updaet_authen_to_checksitauto',[App\Http\Controllers\Auto_authenController::class, 'updaet_authen_to_checksitauto'])->name('auto.updaet_authen_to_checksitauto');//
+Route::match(['get','post'],'checksithos_auto',[App\Http\Controllers\Auto_authenController::class, 'checksithos_auto'])->name('auto.checksithos_auto');//
+Route::match(['get','post'],'pullauthen_tispsch',[App\Http\Controllers\Auto_authenController::class, 'pullauthen_tispsch'])->name('auto.pullauthen_tispsch');//
+Route::match(['get','post'],'updaet_authen_to_checksittiauto',[App\Http\Controllers\Auto_authenController::class, 'updaet_authen_to_checksittiauto'])->name('auto.updaet_authen_to_checksittiauto');//
+
 Route::match(['get','post'],'dbday_auto',[App\Http\Controllers\AutoController::class, 'dbday_auto'])->name('db.dbday_auto');//
 Route::match(['get','post'],'depauthen_auto',[App\Http\Controllers\AutoController::class, 'depauthen_auto'])->name('db.depauthen_auto');//
 Route::match(['get','post'],'authen_auto_year',[App\Http\Controllers\AutoController::class, 'authen_auto_year'])->name('db.authen_auto_year');//
@@ -128,11 +138,16 @@ Route::match(['get','post'],'check_authen_send',[App\Http\Controllers\ChecksitCo
 
 Route::match(['get','post'],'check_sit_day',[App\Http\Controllers\ChecksitController::class, 'check_sit_day'])->name('claim.check_sit_day');//
 Route::match(['get','post'],'check_sit_daysearch',[App\Http\Controllers\ChecksitController::class, 'check_sit_daysearch'])->name('claim.check_sit_daysearch');//
+Route::match(['get','post'],'check_authen_day',[App\Http\Controllers\ChecksitController::class, 'check_authen_day'])->name('claim.check_authen_day');//
 
 Route::match(['get','post'],'check_dashboard',[App\Http\Controllers\ChecksitController::class, 'check_dashboard'])->name('claim.check_dashboard');//
 Route::match(['get','post'],'check_dashboard_authen/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_authen'])->name('claim.check_dashboard_authen');//
 Route::match(['get','post'],'check_dashboard_noauthen/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_noauthen'])->name('claim.check_dashboard_noauthen');//
 Route::match(['get','post'],'check_dashboard_bar',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_bar'])->name('claim.check_dashboard_bar');
+Route::match(['get','post'],'check_dashboard_line',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_line'])->name('claim.check_dashboard_line');
+Route::match(['get','post'],'check_line',[App\Http\Controllers\ChecksitController::class, 'check_line'])->name('claim.check_line');
+Route::match(['get','post'],'check_buble',[App\Http\Controllers\ChecksitController::class, 'check_buble'])->name('claim.check_buble');
+Route::match(['get','post'],'check_type_bar',[App\Http\Controllers\ChecksitController::class, 'check_type_bar'])->name('claim.check_type_bar');
 
 Route::match(['get','post'],'check_dashboard_mob',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_mob'])->name('claim.check_dashboard_mob');//
 Route::match(['get','post'],'check_dashboard_authen_mob/{day}/{month}/{year}',[App\Http\Controllers\ChecksitController::class, 'check_dashboard_authen_mob'])->name('claim.check_dashboard_authen_mob');//
@@ -176,6 +191,16 @@ Route::match(['get','post'],'import_stm_aipnsave',[App\Http\Controllers\UpstmCon
 
 Route::match(['get','post'],'import_rep_aipn',[App\Http\Controllers\UpstmController::class, 'import_rep_aipn'])->name('s.import_rep_aipn');// ทดสอบ Import
 Route::match(['get','post'],'import_rep_aipn_save',[App\Http\Controllers\UpstmController::class, 'import_rep_aipn_save'])->name('s.import_rep_aipn_save');// ทดสอบ Import
+
+Route::match(['get','post'],'uprep_money',[App\Http\Controllers\UpstmController::class, 'uprep_money'])->name('acc.uprep_money');//
+Route::match(['get','post'],'uprep_money_save',[App\Http\Controllers\UpstmController::class, 'uprep_money_save'])->name('acc.uprep_money_save');//
+Route::match(['get','post'],'uprep_money_edit/{id}',[App\Http\Controllers\UpstmController::class, 'uprep_money_edit'])->name('acc.uprep_money_edit');//
+Route::match(['get','post'],'uprep_money_update',[App\Http\Controllers\UpstmController::class, 'uprep_money_update'])->name('acc.uprep_money_update');//
+Route::match(['get','post'],'uprepdestroy/{id}',[App\Http\Controllers\UpstmController::class, 'uprepdestroy'])->name('acc.uprepdestroy');//
+// Route::DELETE('uprepdestroy/{id}',[App\Http\Controllers\UpstmController::class, 'uprepdestroy']);//
+Route::match(['get','post'],'uprep_money_updatefile',[App\Http\Controllers\UpstmController::class, 'uprep_money_updatefile'])->name('acc.uprep_money_updatefile');//
+ 
+
 
 // ********************************* นักโทษ  *****************************************
 Route::match(['get','post'],'prisoner_opd',[App\Http\Controllers\PrisonerController::class, 'prisoner_opd'])->name('prisoner.prisoner_opd');  //นักโทษ 438
@@ -1411,6 +1436,8 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'upstm_ucs_excel',[App\Http\Controllers\AccountPKController::class, 'upstm_ucs_excel'])->name('acc.upstm_ucs_excel');//
     Route::match(['get','post'],'upstm_ucs_sendexcel',[App\Http\Controllers\AccountPKController::class, 'upstm_ucs_sendexcel'])->name('acc.upstm_ucs_sendexcel');//
 
+    
+
     Route::match(['get','post'],'upstm_tixml',[App\Http\Controllers\AccountPKController::class, 'upstm_tixml'])->name('acc.upstm_tixml');// ไต
     Route::match(['get','post'],'upstm_tixml_import',[App\Http\Controllers\AccountPKController::class, 'upstm_tixml_import'])->name('acc.upstm_tixml_import');// ไต
     Route::match(['get','post'],'upstm_tixml_sss',[App\Http\Controllers\AccountPKController::class, 'upstm_tixml_sss'])->name('acc.upstm_tixml_sss');// ไต
@@ -1466,7 +1493,8 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'account_301_pull',[App\Http\Controllers\Account301Controller::class, 'account_301_pull'])->name('acc.account_301_pull');//
     Route::match(['get','post'],'account_301_pulldata',[App\Http\Controllers\Account301Controller::class, 'account_301_pulldata'])->name('acc.account_301_pulldata');//
     Route::match(['get','post'],'account_301/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301'])->name('acc.account_301');//
-    Route::match(['get','post'],'account_301_detail/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301_detail'])->name('acc.account_301_detail');//
+    Route::match(['get','post'],'account_301_detail/{startdate}/{enddate}',[App\Http\Controllers\Account301Controller::class, 'account_301_detail'])->name('acc.account_301_detail');//
+    Route::match(['get','post'],'account_301_detail_search',[App\Http\Controllers\Account301Controller::class, 'account_301_detail_search'])->name('acc.account_301_detail_search');//
     Route::match(['get','post'],'account_301_stm/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301_stm'])->name('acc.account_301_stm');//
     Route::match(['get','post'],'account_301_stmnull/{months}/{year}',[App\Http\Controllers\Account301Controller::class, 'account_301_stmnull'])->name('acc.account_301_stmnull');//
     Route::match(['get','post'],'account_301_stam',[App\Http\Controllers\Account301Controller::class, 'account_301_stam'])->name('acc.account_301_stam');//  stamp OPD
@@ -1476,28 +1504,46 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'account_302_pull',[App\Http\Controllers\Account302Controller::class, 'account_302_pull'])->name('acc.account_302_pull');//
     Route::match(['get','post'],'account_302_pulldata',[App\Http\Controllers\Account302Controller::class, 'account_302_pulldata'])->name('acc.account_302_pulldata');//
     Route::match(['get','post'],'account_302/{months}/{year}',[App\Http\Controllers\Account302Controller::class, 'account_302'])->name('acc.account_302');//
-    Route::match(['get','post'],'account_302_detail/{months}/{year}',[App\Http\Controllers\Account302Controller::class, 'account_302_detail'])->name('acc.account_302_detail');//
+    Route::match(['get','post'],'account_302_detail/{startdate}/{enddate}',[App\Http\Controllers\Account302Controller::class, 'account_302_detail'])->name('acc.account_302_detail');//
     Route::match(['get','post'],'account_302_stm/{months}/{year}',[App\Http\Controllers\Account302Controller::class, 'account_302_stm'])->name('acc.account_302_stm');//
     Route::match(['get','post'],'account_302_stmnull/{months}/{year}',[App\Http\Controllers\Account302Controller::class, 'account_302_stmnull'])->name('acc.account_302_stmnull');//
     Route::match(['get','post'],'account_302_stam',[App\Http\Controllers\Account302Controller::class, 'account_302_stam'])->name('acc.account_302_stam');//  stamp IPD
 
-    Route::match(['get','post'],'account_304_pull',[App\Http\Controllers\AccountPKController::class, 'account_304_pull'])->name('acc.account_304_pull');//
-    Route::match(['get','post'],'account_304_pulldata',[App\Http\Controllers\AccountPKController::class, 'account_304_pulldata'])->name('acc.account_304_pulldata');//
-    Route::match(['get','post'],'account_304_dash',[App\Http\Controllers\AccountPKController::class, 'account_304_dash'])->name('acc.account_304_dash');//
-    Route::match(['get','post'],'account_304/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_304'])->name('acc.account_304');//
-    Route::match(['get','post'],'account_304_detail/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_304_detail'])->name('acc.account_304_detail');//
-    Route::match(['get','post'],'account_304_stm/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_304_stm'])->name('acc.account_304_stm');//
-    Route::match(['get','post'],'account_304_stmnull/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_304_stmnull'])->name('acc.account_304_stmnull');//
-    Route::match(['get','post'],'account_304_stam',[App\Http\Controllers\AccountPKController::class, 'account_304_stam'])->name('acc.account_304_stam');//  stamp IPD
+    Route::match(['get','post'],'account_304_pull',[App\Http\Controllers\Account304Controller::class, 'account_304_pull'])->name('acc.account_304_pull');//
+    Route::match(['get','post'],'account_304_pulldata',[App\Http\Controllers\Account304Controller::class, 'account_304_pulldata'])->name('acc.account_304_pulldata');//
+    Route::match(['get','post'],'account_304_dash',[App\Http\Controllers\Account304Controller::class, 'account_304_dash'])->name('acc.account_304_dash');//
+    Route::match(['get','post'],'account_304/{months}/{year}',[App\Http\Controllers\Account304Controller::class, 'account_304'])->name('acc.account_304');//
+    Route::match(['get','post'],'account_304_detail/{startdate}/{enddate}',[App\Http\Controllers\Account304Controller::class, 'account_304_detail'])->name('acc.account_304_detail');//
+    Route::match(['get','post'],'account_304_stm/{months}/{year}',[App\Http\Controllers\Account304Controller::class, 'account_304_stm'])->name('acc.account_304_stm');//
+    Route::match(['get','post'],'account_304_stmnull/{months}/{year}',[App\Http\Controllers\Account304Controller::class, 'account_304_stmnull'])->name('acc.account_304_stmnull');//
+    Route::match(['get','post'],'account_304_stam',[App\Http\Controllers\Account304Controller::class, 'account_304_stam'])->name('acc.account_304_stam');//  stamp IPD
 
-    Route::match(['get','post'],'account_308_pull',[App\Http\Controllers\AccountPKController::class, 'account_308_pull'])->name('acc.account_308_pull');//
-    Route::match(['get','post'],'account_308_pulldata',[App\Http\Controllers\AccountPKController::class, 'account_308_pulldata'])->name('acc.account_308_pulldata');//
-    Route::match(['get','post'],'account_308_dash',[App\Http\Controllers\AccountPKController::class, 'account_308_dash'])->name('acc.account_308_dash');//
-    Route::match(['get','post'],'account_308/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_308'])->name('acc.account_308');//
-    Route::match(['get','post'],'account_308_detail/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_308_detail'])->name('acc.account_308_detail');//
-    Route::match(['get','post'],'account_308_stm/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_308_stm'])->name('acc.account_308_stm');//
-    Route::match(['get','post'],'account_308_stmnull/{months}/{year}',[App\Http\Controllers\AccountPKController::class, 'account_308_stmnull'])->name('acc.account_308_stmnull');//
-    Route::match(['get','post'],'account_308_stam',[App\Http\Controllers\AccountPKController::class, 'account_308_stam'])->name('acc.account_308_stam');//  stamp IPD
+    Route::match(['get','post'],'account_307_pull',[App\Http\Controllers\Account307Controller::class, 'account_307_pull'])->name('acc.account_307_pull');//
+    Route::match(['get','post'],'account_307_pulldata',[App\Http\Controllers\Account307Controller::class, 'account_307_pulldata'])->name('acc.account_307_pulldata');//
+    Route::match(['get','post'],'account_307_dash',[App\Http\Controllers\Account307Controller::class, 'account_307_dash'])->name('acc.account_307_dash');//
+    Route::match(['get','post'],'account_307/{months}/{year}',[App\Http\Controllers\Account307Controller::class, 'account_307'])->name('acc.account_307');//
+    Route::match(['get','post'],'account_307_detail/{startdate}/{enddate}',[App\Http\Controllers\Account307Controller::class, 'account_307_detail'])->name('acc.account_307_detail');//
+    Route::match(['get','post'],'account_307_stm/{months}/{year}',[App\Http\Controllers\Account307Controller::class, 'account_307_stm'])->name('acc.account_307_stm');//
+    Route::match(['get','post'],'account_307_stmnull/{months}/{year}',[App\Http\Controllers\Account307Controller::class, 'account_307_stmnull'])->name('acc.account_307_stmnull');//
+    Route::match(['get','post'],'account_307_stam',[App\Http\Controllers\Account307Controller::class, 'account_307_stam'])->name('acc.account_307_stam');// 
+
+    Route::match(['get','post'],'account_308_pull',[App\Http\Controllers\Account308Controller::class, 'account_308_pull'])->name('acc.account_308_pull');//
+    Route::match(['get','post'],'account_308_pulldata',[App\Http\Controllers\Account308Controller::class, 'account_308_pulldata'])->name('acc.account_308_pulldata');//
+    Route::match(['get','post'],'account_308_dash',[App\Http\Controllers\Account308Controller::class, 'account_308_dash'])->name('acc.account_308_dash');//
+    Route::match(['get','post'],'account_308/{months}/{year}',[App\Http\Controllers\Account308Controller::class, 'account_308'])->name('acc.account_308');//
+    Route::match(['get','post'],'account_308_detail/{months}/{year}',[App\Http\Controllers\Account308Controller::class, 'account_308_detail'])->name('acc.account_308_detail');//
+    Route::match(['get','post'],'account_308_stm/{months}/{year}',[App\Http\Controllers\Account308Controller::class, 'account_308_stm'])->name('acc.account_308_stm');//
+    Route::match(['get','post'],'account_308_stmnull/{months}/{year}',[App\Http\Controllers\Account308Controller::class, 'account_308_stmnull'])->name('acc.account_308_stmnull');//
+    Route::match(['get','post'],'account_308_stam',[App\Http\Controllers\Account308Controller::class, 'account_308_stam'])->name('acc.account_308_stam');//  stamp IPD
+
+    Route::match(['get','post'],'account_309_pull',[App\Http\Controllers\Account309Controller::class, 'account_309_pull'])->name('acc.account_309_pull');//
+    Route::match(['get','post'],'account_309_pulldata',[App\Http\Controllers\Account309Controller::class, 'account_309_pulldata'])->name('acc.account_309_pulldata');//
+    Route::match(['get','post'],'account_309_dash',[App\Http\Controllers\Account309Controller::class, 'account_309_dash'])->name('acc.account_309_dash');//
+    Route::match(['get','post'],'account_309/{months}/{year}',[App\Http\Controllers\Account309Controller::class, 'account_309'])->name('acc.account_309');//
+    Route::match(['get','post'],'account_309_detail/{months}/{year}',[App\Http\Controllers\Account309Controller::class, 'account_309_detail'])->name('acc.account_309_detail');//
+    Route::match(['get','post'],'account_309_stm/{months}/{year}',[App\Http\Controllers\Account309Controller::class, 'account_309_stm'])->name('acc.account_309_stm');//
+    Route::match(['get','post'],'account_309_stmnull/{months}/{year}',[App\Http\Controllers\Account309Controller::class, 'account_309_stmnull'])->name('acc.account_309_stmnull');//
+    Route::match(['get','post'],'account_309_stam',[App\Http\Controllers\Account309Controller::class, 'account_309_stam'])->name('acc.account_309_stam');//
 
     Route::match(['get','post'],'account_2166_pull',[App\Http\Controllers\AccountPKController::class, 'account_2166_pull'])->name('acc.account_2166_pull');//
     Route::match(['get','post'],'account_2166_pulldata',[App\Http\Controllers\AccountPKController::class, 'account_2166_pulldata'])->name('acc.account_2166_pulldata');//
@@ -1636,6 +1682,11 @@ Route::middleware(['type'])->group(function(){
     Route::match(['get','post'],'acc_setting_edit/{id}',[App\Http\Controllers\AccountPKController::class, 'acc_setting_edit'])->name('acc.acc_setting_edit');//
     Route::match(['get','post'],'acc_setting_save',[App\Http\Controllers\AccountPKController::class, 'acc_setting_save'])->name('acc.acc_setting_save');//
     Route::match(['get','post'],'acc_setting_update',[App\Http\Controllers\AccountPKController::class, 'acc_setting_update'])->name('acc.acc_setting_update');//
+
+    Route::match(['get','post'],'aset_trimart',[App\Http\Controllers\AccountPKController::class, 'aset_trimart'])->name('acc.aset_trimart');//
+    Route::match(['get','post'],'aset_trimart_edit/{id}',[App\Http\Controllers\AccountPKController::class, 'aset_trimart_edit'])->name('acc.aset_trimart_edit');//
+    Route::match(['get','post'],'aset_trimart_save',[App\Http\Controllers\AccountPKController::class, 'aset_trimart_save'])->name('acc.aset_trimart_save');//
+    Route::match(['get','post'],'aset_trimart_update',[App\Http\Controllers\AccountPKController::class, 'aset_trimart_update'])->name('acc.aset_trimart_update');//
      // **************************** PPFS 2566  ***********************
      Route::match(['get','post'],'anc_14001',[App\Http\Controllers\PPFSController::class, 'anc_14001'])->name('claim.anc_14001');//
      Route::match(['get','post'],'anc_14001_pull',[App\Http\Controllers\PPFSController::class, 'anc_14001_pull'])->name('claim.anc_14001_pull');//
@@ -1956,23 +2007,7 @@ Route::match(['get','post'],'medicine_salt_subhn/{hn}',[App\Http\Controllers\Med
 // Route::match(['get','post'],'sixteendata',[App\Http\Controllers\ClaimreferController::class, 'sixteendata'])->name('data.sixteendata');//
 // Route::match(['get','post'],'sixteendata_pull',[App\Http\Controllers\ClaimreferController::class, 'sixteendata_pull'])->name('data.sixteendata_pull');//
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
 
 Route::match(['get','post'],'six',[App\Http\Controllers\SixteenController::class, 'six'])->name('data.six');//
 Route::match(['get','post'],'six_pull_a',[App\Http\Controllers\SixteenController::class, 'six_pull_a'])->name('data.six_pull_a');//
@@ -1980,6 +2015,8 @@ Route::match(['get','post'],'six_pull_b',[App\Http\Controllers\SixteenController
 Route::match(['get','post'],'six_pull_c',[App\Http\Controllers\SixteenController::class, 'six_pull_c'])->name('data.six_pull_c');//
 Route::match(['get','post'],'six_pull_d',[App\Http\Controllers\SixteenController::class, 'six_pull_d'])->name('data.six_pull_d');//
 Route::match(['get','post'],'six_send',[App\Http\Controllers\SixteenController::class, 'six_send'])->name('data.six_send');//
+
+Route::match(['get','post'],'sixquery',[App\Http\Controllers\SixqueryController::class, 'sixquery'])->name('data.sixquery');//
 
 Route::match(['get','post'],'ofc',[App\Http\Controllers\Ofcopd401Controller::class, 'ofc'])->name('data.ofc');//
 Route::match(['get','post'],'ofc_pull_a',[App\Http\Controllers\Ofcopd401Controller::class, 'ofc_pull_a'])->name('data.ofc_pull_a');//

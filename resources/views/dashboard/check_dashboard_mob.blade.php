@@ -227,13 +227,28 @@
                             <tbody>
                                 <?php $j = 1; ?>
                                 @foreach ($data_staff as $item2)
+                                <?php 
+                                    $Authenper_s = 100 * $item2->Authen / $item2->countvn;
+                                    $noAuthenper_s = 100 * $item2->Noauthen / $item2->countvn;
+                                
+                                ?>
                                     <tr >
                                         <td class="text-center" style="width: 5%">{{ $j++ }}</td>
                                         {{-- <td class="text-center">{{ $item2->day }}</td> --}}
                                         <td class="p-2">{{ $item2->staff }}</td>
                                         <td class="text-center">{{ $item2->countvn }}</td>
-                                        <td class="text-center">{{ $item2->Authen }}</td> 
-                                        <td class="text-center">{{ $item2->Noauthen }}</td> 
+                                        <td class="text-center text-success"> 
+                                            <a class="btn-icon btn-sm btn-shadow btn-dashed btn btn-outline-success" href="{{ url('check_dashboard_staff/' . $item2->staff.'/'. $item2->day.'/'. $item2->month.'/'. $item2->year) }}"  target="_blank">
+                                                {{ $item2->Authen }} Visit
+                                            </a>
+                                            => {{ number_format($Authenper_s, 2) }}%
+                                        </td> 
+                                        <td class="text-center text-danger">
+                                            <a class="btn-icon btn-sm btn-shadow btn-dashed btn btn-outline-danger" href="{{ url('check_dashboard_staffno/' . $item2->staff.'/'. $item2->day.'/'. $item2->month.'/'. $item2->year) }}"  target="_blank">
+                                                {{ $item2->Noauthen }} Visit
+                                            </a>   
+                                            => {{ number_format($noAuthenper_s, 2) }}%
+                                        </td> 
                                     </tr>
                                 @endforeach
     
