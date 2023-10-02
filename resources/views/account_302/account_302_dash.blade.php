@@ -82,7 +82,7 @@
         </div>
         <form action="{{ url('account_302_dash') }}" method="GET">
             @csrf
-            <div class="row"> 
+            <div class="row ms-3 me-3 mt-2"> 
                 <div class="col-md-4">
                     <h4 class="card-title">Detail 1102050101.302</h4>
                     <p class="card-title-desc">รายละเอียดข้อมูล ผัง 1102050101.302</p>
@@ -93,26 +93,27 @@
                     <select name="acc_trimart_id" id="acc_trimart_id" class="form-control">
                         <option value="">--เลือก--</option>
                         @foreach ($trimart as $item)
-                            <option value="{{$item->acc_trimart_id}}">{{$item->acc_trimart_name}} {{$item->acc_trimart_start_date}} {{$item->acc_trimart_end_date}}</option>
+                            {{-- <option value="{{$item->acc_trimart_id}}">{{$item->acc_trimart_name}} {{$item->acc_trimart_start_date}} {{$item->acc_trimart_end_date}}</option> --}}
+                            <option value="{{$item->acc_trimart_id}}">{{$item->acc_trimart_name}}( {{$item->acc_trimart_start_date}} ถึง {{$item->acc_trimart_end_date}})</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-2 text-start">
-                    <button type="submit" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">
+                <div class="col-md-3 text-start">
+                    <button type="submit" class="me-2 btn-icon btn-shadow btn-dashed btn btn-outline-info">
                         <i class="fa-solid fa-magnifying-glass text-info me-2"></i>
                         ค้นหา
                     </button>
-                    <a href="{{url('account_302_pull')}}" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary" target="_blank">  
+                    {{-- <a href="{{url('account_302_pull')}}" class="me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary" target="_blank">  
                         <i class="fa-solid fa-file-circle-plus text-primary me-2"></i>
                         ดึงข้อมูล
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </form>  
-        <div class="row "> 
+        <div class="row ms-3 me-3"> 
             @foreach ($data_trimart as $item)   
             <div class="col-xl-4 col-md-4">
-                <div class="main-card mb-3 card shadow" style="background-color: rgb(246, 235, 247)"> 
+                <div class="main-card mb-3 card shadow" style="background-color: rgb(235, 242, 247)"> 
 
                     {{-- @if ($startdate == '') --}}
                     <div class="grid-menu-col">
@@ -124,12 +125,12 @@
                                            
                                             // ลูกหนี้ทั้งหมด
                                             $datas = DB::select('
-                                                SELECT count(DISTINCT vn) as Can
+                                                SELECT count(DISTINCT an) as Can
                                                     ,SUM(debit) as sumdebit
                                                     from acc_debtor
                                                     WHERE account_code="1102050101.302"
                                                     AND stamp = "N"
-                                                    AND vstdate between "'.$item->acc_trimart_start_date.'" and "'.$item->acc_trimart_end_date.'"
+                                                    AND dchdate between "'.$item->acc_trimart_start_date.'" and "'.$item->acc_trimart_end_date.'"
                                             ');
                                             foreach ($datas as $key => $value) {
                                                 $count_N = $value->Can;
@@ -137,9 +138,9 @@
                                             }
                                             // ตั้งลูกหนี้
                                              $datasum_ = DB::select('
-                                                SELECT sum(debit_total) as debit_total,count(vn) as Cvit
+                                                SELECT sum(debit_total) as debit_total,count(an) as Cvit
                                                 from acc_1102050101_302
-                                                where vstdate between "'.$item->acc_trimart_start_date.'" and "'.$item->acc_trimart_end_date.'"
+                                                where dchdate between "'.$item->acc_trimart_start_date.'" and "'.$item->acc_trimart_end_date.'"
                                             ');   
                                             foreach ($datasum_ as $key => $value2) {
                                                 $sum_Y = $value2->debit_total;
@@ -151,7 +152,7 @@
                                                 SELECT 
                                                     SUM(ar.acc_stm_repmoney_price302) as total                                                   
                                                     FROM acc_stm_repmoney ar 
-                                                    LEFT JOIN acc_trimart a ON a.acc_trimart_id = ar.acc_stm_repmoney_tri 
+                                                    LEFT JOIN acc_trimart a ON a.acc_trimart_id = ar.acc_trimart_id 
                                                     WHERE a.acc_trimart_code = "'.$item->acc_trimart_code.'"  
                                             ');                                           
                                             foreach ($sumapprove_ as $key => $value3) {
@@ -172,7 +173,7 @@
                                                 <h5 > {{$item->acc_trimart_name}}</h5>
                                             </div>
                                             <div class="col"></div>
-                                            <div class="col-md-3 text-end mt-2 me-4">
+                                            <div class="col-md-5 text-end mt-2 me-2">
                                                 {{-- <a href="{{url('account_301_pull')}}" target="_blank"> --}}
                                                     <div class="widget-chart widget-chart-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="จำนวนลูกหนี้ที่ต้องตั้ง">
                                                         <h6 class="text-end">{{ $count_N}} Visit</h6>
@@ -190,7 +191,7 @@
                                                 </p>
                                             </div>
                                             <div class="col"></div>
-                                            <div class="col-md-4 text-end me-4">
+                                            <div class="col-md-5 text-end me-2">
                                                 {{-- <a href="" target="_blank"> --}}
                                                     <div class="widget-chart widget-chart-hover" >
                                                         <p class="text-end mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="ลูกหนี้ที่ต้องตั้ง {{ $count_N}} Visit" >
@@ -211,8 +212,9 @@
                                                 </p>
                                             </div>
                                             <div class="col"></div>
-                                            <div class="col-md-4 text-end me-4">
-                                                <a href="{{url('account_302_detail/'.$item->acc_trimart_start_date.'/'.$item->acc_trimart_end_date)}}" target="_blank">
+                                            <div class="col-md-5 text-end me-2">
+                                                {{-- <a href="{{url('account_302_detail/'.$item->acc_trimart_start_date.'/'.$item->acc_trimart_end_date)}}" target="_blank"> --}}
+                                                <a href="{{url('account_302_dashsub/'.$item->acc_trimart_start_date.'/'.$item->acc_trimart_end_date)}}" target="_blank">
                                                     <div class="widget-chart widget-chart-hover">
                                                         <p class="text-end mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="ตั้งลูกหนี้ {{$count_Y}} Visit">
                                                                 {{ number_format($sum_Y, 2) }}
@@ -233,7 +235,7 @@
                                                 </p>
                                             </div>
                                             <div class="col"></div>
-                                            <div class="col-md-4 text-end me-4">
+                                            <div class="col-md-5 text-end me-2">
                                                 {{-- <a href="" target="_blank"> --}}
                                                     <div class="widget-chart widget-chart-hover">
                                                         <p class="text-end mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Statement {{number_format($total302, 2) }} บาท">
@@ -255,7 +257,7 @@
                                                 </p>
                                             </div>
                                             <div class="col"></div>
-                                            <div class="col-md-4 text-end me-4">
+                                            <div class="col-md-5 text-end me-2">
                                                 {{-- <a href="" target="_blank"> --}}
                                                     <div class="widget-chart widget-chart-hover">
                                                         <p class="text-end mb-0" data-bs-toggle="tooltip" data-bs-placement="top" >

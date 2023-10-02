@@ -52,7 +52,7 @@ use App\Models\Claim_sixteen_orf;
 use App\Models\Claim_sixteen_pat;
 use App\Models\Claim_sixteen_ins;
 use App\Models\Claim_temp_ssop;
-use App\Models\Claim_sixteen_opd;
+use App\Models\Acc_opitemrece;
 use App\Models\Dashboard_authen_day;
 use App\Models\Dashboard_department_authen;
 use App\Models\Visit_pttype_authen_report;
@@ -62,6 +62,7 @@ use App\Models\Check_sit_auto_claim;
 use App\Models\Db_year;
 use App\Models\Db_authen;
 use App\Models\Db_authen_detail;
+use App\Models\Checksit_hos;
 use Auth;
 use ZipArchive;
 use Storage;
@@ -420,7 +421,7 @@ class AutoController extends Controller
                                     'pttype_spsch' => @$subinscl,
                                     'hsub' => @$hsub,
 
-                                ]);
+                            ]);
                         // }else{
                             // Check_sit_auto::insert([
                             //     'status' => @$status,
@@ -1162,6 +1163,516 @@ class AutoController extends Controller
                   
             }
         return view('auto.sss_check_claimcode');
+    }
+
+    // ดึงข้อมูลมาไว้เช็คสิทธิ์ เอาทุกสิทธิ์
+    public function pull_Checksit_hosauto(Request $request)
+    {           
+        $data_sits = DB::connection('mysql')->select('
+                SELECT o.an,o.vn,p.hn,p.cid,o.vstdate,o.vsttime,o.pttype,p.pname,p.fname,concat(p.pname,p.fname," ",p.lname) as ptname,op.name as staffname,p.hometel
+                ,pt.nhso_code,o.hospmain,o.hospsub,p.birthday
+                ,o.staff,op.name as sname
+                ,o.main_dep,v.income-v.discount_money-v.rcpt_money debit
+                FROM hos.ovst o
+                LEFT JOIN hos.vn_stat v on v.vn = o.vn
+                LEFT JOIN hos.patient p on p.hn=o.hn
+                LEFT JOIN hos.pttype pt on pt.pttype=o.pttype
+                LEFT JOIN hos.opduser op on op.loginname = o.staff
+                WHERE o.vstdate = CURDATE() 
+                AND p.nationality = "99"
+                
+                group by o.vn
+                    
+        ');        
+        //  AND p.birthday <> CURDATE()
+        foreach ($data_sits as $key => $value) {
+                $check = Checksit_hos::where('vn', $value->vn)->count();
+
+                if ($check > 0) {
+                
+                } else {
+                Checksit_hos::insert([
+                        'vn'         => $value->vn,
+                        'an'         => $value->an,
+                        'hn'         => $value->hn,
+                        'cid'        => $value->cid,
+                        'vstdate'    => $value->vstdate,
+                        'hometel'    => $value->hometel,
+                        'vsttime'    => $value->vsttime,
+                        'ptname'     => $value->ptname,
+                        'pttype'     => $value->pttype,
+                        'hospmain'   => $value->hospmain,
+                        'hospsub'    => $value->hospsub,
+                        'main_dep'   => $value->main_dep,
+                        'staff'      => $value->staff,
+                        'staff_name' => $value->staffname,
+                        'debit'      => $value->debit
+                    ]);
+
+                } 
+        } 
+        return view('auto.pull_Checksit_hosauto');
+    }
+    public function checksit_hosauto(Request $request)
+    {
+        $datestart = $request->datestart;
+        $dateend = $request->dateend;
+        $date = date('Y-m-d');
+        $token_data = DB::connection('mysql')->select('
+            SELECT cid,token FROM ssop_token
+        ');       
+        foreach ($token_data as $key => $valuetoken) {
+            $cid_   = $valuetoken->cid;
+            $token_ = $valuetoken->token;
+        }
+        // $token_data = DB::connection('mysql')->select('
+        //     SELECT cid,token FROM hos.nhso_token where token <> ""
+        // ');
+        $data_sitss = DB::connection('mysql')->select('
+            SELECT cid,vn,an,vstdate
+            FROM checksit_hos
+            WHERE vstdate = CURDATE()
+            AND subinscl IS NULL
+            ORDER BY vstdate desc
+            LIMIT 100
+        ');
+        // WHERE vstdate = CURDATE()
+        // AND subinscl IS NULL 
+        foreach ($data_sitss as $key => $item) {
+            $pids = $item->cid;
+            $vn = $item->vn;
+            $an = $item->an;
+
+            // foreach ($token_data as $key => $value) { 
+                $client = new SoapClient("http://ucws.nhso.go.th/ucwstokenp1/UCWSTokenP1?wsdl",
+                    array("uri" => 'http://ucws.nhso.go.th/ucwstokenp1/UCWSTokenP1?xsd=1', "trace"=> 1,"exceptions"=> 0,"cache_wsdl"=> 0)
+                    );
+                    $params = array(
+                        'sequence' => array(
+                            "user_person_id" => "$cid_",
+                            "smctoken"       => "$token_",
+                            "person_id"      => "$pids"
+                    )
+                    // $params = array(
+                    //     'sequence' => array(
+                    //         "user_person_id" => "$value->cid",
+                    //         "smctoken"       => "$value->token",
+                    //         "person_id"      => "$pids"
+                    // )
+                );
+            // }
+            $contents = $client->__soapCall('searchCurrentByPID',$params);
+            foreach ($contents as $v) {
+                @$status = $v->status ;
+                @$maininscl = $v->maininscl;
+                @$startdate = $v->startdate;
+                @$hmain = $v->hmain ;
+                @$subinscl = $v->subinscl ;
+                @$person_id_nhso = $v->person_id;
+
+                @$hmain_op = $v->hmain_op;  //"10978"
+                @$hmain_op_name = $v->hmain_op_name;  //"รพ.ภูเขียวเฉลิมพระเกียรติ"
+                @$hsub = $v->hsub;    //"04047"
+                @$hsub_name = $v->hsub_name;   //"รพ.สต.แดงสว่าง"
+                @$subinscl_name = $v->subinscl_name ; //"ช่วงอายุ 12-59 ปี"
+
+
+                IF(@$maininscl == "" || @$maininscl == null || @$status == "003" ){ #ถ้าเป็นค่าว่างไม่ต้อง insert
+                    $date = date("Y-m-d");
+                    Checksit_hos::where('vn', $vn)
+                            ->update([
+                                'status'         => @$status,
+                                'maininscl'      => @$maininscl,
+                                'startdate'      => @$startdate,
+                                'hmain'          => @$hmain,
+                                'subinscl'       => @$subinscl,
+                                'person_id_nhso' => @$person_id_nhso,
+                                'hmain_op'       => @$hmain_op,
+                                'hmain_op_name'  => @$hmain_op_name,
+                                'hsub'           => @$hsub,
+                                'hsub_name'      => @$hsub_name,
+                                'subinscl_name'  => @$subinscl_name,
+                                'upsit_date'     => $date
+                        ]);
+                        Acc_debtor::where('vn', $vn)
+                        ->update([
+                            'status'          => @$status,
+                            'maininscl'       => @$maininscl,
+                            'hmain'           => @$hmain,
+                            'subinscl'        => @$subinscl,
+                            'pttype_spsch'    => @$subinscl,
+                            'hsub'            => @$hsub,
+
+                    ]);
+                    
+                }elseif(@$maininscl !="" || @$subinscl !=""){
+                        $date2 = date("Y-m-d");
+                        Checksit_hos::where('vn', $vn)
+                            ->update([
+                                'status' => @$status,
+                                'maininscl' => @$maininscl,
+                                'startdate' => @$startdate,
+                                'hmain' => @$hmain,
+                                'subinscl' => @$subinscl,
+                                'person_id_nhso' => @$person_id_nhso,
+                                'hmain_op' => @$hmain_op,
+                                'hmain_op_name' => @$hmain_op_name,
+                                'hsub' => @$hsub,
+                                'hsub_name' => @$hsub_name,
+                                'subinscl_name' => @$subinscl_name,
+                                'upsit_date'    => $date2
+                            ]);
+                        Acc_debtor::where('vn', $vn)
+                            ->update([
+                                'status' => @$status,
+                                'maininscl' => @$maininscl,
+                                'hmain' => @$hmain,
+                                'subinscl' => @$subinscl,
+                                'pttype_spsch' => @$subinscl,
+                                'hsub' => @$hsub,
+
+                            ]);
+                        Acc_debtor::where('an', $an)
+                            ->update([
+                                'status' => @$status,
+                                'maininscl' => @$maininscl,
+                                'hmain' => @$hmain,
+                                'subinscl' => @$subinscl,
+                                'pttype_spsch' => @$subinscl,
+                                'hsub' => @$hsub,
+
+                        ]);
+                            
+                }
+
+            }
+        }
+
+        return view('auto.checksit_hosauto');
+
+    }
+    public function check_prb202(Request $request)
+    {
+        date_default_timezone_set("Asia/Bangkok");
+        $date = date('Y-m-d');
+        $y = date('Y') + 543;
+        $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+        $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
+        $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+       //  dd($end);
+        $detail_auto = DB::connection('mysql2')->select('  
+            SELECT a.vn,a.an,a.hn,pt.cid,concat(pt.pname,pt.fname," ",pt.lname) ptname,a.dchdate,v.vstdate
+                    ,ipt.pttype,ipt.pttype_number
+                    ,ipt.max_debt_amount
+                    ,ip.adjrw,ip.adjrw*8350 as total_adjrw_income 
+                    ,CASE 
+                    WHEN  ipt.pttype_number ="2" THEN "1102050101.202" 
+                    ELSE ec.ar_ipd
+                    END as account_code	 
+                    ,ipt.nhso_ownright_pid
+                    ,a.rcpt_money,a.discount_money
+                    ,a.income-a.rcpt_money-a.discount_money as debit
+
+                    from hos.ipt ip
+                    LEFT JOIN hos.an_stat a ON ip.an = a.an
+                    LEFT JOIN hos.patient pt on pt.hn=a.hn
+                    LEFT JOIN hos.pttype ptt on a.pttype=ptt.pttype
+                    LEFT JOIN hos.pttype_eclaim ec on ec.code=ptt.pttype_eclaim_id
+                    LEFT JOIN hos.ipt_pttype ipt ON ipt.an = a.an
+                    LEFT JOIN hos.opitemrece op ON ip.an = op.an
+                    LEFT JOIN hos.vn_stat v on v.vn = a.vn
+                    WHERE a.dchdate BETWEEN "' . $start . '" AND "' . $end . '"
+                    AND ipt.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.202"))
+                      AND ipt.pttype_number = "2"  AND ipt.max_debt_amount IS NULL 
+                    GROUP BY a.an;
+                
+            ');
+
+            // a.dchdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"
+            foreach ($detail_auto as $key => $value) {
+                    if ($value->max_debt_amount == '' && $value->pttype <> "33") {
+                     
+                        $linetoken = "1oDKi9NtbpxpNNxeiqkMdhpn4Y0YU8npoMpe5PitrJy";
+                        
+                        $datesend = date('Y-m-d'); 
+                        $header = "พรบ.ลืมลงวงเงินสูงสุด";
+                        $message = $header.
+                            "\n"."an : "               . $value->an.  
+                            "\n"."hn  : "              . $value->hn .
+                            "\n"."cid  : "             . $value->cid .
+                            "\n"."ptname  : "          . $value->ptname .
+                            "\n"."pttype  : "          . $value->pttype .
+                            "\n"."dchdate  : "         . $value->dchdate .
+                            "\n"."วงเงินสูงสุด  : "       . $value->max_debt_amount .
+                            "\n"."debit  : "           . $value->debit; 
+                                    
+                            if($linetoken == null){
+                                $send_line ='';
+                            }else{
+                                $send_line = $linetoken;
+                            }
+
+                        if($send_line !== '' && $send_line !== null){  
+                                $chOne = curl_init();
+                                curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
+                                curl_setopt( $chOne, CURLOPT_POST, 1);
+                                curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
+                                curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
+                                curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
+                                $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$send_line.'', );
+                                curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+                                curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
+                                $result = curl_exec( $chOne );
+                                //  if(curl_error($chOne)) { echo 'error:' . curl_error($chOne); }
+                                //     else { 
+                                //         $result_ = json_decode($result, true);
+                                //         echo "status : ".$result_['status']; echo "message : ". $result_['message'];
+                                //         //  return response()->json([
+                                //         //      'status'     => 200 , 
+                                //         //      ]);                                
+                                // }
+                                curl_close( $chOne );
+                                
+                        }
+                    } else {
+                        # code...
+                    }
+                  
+            }
+        return view('auto.check_prb202');
+    }
+
+    public function check_304(Request $request)
+    {
+        date_default_timezone_set("Asia/Bangkok");
+        $date = date('Y-m-d');
+        $y = date('Y') + 543;
+        $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+        $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
+        $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+       //  dd($end);
+        $detail_auto = DB::connection('mysql')->select('  
+                SELECT a.vn,a.an,a.hn,pt.cid,concat(pt.pname,pt.fname," ",pt.lname) ptname
+                    ,a.regdate as admdate,a.dchdate as dchdate,v.vstdate,op.income as income_group
+                    ,ipt.pttype 
+                    ,"1102050101.304" as account_code
+                    ,"ประกันสังคม นอกเครือข่าย" as account_name 
+                    ,a.income as income ,a.uc_money,a.rcpt_money,a.discount_money
+                    ,a.income-a.rcpt_money-a.discount_money as debit
+                    
+                    ,ipt.nhso_ownright_pid as looknee
+                    ,sum(if(op.icode ="3010058",sum_price,0)) as fokliad
+                    ,sum(if(op.income="02",sum_price,0)) as debit_instument
+                    ,sum(if(op.icode IN("1560016","1540073","1530005","1540048","1620015","1600012","1600015"),sum_price,0)) as debit_drug
+                    ,sum(if(op.icode IN ("3001412","3001417"),sum_price,0)) as debit_toa
+                    ,sum(if(op.icode IN ("3010829","3010726 "),sum_price,0)) as debit_refer
+                    from hos.ipt ip
+                    LEFT JOIN hos.an_stat a ON ip.an = a.an
+                    LEFT JOIN hos.patient pt on pt.hn=a.hn
+                    LEFT JOIN hos.pttype ptt on a.pttype=ptt.pttype 
+                    LEFT JOIN hos.ipt_pttype ipt ON ipt.an = a.an
+                    LEFT JOIN hos.opitemrece op ON ip.an = op.an
+                    LEFT JOIN hos.vn_stat v on v.vn = a.vn
+                    WHERE a.dchdate BETWEEN "' . $start . '" AND "' . $end . '"
+                    AND ipt.pttype = "s7" AND ipt.nhso_ownright_pid IS NULL
+                    GROUP BY a.an;
+            ');
+
+            // a.dchdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"
+            foreach ($detail_auto as $key => $value) {
+                    if ($value->looknee == '') {
+                     
+                        $linetoken = "xdj4Q5LeOBiKFX8mABHnVFbx6vLR9ft9LANllZ7PgTl";
+                        
+                        $datesend = date('Y-m-d'); 
+                        $header = "ผัง 304";
+                        $message = $header.
+                            "\n"."an : "               . $value->an. 
+                            "\n"."vn  : "              . $value->vn . 
+                            "\n"."hn  : "              . $value->hn .
+                            "\n"."cid  : "             . $value->cid .
+                            "\n"."ptname  : "          . $value->ptname .
+                            "\n"."dchdate  : "          . $value->dchdate .
+                            "\n"."debit  : "           . $value->debit; 
+                                    
+                            if($linetoken == null){
+                                $send_line ='';
+                            }else{
+                                $send_line = $linetoken;
+                            }
+
+                        if($send_line !== '' && $send_line !== null){  
+                                $chOne = curl_init();
+                                curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
+                                curl_setopt( $chOne, CURLOPT_POST, 1);
+                                curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
+                                curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
+                                curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
+                                $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$send_line.'', );
+                                curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+                                curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
+                                $result = curl_exec( $chOne );
+                                //  if(curl_error($chOne)) { echo 'error:' . curl_error($chOne); }
+                                //     else { 
+                                //         $result_ = json_decode($result, true);
+                                //         echo "status : ".$result_['status']; echo "message : ". $result_['message'];
+                                //         //  return response()->json([
+                                //         //      'status'     => 200 , 
+                                //         //      ]);                                
+                                // }
+                                curl_close( $chOne );
+                                
+                        }
+                    } else {
+                        # code...
+                    }
+                  
+            }
+        return view('auto.check_304');
+    }
+
+    public function check_308(Request $request)
+    {
+        date_default_timezone_set("Asia/Bangkok");
+        $date = date('Y-m-d');
+        $y = date('Y') + 543;
+        $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+        $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
+        $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+            $detail_auto = DB::connection('mysql')->select('  
+                    SELECT a.vn,a.an,a.hn,pt.cid,concat(pt.pname,pt.fname," ",pt.lname) as ptname
+                    ,a.regdate as admdate,a.dchdate as dchdate,v.vstdate,op.income as income_group
+                    ,ipt.pttype,"1102050101.308" as account_code,"ประกันสังคม นอกเครือข่าย" as account_name 
+                    ,a.income as income ,a.uc_money,a.rcpt_money as cash_money,a.discount_money
+                    ,a.income-a.rcpt_money-a.discount_money as debit,ipt.max_debt_amount
+                    ,ipt.nhso_ownright_pid as looknee
+                    ,sum(if(op.icode ="3010058",sum_price,0)) as fokliad
+                    ,sum(if(op.income="02",sum_price,0)) as debit_instument
+                    ,sum(if(op.icode IN("1560016","1540073","1530005","1540048","1620015","1600012","1600015"),sum_price,0)) as debit_drug
+                    ,sum(if(op.icode IN ("3001412","3001417"),sum_price,0)) as debit_toa
+                    ,sum(if(op.icode IN ("3010829","3010726 "),sum_price,0)) as debit_refer
+                    from hos.ipt ip
+                    LEFT JOIN hos.an_stat a ON ip.an = a.an
+                    LEFT JOIN hos.patient pt on pt.hn=a.hn
+                    LEFT JOIN hos.pttype ptt on a.pttype=ptt.pttype
+                    LEFT JOIN hos.pttype_eclaim ec on ec.code=ptt.pttype_eclaim_id
+                    LEFT JOIN hos.ipt_pttype ipt ON ipt.an = a.an
+                    LEFT JOIN hos.opitemrece op ON ip.an = op.an
+                    LEFT JOIN hos.vn_stat v on v.vn = a.vn
+                    WHERE a.dchdate BETWEEN "' . $start . '" AND "' . $end . '" 
+                    AND ipt.pttype = "14" AND ipt.nhso_ownright_pid IS NULL
+                    GROUP BY a.an;
+            ');
+
+            // a.dchdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"
+            foreach ($detail_auto as $key => $value) {
+                    if ($value->looknee == '') {
+                     
+                        $linetoken = "kYW8gGoxc6RwemXIUxsf7ojJGJpNLvDo0SdM4OMBn5W";
+                        
+                        $datesend = date('Y-m-d'); 
+                        $header = "ผัง 308";
+                        $message = $header.
+                            "\n"."an : "               . $value->an. 
+                            "\n"."vn  : "              . $value->vn . 
+                            "\n"."hn  : "              . $value->hn .
+                            "\n"."cid  : "             . $value->cid .
+                            "\n"."ptname  : "          . $value->ptname .
+                            "\n"."dchdate  : "          . $value->dchdate .
+                            "\n"."debit  : "           . $value->debit; 
+                                    
+                            if($linetoken == null){
+                                $send_line ='';
+                            }else{
+                                $send_line = $linetoken;
+                            }
+
+                        if($send_line !== '' && $send_line !== null){  
+                                $chOne = curl_init();
+                                curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
+                                curl_setopt( $chOne, CURLOPT_POST, 1);
+                                curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
+                                curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
+                                curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
+                                $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$send_line.'', );
+                                curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+                                curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
+                                $result = curl_exec( $chOne );
+                                //  if(curl_error($chOne)) { echo 'error:' . curl_error($chOne); }
+                                //     else { 
+                                //         $result_ = json_decode($result, true);
+                                //         echo "status : ".$result_['status']; echo "message : ". $result_['message'];
+                                //         //  return response()->json([
+                                //         //      'status'     => 200 , 
+                                //         //      ]);                                
+                                // }
+                                curl_close( $chOne );
+                                
+                        }
+                    } else {
+                        # code...
+                    }
+                  
+            }
+        return view('auto.check_308');
+    }
+
+    public function inst_opitemrece(Request $request)
+    {
+        date_default_timezone_set("Asia/Bangkok");
+        $date = date('Y-m-d');
+        $y = date('Y') + 543; 
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+
+                    $acc_opitemrece_ = DB::connection('mysql2')->select('
+                            SELECT vn,an,hn,vstdate,rxdate,income,pttype,paidst,order_no,icode,qty,cost,finance_number,unitprice,discount,sum_price
+                            FROM opitemrece 
+                            WHERE vstdate ="'.$date.'"
+                    ');
+                    foreach ($acc_opitemrece_ as $key => $va2) {
+                        // $check = Acc_opitemrece::where('')
+                        Acc_opitemrece::insert([
+                            'hn'                 => $va2->hn,
+                            'an'                 => $va2->an,
+                            'vn'                 => $va2->vn,
+                            'pttype'             => $va2->pttype,
+                            'paidst'             => $va2->paidst,
+                            'rxdate'             => $va2->rxdate,
+                            'vstdate'            => $va2->vstdate, 
+                            'income'             => $va2->income,
+                            'order_no'           => $va2->order_no,
+                            'icode'              => $va2->icode, 
+                            'qty'                => $va2->qty,
+                            'cost'               => $va2->cost,
+                            'finance_number'     => $va2->finance_number,
+                            'unitprice'          => $va2->unitprice,
+                            'discount'           => $va2->discount,
+                            'sum_price'          => $va2->sum_price,
+                        ]);
+                    }
+ 
+        return view('auto.inst_opitemrece');
     }
 
 

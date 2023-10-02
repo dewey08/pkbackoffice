@@ -58,164 +58,72 @@
             </div>
 
         </div>
-        
-        <div class="row">
+
+        <div class="row ms-3 me-3">
             <div class="col-md-12">
                 <div class="main-card mb-3 card">
-                    <div class="card-header"> 
-                       รายละเอียดตั้งลูกหนี้ผัง 1102050101.304
+                    <div class="card-header">
+                        รายละเอียด 1102050101.304 STM
                         <div class="btn-actions-pane-right">
-                           
+                            {{-- <button type="button" class="me-2 btn-icon btn-shadow btn-dashed btn btn-outline-danger PulldataAll" >
+                                <i class="fa-solid fa-arrows-rotate text-danger me-2"></i>
+                                Sync Data All 
+                            </button> --}}
                         </div>
                     </div>
-                    <div class="card-body">  
-                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
-                        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            {{-- <table id="example" class="table table-striped table-bordered "
+                    <div class="card-body">
+                        <input type="hidden" name="months" id="months" value="{{$months}}">
+                        <input type="hidden" name="year" id="year" value="{{$year}}">
+                        {{-- <table id="example" class="table table-striped table-bordered dt-responsive nowrap"
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;"> --}}
+                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
+                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th class="text-center">ลำดับ</th>
-                                    <th class="text-center">tranid</th>
-                                    {{-- <th class="text-center" width="5%">vn</th>  --}}
+                                    <th class="text-center">ลำดับ</th> 
                                     <th class="text-center">an</th>
-                                    <th class="text-center" >hn</th>
-                                    {{-- <th class="text-center" >cid</th> --}}
+                                    <th class="text-center">hn</th>
+                                    <th class="text-center">cid</th>
                                     <th class="text-center">ptname</th>
-                                    {{-- <th class="text-center">vstdate</th>   --}}
-                                    <th class="text-center">dchdate</th>  
-                                    <th class="text-center">income</th> 
+                                    <th class="text-center">vstdate</th> 
+                                    <th class="text-center">pttype</th> 
+                                    <th class="text-center">Sync Data / เลขหนังสือ </th> 
                                     <th class="text-center">ลูกหนี้</th> 
-                                    {{-- <th class="text-center">Stm 217</th>  --}}
+                                    <th class="text-center">เบิกจริง</th> 
+                                    <th class="text-center">รับชำระ</th> 
                                     <th class="text-center">ส่วนต่าง</th> 
-                                    <th class="text-center">Stm 202</th> 
-                                    <th class="text-center">ยอดชดเชยทั้งสิ้น</th>  
-                                   
+                                    <th class="text-center">เลขที่ใบเสร็จ</th> 
+                                    <th class="text-center">วันที่ลงรับ</th> 
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $number = 0; $total1 = 0; $total2 = 0;$total3 = 0;?>
-                                @foreach ($datashow as $item)
-                                    <?php $number++; ?>
+                                <?php $number = 1; ?>
+                                @foreach ($data as $item) 
+
                                     <tr height="20" style="font-size: 14px;">
-                                        <td class="text-font" style="text-align: center;" width="4%">{{ $number }}</td> 
-                                        <td class="text-center" width="6%">{{ $item->tranid }}</td>  
-                                                <td class="text-center" width="6%">{{ $item->an }}</td> 
-                                                <td class="text-center" width="5%">{{ $item->hn }}</td>   
-                                                <td class="p-2" width="10%">{{ $item->ptname }}</td>  
-                                                <td class="text-center" width="6%">{{ $item->dchdate }}</td> 
-                                                <td class="text-center" width="5%">{{ $item->income_group }}</td>   
-                                                <td class="text-end" style="color:rgb(73, 147, 231)" width="7%">{{ number_format($item->debit_total,2)}}</td>
-
-                                                {{-- @if ($item->inst == '0')
-                                                <td class="text-end" style="color:rgb(243, 12, 12)" width="7%"></td> 
-                                                @else 
-                                                <td class="text-end" style="color:rgb(216, 95, 14)" width="7%">{{ number_format(($item->inst),2)}}</td> 
-                                                @endif --}}
-                                               
-
-                                                <td class="text-end" style="color:rgb(184, 12, 169)" width="7%">{{ number_format(($item->debit_total-$item->ip_paytrue),2)}}</td> 
-                                                <td class="text-end" style="color:rgb(216, 95, 14)" width="7%">{{ number_format($item->ip_paytrue,2)}}</td> 
-                                                <td class="text-end" style="color:rgb(9, 196, 180)" width="8%">{{ number_format($item->total_approve,2)}}</td>  
-                                                 
-                                                {{-- <td class="text-end" width="10%"> 
-                                                    <button type="button" class="btn btn-icon btn-shadow btn-dashed btn-outline-primary" data-bs-toggle="modal" data-bs-target="#DetailModal{{ $item->an }}" data-bs-placement="right" title="ค่าใช้จ่าย">{{ number_format($item->debit,2)}} </button> 
-                                                </td>  --}}
+                                        <td class="text-font" style="text-align: center;" width="4%">{{ $number++ }} </td> 
+                                        <td class="text-center" width="10%">{{ $item->an }}</td>
+                                        <td class="text-center" width="10%">{{ $item->hn }}</td>
+                                        <td class="text-center" width="10%">{{ $item->cid }}</td>
+                                        <td class="p-2">{{ $item->ptname }}</td>
+                                        <td class="text-center" width="10%">{{ $item->vstdate }}</td>
+                                        <td class="text-center" width="10%">{{ $item->pttype }}</td>
+                                        <td class="text-center" width="5%"> 
+                                            <button type="button" class="me-2 btn-icon btn-shadow btn-dashed btn btn-outline-success">
+                                                <i class="fa-solid fa-book-open text-success me-2"></i> 
+                                                {{$item->nhso_docno}}  
+                                            </button>  
+                                        </td>
+                                        <td class="text-end" style="color:rgb(73, 147, 231)" width="7%"> {{ number_format($item->debit_total, 2) }}</td>  </td>
+                                        <td class="text-end" style="color:rgb(243, 157, 27)" width="7%"> {{ $item->nhso_ownright_pid }}</td>  </td>
+                                        <td class="text-end text-success"  width="7%"> {{ $item->recieve_true }}</td>  </td>
+                                        <td class="text-end" style="color:rgb(231, 73, 134)" width="7%"> {{ $item->difference }}</td>  </td> 
+                                        <td class="text-center">{{ $item->recieve_no }}</td>
+                                        <td class="text-center">{{ $item->recieve_date }}</td>
                                     </tr>
-                                        <?php
-                                            $total1 = $total1 + ($item->debit_total); 
-                                            $total2 = $total2 + $item->ip_paytrue;
-                                            $total3 = $total3 + $item->total_approve;
-                                        ?>
+                                @endforeach
 
-                                    {{-- <div class="modal fade" id="DetailModal{{ $item->an }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-xl">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">
-                                                        รายละเอียดค่าใช้จ่าย
-                                                    </h5> 
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body"> 
-                                                    <?php 
-                                                    
-                                                        $detail_ =  DB::connection('mysql3')->select('
-                                                            SELECT o.an,o.vn,o.hn,o.icode,s.name as dname,o.qty,o.unitprice,o.sum_price 
-                                                                FROM opitemrece o
-                                                                left outer join s_drugitems s on s.icode = o.icode 
-                                                                WHERE o.an ="'.$item->an.'" 
-                                                                and o.income IN("02","03")
-				                                                GROUP BY s.icode;
-                                                        '); 
-                                                    ?>
-                                                     <div class="row">
-                                                        <div class="col-md-2 text-primary">
-                                                            <label for="">icode </label> 
-                                                        </div>
-                                                        <div class="col-md-4 text-primary">
-                                                            <label for="">รายการ </label> 
-                                                        </div> 
-                                                        <div class="col-md-2 text-primary">
-                                                            <label for="">จำนวน </label> 
-                                                        </div>
-                                                        <div class="col-md-2 text-primary">
-                                                            <label for="">ราคา </label> 
-                                                        </div>
-                                                        <div class="col-md-2 text-primary">
-                                                            <label for="" >รวม</label> 
-                                                        </div> 
-                                                    </div>
-                                                    @foreach ($detail_ as $items) 
-                                                    <div class="row">
-                                                        <div class="col-md-2">
-                                                            <label for="">{{$items->icode}} </label> 
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label for="">{{$items->dname}} </label> 
-                                                        </div> 
-                                                        <div class="col-md-2">
-                                                            <label for="">{{$items->qty}}</label> 
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <label for="">{{$items->unitprice}}</label> 
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <label for="">{{$items->sum_price}}</label> 
-                                                        </div> 
-                                                    </div>
-                                                    @endforeach
-                                                    <div class="row">
-                                                        <div class="col"> </div> 
-                                                        <div class="col-md-2 text-danger">
-                                                            
-                                                        </div> 
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <div class="col-md-12 text-end">
-                                                        <div class="form-group"> 
-                                                            <button type="button"
-                                                                class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-danger"
-                                                                data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>Close</button> 
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
-                                @endforeach  
-                               
                             </tbody>
-                                        <tr style="background-color: #f3fca1">
-                                            <td colspan="7" class="text-end" style="background-color: #ff9d9d"></td>
-                                            <td class="text-end" style="background-color: #ace5fc">{{ number_format($sum_debit_total,2)}}</td>
-                                            {{-- <td class="text-end" style="background-color: #f3d1be">{{ number_format($sum_stm_total,2)}}</td> --}}
-                                            <td class="text-end" style="background-color: #e09be9">{{ number_format($total1,2)}}</td> 
-                                            <td class="text-end" style="background-color: #f5a382">{{ number_format($total2,2)}}</td> 
-                                            <td class="text-end" style="background-color: #bbf0e3">{{ number_format($total3,2)}}</td>  
-                                            {{-- <td class="text-end" style="background-color: #ff9d9d"></td> dt-responsive nowrap--}}
-                                        </tr>  
                         </table>
                     </div>
                 </div>
@@ -229,8 +137,8 @@
 @endsection
 @section('footer')
 
-    <script> 
-        $(document).ready(function() { 
+    <script>
+        $(document).ready(function() {
 
             $('#datepicker').datepicker({
                 format: 'yyyy-mm-dd'
@@ -249,7 +157,150 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
- 
         });
+        $('.Pulldata').click(function() { 
+                var vn = $(this).val();
+                // alert(vn);
+                Swal.fire({
+                        title: 'ต้องการซิ้งค์ข้อมูลใช่ไหม ?',
+                        text: "You Sync Data!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Sync it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $("#overlay").fadeIn(300);　
+                                $("#spinner").show();  
+                                
+                                $.ajax({
+                                    url: "{{ url('account_307_sync') }}",
+                                    type: "POST",
+                                    dataType: 'json',
+                                    data: {vn},
+                                    success: function(data) {
+                                        if (data.status == 200) { 
+                                            Swal.fire({
+                                                title: 'ดึงข้อมูลสำเร็จ',
+                                                text: "You Sync data success",
+                                                icon: 'success',
+                                                showCancelButton: false,
+                                                confirmButtonColor: '#06D177',
+                                                confirmButtonText: 'เรียบร้อย'
+                                            }).then((result) => {
+                                                if (result
+                                                    .isConfirmed) {
+                                                    console.log(
+                                                        data);
+                                                    window.location.reload();
+                                                    $('#spinner').hide();//Request is complete so hide spinner
+                                                        setTimeout(function(){
+                                                            $("#overlay").fadeOut(300);
+                                                        },500);
+                                                }
+                                            })
+
+                                        } else if (data.status == 100) { 
+                                            Swal.fire({
+                                                title: 'ยังไม่ได้ลงเลขที่หนังสือ',
+                                                text: "Please enter the number of the book.",
+                                                icon: 'warning',
+                                                showCancelButton: false,
+                                                confirmButtonColor: '#06D177',
+                                                confirmButtonText: 'เรียบร้อย'
+                                            }).then((result) => {
+                                                if (result
+                                                    .isConfirmed) {
+                                                    console.log(
+                                                        data);
+                                                    window.location.reload();
+                                                   
+                                                }
+                                            })
+                                            
+                                        } else {
+                                            
+                                        }
+                                    },
+                                });
+                                
+                            }
+                })
+        });
+         
+        $('.PulldataAll').click(function() { 
+                var months = $('#months').val();
+                var year = $('#year').val();
+                // alert(startdate);
+                Swal.fire({
+                        title: 'ต้องการซิ้งค์ข้อมูลใช่ไหม ?',
+                        text: "You Sync Data!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Sync it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $("#overlay").fadeIn(300);　
+                                $("#spinner").show();  
+                                
+                                $.ajax({
+                                    url: "{{ url('account_307_syncall') }}",
+                                    type: "POST",
+                                    dataType: 'json',
+                                    data: {months,year},
+                                    success: function(data) {
+                                        if (data.status == 200) { 
+                                            Swal.fire({
+                                                title: 'ซิ้งค์ข้อมูลสำเร็จ',
+                                                text: "You Sync data success",
+                                                icon: 'success',
+                                                showCancelButton: false,
+                                                confirmButtonColor: '#06D177',
+                                                confirmButtonText: 'เรียบร้อย'
+                                            }).then((result) => {
+                                                if (result
+                                                    .isConfirmed) {
+                                                    console.log(
+                                                        data);
+                                                    window.location.reload();
+                                                    $('#spinner').hide();//Request is complete so hide spinner
+                                                        setTimeout(function(){
+                                                            $("#overlay").fadeOut(300);
+                                                        },500);
+                                                }
+                                            })
+
+                                        } else if (data.status == 100) { 
+                                            Swal.fire({
+                                                title: 'ยังไม่ได้ลงเลขที่หนังสือ',
+                                                text: "Please enter the number of the book.",
+                                                icon: 'warning',
+                                                showCancelButton: false,
+                                                confirmButtonColor: '#06D177',
+                                                confirmButtonText: 'เรียบร้อย'
+                                            }).then((result) => {
+                                                if (result
+                                                    .isConfirmed) {
+                                                    console.log(
+                                                        data);
+                                                    window.location.reload();
+                                                   
+                                                }
+                                            })
+                                            
+                                        } else {
+                                            
+                                        }
+                                    },
+                                });
+                                
+                            }
+                })
+        });
+        
+                  
     </script>
 @endsection

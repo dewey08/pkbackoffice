@@ -106,7 +106,7 @@ class Account302Controller extends Controller
         
             // $data_trimart = DB::table('acc_trimart')->limit(3)->orderBy('acc_trimart_id','desc')->get();
             if ($acc_trimart_id == '') {
-                $data_trimart = DB::table('acc_trimart')->limit(3)->orderBy('acc_trimart_id','desc')->get();
+                $data_trimart = DB::table('acc_trimart')->limit(6)->orderBy('acc_trimart_id','desc')->get();
                 $trimart = DB::table('acc_trimart')->orderBy('acc_trimart_id','desc')->get();
             } else {
                 // $data_trimart = DB::table('acc_trimart')->whereBetween('dchdate', [$startdate, $enddate])->orderBy('acc_trimart_id','desc')->get();
@@ -121,6 +121,62 @@ class Account302Controller extends Controller
                 'data_trimart'     =>  $data_trimart,
             ]);
     }
+    public function account_302_dashsub(Request $request,$startdate,$enddate)
+    {
+        $datenow = date('Y-m-d');
+        
+        $dabudget_year = DB::table('budget_year')->where('active','=',true)->first();
+        $leave_month_year = DB::table('leave_month')->orderBy('MONTH_ID', 'ASC')->get();
+        $date = date('Y-m-d'); 
+        // dd($end );
+       
+            $datashow = DB::select('
+                    SELECT month(a.dchdate) as months,year(a.dchdate) as year,l.MONTH_NAME,l.MONTH_ID
+                    ,count(distinct a.hn) as hn
+                    ,count(distinct a.vn) as vn
+                    ,count(distinct a.an) as an
+                    ,sum(a.income) as income
+                    ,sum(a.paid_money) as paid_money
+                    ,sum(a.income)-sum(a.discount_money)-sum(a.rcpt_money) as total
+                    ,sum(a.debit) as debit
+                    FROM acc_debtor a
+                    left outer join leave_month l on l.MONTH_ID = month(a.dchdate)
+                    WHERE a.dchdate between "'.$startdate.'" and "'.$enddate.'"
+                    and account_code="1102050101.302"
+                    group by month(a.dchdate) order by month(a.dchdate) desc;
+            ');
+            
+
+        return view('account_302.account_302_dashsub',[
+            'startdate'          =>  $startdate,
+            'enddate'            =>  $enddate,
+            'datashow'           =>  $datashow,
+            'leave_month_year'   =>  $leave_month_year,
+        ]);
+    }
+    public function account_302_dashsubdetail(Request $request,$months,$year)
+    {
+        $datenow = date('Y-m-d'); 
+        // dd($id);
+        $data['users'] = User::get();
+
+        $data = DB::select('
+        SELECT 
+            month(dchdate) as months,year(dchdate) as year
+            ,an,vn,hn,cid,ptname,dchdate,pttype,debit_total
+            from acc_1102050101_302
+        
+            WHERE month(dchdate) = "'.$months.'"  
+            AND year(dchdate) = "'.$year.'"
+        ');
+        // WHERE month(U1.vstdate) = "'.$months.'" and year(U1.vstdate) = "'.$year.'"
+        return view('account_302.account_302_dashsubdetail', $data, [ 
+            'data'          =>     $data,
+            'year'          =>     $year,
+            'months'        =>     $months
+        ]);
+    }
+
     public function account_302_pull(Request $request)
     {
         $datenow = date('Y-m-d');
@@ -133,14 +189,22 @@ class Account302Controller extends Controller
             // $acc_debtor = Acc_debtor::where('stamp','=','N')->whereBetween('dchdate', [$datenow, $datenow])->get();
             $acc_debtor = DB::select('
                 SELECT a.*,c.subinscl from acc_debtor a
-                left outer join check_sit_auto c on c.an = a.an 
+                left join checksit_hos c on c.an = a.an
                 WHERE a.account_code="1102050101.302"
                 AND a.stamp = "N"
-                order by a.dchdate asc;
+                order by a.dchdate desc;
 
             ');
             // and month(a.dchdate) = "'.$months.'" and year(a.dchdate) = "'.$year.'"
         } else {
+            $acc_debtor = DB::select('
+            SELECT a.*,c.subinscl from acc_debtor a
+            left join checksit_hos c on c.an = a.an
+            WHERE a.account_code="1102050101.302"
+            AND a.stamp = "N"
+            order by a.dchdate desc;
+
+        ');
             // $acc_debtor = Acc_debtor::where('stamp','=','N')->whereBetween('dchdate', [$startdate, $enddate])->get();
         }
 
@@ -156,10 +220,10 @@ class Account302Controller extends Controller
         $startdate = $request->datepicker;
         $enddate = $request->datepicker2;
         // Acc_opitemrece::truncate();
-            $acc_debtor = DB::connection('mysql3')->select('
+            $acc_debtor = DB::connection('mysql2')->select('
                 SELECT a.vn,a.an,a.hn,pt.cid,concat(pt.pname,pt.fname," ",pt.lname) fullname
                 ,a.regdate as admdate,a.dchdate as dchdate,v.vstdate,op.income as income_group
-                ,a.pttype,ptt.max_debt_money,ec.code,ec.ar_ipd as account_code
+                ,ipt.pttype,ptt.max_debt_money,ec.code,ec.ar_ipd as account_code
                 ,ec.name as account_name,ifnull(ec.ar_ipd,"") pang_debit
                 ,a.income as income ,a.uc_money,a.rcpt_money as cash_money,a.discount_money
                 ,a.income-a.rcpt_money-a.discount_money as looknee_money
@@ -167,9 +231,9 @@ class Account302Controller extends Controller
                 ,sum(if(op.icode ="3010058",sum_price,0)) as fokliad
                 ,sum(if(op.income="02",sum_price,0)) as debit_instument
                 ,sum(if(op.icode IN("1560016","1540073","1530005","1540048","1620015","1600012","1600015"),sum_price,0)) as debit_drug
-                ,sum(if(op.icode IN ("3001412","3001417"),sum_price,0)) as debit_toa
-                ,sum(if(op.icode IN ("3010829","3010726 "),sum_price,0)) as debit_refer
-                from ipt ip
+                ,sum(if(op.icode IN("3001412","3001417"),sum_price,0)) as debit_toa
+                ,sum(if(op.icode IN("3010829","3011068","3010864","3010861","3010862","3010863","3011069","3011012","3011070"),sum_price,0)) as debit_refer
+                from hos.ipt ip
                 LEFT JOIN hos.an_stat a ON ip.an = a.an
                 LEFT JOIN patient pt on pt.hn=a.hn
                 LEFT JOIN pttype ptt on a.pttype=ptt.pttype
@@ -178,10 +242,11 @@ class Account302Controller extends Controller
                 LEFT JOIN hos.opitemrece op ON ip.an = op.an
                 LEFT JOIN hos.vn_stat v on v.vn = a.vn
                 WHERE a.dchdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"
-                AND a.pttype = "A7"
+               
+                AND ipt.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.302"))
                 GROUP BY a.an;
             ');
-
+            // AND ipt.pttype = "A7"
             foreach ($acc_debtor as $key => $value) {
                     $check = Acc_debtor::where('an', $value->an)->where('account_code','1102050101.302')->whereBetween('dchdate', [$startdate, $enddate])->count();
                     if ($check == 0) {
@@ -216,28 +281,28 @@ class Account302Controller extends Controller
                         ]);
                     }
 
-                    if ($value->fokliad > 0 && $value->account_code =='1102050101.302') {
-                        $checkfokliad = Acc_debtor::where('an', $value->an)->where('account_code', '1102050101.3099')->count();
-                        if ($checkfokliad == 0) {
-                            Acc_debtor::insert([
-                                'hn'                 => $value->hn,
-                                'an'                 => $value->an,
-                                'vn'                 => $value->vn,
-                                'cid'                => $value->cid,
-                                'ptname'             => $value->fullname,
-                                'pttype'             => $value->pttype,
-                                'vstdate'            => $value->vstdate,
-                                'regdate'            => $value->admdate,
-                                'dchdate'            => $value->dchdate,
-                                'acc_code'           => "38",
-                                'account_code'       => '1102050101.3099',
-                                'account_name'       => 'ประกันสังคม-ค่าใช้จ่ายสูง OP(ฟอกไต)',
-                                'income_group'       => '11',
-                                'debit'              => $value->fokliad,
-                                'debit_total'        => $value->fokliad
-                            ]);
-                        }
-                    }
+                    // if ($value->fokliad > 0 && $value->account_code =='1102050101.302') {
+                    //     $checkfokliad = Acc_debtor::where('an', $value->an)->where('account_code', '1102050101.3099')->count();
+                    //     if ($checkfokliad == 0) {
+                    //         Acc_debtor::insert([
+                    //             'hn'                 => $value->hn,
+                    //             'an'                 => $value->an,
+                    //             'vn'                 => $value->vn,
+                    //             'cid'                => $value->cid,
+                    //             'ptname'             => $value->fullname,
+                    //             'pttype'             => $value->pttype,
+                    //             'vstdate'            => $value->vstdate,
+                    //             'regdate'            => $value->admdate,
+                    //             'dchdate'            => $value->dchdate,
+                    //             'acc_code'           => "38",
+                    //             'account_code'       => '1102050101.3099',
+                    //             'account_name'       => 'ประกันสังคม-ค่าใช้จ่ายสูง OP(ฟอกไต)',
+                    //             'income_group'       => '11',
+                    //             'debit'              => $value->fokliad,
+                    //             'debit_total'        => $value->fokliad
+                    //         ]);
+                    //     }
+                    // }
             }
             return response()->json([
 

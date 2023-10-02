@@ -250,7 +250,7 @@ class AccountController extends Controller
         // and a.uc_money > 1
         // group by year(a.vstdate),month(a.vstdate)
         // and (rr.sss_approval_code is null or rr.sss_approval_code ="")
-        $datashow2 = DB::connection('mysql3')->select('
+        $datashow2 = DB::connection('mysql2')->select('
                 select year(a.vstdate) as monyear
                 ,month(a.vstdate) as months
                 ,count(distinct a.vn) as vn
@@ -283,7 +283,7 @@ class AccountController extends Controller
 
         // dd($enddateadmit);
 
-        $datashow3 = DB::connection('mysql3')->select('
+        $datashow3 = DB::connection('mysql2')->select('
                 select left(DATEADM,4) as monyear,mid(dateadm,5,2) as months,count(distinct m.opdseq) as errorc
                 from eclaimdb.m_registerdata m
                 LEFT JOIN hshooterdb.m_stm s on s.vn = m.opdseq
@@ -335,7 +335,7 @@ class AccountController extends Controller
                 and e.uc_money > 0
                 and (rr.sss_approval_code is null or rr.sss_approval_code =" ")
                 and e.vn not in(select opdseq from eclaimdb.m_registerdata  where opdseq = m.opdseq)
-              
+                and e.hn <> ""
                 group by e.vn,e.vstdate
                 order by e.vstdate
         ');
@@ -1917,6 +1917,148 @@ class AccountController extends Controller
             }
         }
 
+    }
+
+    public function account_nopaid(Request $request)
+    {
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+
+        $date = date('Y-m-d');
+        $y = date('Y') + 543;
+        $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+        $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
+        $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+
+        if ($startdate != '') {
+            $datashow = DB::connection('mysql')->select('
+                SELECT YEAR(v.vstdate) as year,MONTH(v.vstdate) as months 
+                    ,SUM(v.paid_money) AS sum_paid_money
+                    ,COUNT(DISTINCT v.vn) AS count_vn,l.MONTH_NAME
+                    FROM hos.vn_stat v
+                     
+                    LEFT JOIN hos.pttype t on t.pttype=v.pttype
+                    LEFT JOIN leave_month l on l.MONTH_ID = MONTH(v.vstdate)
+                    WHERE v.vstdate between "' . $startdate . '" and "' . $enddate . '"
+                    AND (v.paid_money>0 and v.rcpt_money=0 and v.remain_money=0)
+                    GROUP BY date_format(v.vstdate, "%M")
+                    ORDER BY v.vstdate desc  
+            ');
+        } else {
+            $datashow = DB::connection('mysql')->select('
+                SELECT YEAR(v.vstdate) as year,MONTH(v.vstdate) as months 
+                    ,SUM(v.paid_money) AS sum_paid_money
+                    ,COUNT(DISTINCT v.vn) AS count_vn,l.MONTH_NAME
+                    FROM hos.vn_stat v
+                 
+                    LEFT JOIN hos.pttype t on t.pttype=v.pttype
+                    LEFT JOIN leave_month l on l.MONTH_ID = MONTH(v.vstdate)
+                    WHERE v.vstdate between "' . $start . '" and "' . $end . '"
+                    AND (v.paid_money>0 and v.rcpt_money=0 and v.remain_money=0)
+                    GROUP BY date_format(v.vstdate, "%M")
+                    ORDER BY v.vstdate desc limit 6
+            ');
+        }
+        
+        
+        return view('account.account_nopaid', [
+            'datashow'   =>  $datashow, 
+            'startdate'  =>  $startdate,
+            'enddate'    =>  $enddate, 
+        ]);
+    }
+    public function account_nopaid_sub(Request $request,$months,$year)
+    {
+        $startdate = $request->startdate;
+        $enddate = $request->enddate; 
+
+        $datashow = DB::connection('mysql2')->select(' 
+                SELECT v.vn, v.income,v.cid, v.paid_money, v.hn, v.vstdate, v.pdx, v.pttype,concat(p.pname,p.fname," ",p.lname) ptname
+                FROM vn_stat v
+                LEFT JOIN patient p on p.hn=v.hn
+                LEFT JOIN pttype t on t.pttype=v.pttype
+                WHERE YEAR(v.vstdate) = "' . $year . '" AND MONTH(v.vstdate) = "' . $months . '"
+                AND (v.paid_money>0 and v.rcpt_money=0 and v.remain_money=0)
+        ');
+        return view('account.account_nopaid_sub', [
+            'datashow'   =>  $datashow, 
+            'startdate'  =>  $startdate,
+            'enddate'    =>  $enddate, 
+        ]);
+    }
+
+    public function account_nopaid_ip(Request $request)
+    {
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+
+        $date = date('Y-m-d');
+        $y = date('Y') + 543;
+        $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+        $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
+        $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+
+        if ($startdate != '') {
+            $datashow = DB::connection('mysql')->select('
+                SELECT YEAR(a.dchdate) as year,MONTH(a.dchdate) as months 
+                    ,SUM(a.paid_money) AS sum_paid_money
+                    ,COUNT(DISTINCT a.an) AS count_an,l.MONTH_NAME
+                    FROM hos.an_stat a 
+                    LEFT JOIN hos.pttype t on t.pttype=a.pttype
+                    LEFT JOIN leave_month l on l.MONTH_ID = MONTH(a.dchdate)
+                    WHERE a.dchdate BETWEEN "' . $startdate . '" and "' . $enddate . '"
+                    AND (a.paid_money>0 and a.rcpt_money=0 and a.remain_money=0)
+                    GROUP BY date_format(a.dchdate, "%M")
+                    ORDER BY a.dchdate desc  
+            ');
+        } else {
+            $datashow = DB::connection('mysql')->select('
+                SELECT YEAR(a.dchdate) as year,MONTH(a.dchdate) as months 
+                    ,SUM(a.paid_money) AS sum_paid_money
+                    ,COUNT(DISTINCT a.an) AS count_an,l.MONTH_NAME
+                    FROM hos.an_stat a 
+                    LEFT JOIN hos.pttype t on t.pttype=a.pttype
+                    LEFT JOIN leave_month l on l.MONTH_ID = MONTH(a.dchdate)
+                    WHERE a.dchdate BETWEEN "' . $start . '" and "' . $end . '"
+                    AND (a.paid_money>0 and a.rcpt_money=0 and a.remain_money=0)
+                    GROUP BY date_format(a.dchdate, "%M")
+                    ORDER BY a.dchdate desc limit 6 
+            ');
+        }
+                
+        return view('account.account_nopaid_ip', [
+            'datashow'   =>  $datashow, 
+            'startdate'  =>  $startdate,
+            'enddate'    =>  $enddate, 
+        ]);
+    }
+    public function account_nopaid_sub_ip(Request $request,$months,$year)
+    {
+        $startdate = $request->startdate;
+        $enddate = $request->enddate; 
+
+        $datashow = DB::connection('mysql2')->select(' 
+            SELECT a.an, a.income,p.cid, a.paid_money, a.hn
+            , a.dchdate, a.pdx, a.pttype,concat(p.pname,p.fname," ",p.lname) ptname
+            FROM an_stat a
+            LEFT JOIN patient p on p.hn=a.hn
+            LEFT JOIN pttype t on t.pttype=a.pttype
+            WHERE YEAR(a.dchdate) = "' . $year . '" AND MONTH(a.dchdate) = "' . $months . '"
+            AND (a.paid_money>0 and a.rcpt_money=0 and a.remain_money=0)
+        ');
+        return view('account.account_nopaid_sub_ip', [
+            'datashow'   =>  $datashow, 
+            'startdate'  =>  $startdate,
+            'enddate'    =>  $enddate, 
+        ]);
     }
 
 

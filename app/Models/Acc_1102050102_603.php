@@ -13,7 +13,7 @@ class Acc_1102050102_603 extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'acc_1102050102_603';
-    protected $primaryKey = 'Acc_1102050102_603_id';
+    protected $primaryKey = 'acc_1102050102_603_id';
     protected $fillable = [
         'vn',
         'an',

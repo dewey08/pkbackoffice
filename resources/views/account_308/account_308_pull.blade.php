@@ -80,32 +80,26 @@
                         data-date-language="th-th" value="{{ $enddate }}"/>  
                 </div>  --}}
                 <div class="input-daterange input-group" id="datepicker1" data-date-format="dd M, yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker1'>
-                    <input type="text" class="form-control" name="startdate" id="datepicker" placeholder="Start Date" data-date-container='#datepicker1'
+                    <input type="text" class="form-control" name="startdate" id="datepicker" placeholder="Start Date" data-date-container='#datepicker1' autocomplete="off"
                      data-provide="datepicker" data-date-autoclose="true" data-date-language="th-th" value="{{ $startdate }}"/>
-                    <input type="text" class="form-control" name="enddate" placeholder="End Date" id="datepicker2" data-date-container='#datepicker1'
+                    <input type="text" class="form-control" name="enddate" placeholder="End Date" id="datepicker2" data-date-container='#datepicker1' autocomplete="off"
                     data-provide="datepicker" data-date-autoclose="true" data-date-language="th-th" value="{{ $enddate }}"/>
                     
-                    <button type="button" class="me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary" id="Pulldata">
+                    {{-- <button type="button" class="me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary" id="Pulldata">
                         <i class="fa-solid fa-file-circle-plus text-primary me-2"></i>
-                        ดึงข้อมูล</button>
+                        ดึงข้อมูล</button> --}}
                 </div>
             </div>
-            {{-- <div class="col-md-4"> 
-                <button type="button" class="mb-2 me-2 btn-icon btn-shadow btn-dashed btn btn-outline-primary" id="Pulldata">
+            <div class="col-md-1"> 
+                <button type="button" class="btn-icon btn-shadow btn-dashed btn btn-outline-primary" id="Pulldata">
                     <i class="fa-solid fa-file-circle-plus text-primary me-2"></i>
                     ดึงข้อมูล</button>    
                   
-            </div> --}}
-            <div class="col"></div>
+            </div>
+            {{-- <div class="col"></div> --}}
         </div>
              
-        <div class="row mt-3 text-center">  
-            <div id="overlay">
-                <div class="cv-spinner">
-                  <span class="spinner"></span>
-                </div>
-              </div>
-        </div> 
+        
         <div class="row mt-3">
             <div class="col-xl-12">
                 <div class="card">
@@ -120,7 +114,7 @@
                       
                         <div class="row">
                             <div class="col-md-4">
-                                <h4 class="card-title">Detail Account</h4>
+                                <h4 class="card-title">Detail Account ผัง 1102050101.308</h4>
                                 <p class="card-title-desc">รายละเอียดตั้งลูกหนี้</p>
                             </div>
                             <div class="col"></div>
@@ -149,7 +143,7 @@
                                             <th class="text-center">dchdate</th>  
                                             <th class="text-center">pttype</th> 
                                             <th class="text-center">spsch</th> 
-                                            {{-- <th class="text-center">income</th> --}}
+                                            <th class="text-center">income</th>
                                             <th class="text-center">ลูกหนี้</th>  
                                         </tr>
                                     </thead>
@@ -177,8 +171,8 @@
                                                 
                                                 <td class="text-center" style="color:rgb(216, 95, 14)" width="5%">{{ $item->subinscl }}</td> 
                                                 
-                                                {{-- <td class="text-center" width="10%">{{ number_format($item->income, 2) }}</td>  --}}
-                                                <td class="text-center" width="10%">{{ number_format($item->debit, 2) }}</td> 
+                                                <td class="text-center" width="10%">{{ number_format($item->income, 2) }}</td> 
+                                                <td class="text-center" width="10%">{{ number_format($item->debit_total, 2) }}</td> 
  
                                             </tr>
                                         @endforeach

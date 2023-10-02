@@ -61,10 +61,12 @@
 <style>
     body{
     background:
-        url(/pkbackoffice/public/images/bg7.jpg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
+        /* url(/pkbackoffice/public/images/bg7.jpg); */
+        /* background-color:rgb(245, 240, 240); */
+        background-color:rgb(245, 240, 240);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: 100% 100%;
     }
 .Bgsidebar {
       background-image: url('/pkbackoffice/public/images/bgside.jpg');
@@ -210,6 +212,10 @@
                                 <li ><a href="{{ url('check_knee_ipd') }}" >ข้อเข่า</a></li>
                                 <li ><a href="{{ url('check_kradook') }}" >แผ่นโลหะกระดูก</a></li>
                                 <li ><a href="{{ url('check_khosaphok') }}" >ข้อสะโพก</a></li>
+                                <li ><a href="{{ url('check_bumbat') }}" >อุปกรณ์ในการบำบัดรักษา(9104)</a></li>
+                                <li ><a href="{{ url('check_lapo') }}" >Laparoscopic appendectomy(4701)</a></li>
+                                <li ><a href="{{ url('ins_a') }}" >Colostomy OPD</a></li>
+                                <li ><a href="{{ url('ins_b') }}" >Colostomy IPD</a></li>
                             </ul>
                         </li>
                         <li>
@@ -241,6 +247,15 @@
                                 <li ><a href="{{ url('kayapap_jitvs_mian') }}" >จิตเวช</a></li> 
                             </ul>
                         </li>
+                        {{-- <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="fa-solid fa-square-person-confined text-danger"></i>
+                                <span>จิตเวช</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li ><a href="{{ url('kayapap_jitvs_mian') }}" >จิตเวช</a></li> 
+                            </ul>
+                        </li> --}}
 
                     </ul>
                 </div>

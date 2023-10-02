@@ -27,6 +27,11 @@ use App\Models\Stm_import;
 use App\Models\Acc_stm_repmoney;
 use App\Models\Acc_stm_repmoney_file;
 use App\Models\Acc_trimart;
+use App\Models\Acc_1102050101_304;
+use App\Models\Acc_1102050101_307;
+use App\Models\Acc_1102050101_308;
+use App\Models\Acc_1102050101_309;
+
  
 use SplFileObject;
 use Arr;
@@ -49,13 +54,13 @@ class UpstmController extends Controller
             SELECT YEAR(a.acc_trimart_start_date) as year,ar.acc_stm_repmoney_id,a.acc_trimart_code,a.acc_trimart_name
             ,ar.acc_stm_repmoney_book,ar.acc_stm_repmoney_no,ar.acc_stm_repmoney_price301,ar.acc_stm_repmoney_price302,ar.acc_stm_repmoney_price310,ar.acc_stm_repmoney_date,concat(u.fname," ",u.lname) as fullname
             FROM acc_stm_repmoney ar 
-            LEFT JOIN acc_trimart a ON a.acc_trimart_id = ar.acc_stm_repmoney_tri 
+            LEFT JOIN acc_trimart a ON a.acc_trimart_id = ar.acc_trimart_id 
             LEFT JOIN users u ON u.id = ar.user_id 
             ORDER BY acc_stm_repmoney_id DESC
         ');
         $countc = DB::table('acc_stm_ucs_excel')->count();
-        $data['acc_trimart_liss'] = DB::table('acc_trimart_liss')->get();
-        // $data['trimart'] = DB::table('acc_stm_repmoney_file')->get();
+        // $data['acc_trimart_liss'] = DB::table('acc_trimart_liss')->get();
+        $data['trimart'] = DB::table('acc_trimart')->get();
 
         return view('account_pk.uprep_money',$data,[
             'startdate'     =>     $startdate,
@@ -67,7 +72,7 @@ class UpstmController extends Controller
     public function uprep_money_save(Request $request)
     {
         $add = new Acc_stm_repmoney();
-        $add->acc_stm_repmoney_tri         = $request->acc_stm_repmoney_tri;
+        $add->acc_trimart_id               = $request->acc_stm_repmoney_tri;
         $add->acc_stm_repmoney_book        = $request->acc_stm_repmoney_book;
         $add->acc_stm_repmoney_no          = $request->acc_stm_repmoney_no;
         $add->acc_stm_repmoney_price301    = $request->acc_stm_repmoney_price301;
@@ -93,7 +98,7 @@ class UpstmController extends Controller
     {
         $id = $request->acc_stm_repmoney_id;
         $update = Acc_stm_repmoney::find($id);
-        $update->acc_stm_repmoney_tri         = $request->acc_stm_repmoney_tri;
+        $update->acc_trimart_id               = $request->acc_stm_repmoney_tri;
         $update->acc_stm_repmoney_book        = $request->acc_stm_repmoney_book;
         $update->acc_stm_repmoney_no          = $request->acc_stm_repmoney_no;
         $update->acc_stm_repmoney_price301    = $request->acc_stm_repmoney_price301;
@@ -144,6 +149,361 @@ class UpstmController extends Controller
         // return response()->json(['status' => '200']);
     }
 
+    
+     public function uprep_sss_304(Request $request)
+     { 
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $data['users'] = User::get(); 
+        if ($startdate != '') {
+            $data['data'] = DB::select('
+            SELECT U1.acc_1102050101_304_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.recieve_no
+                from acc_1102050101_304 U1 
+                WHERE U1.dchdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                GROUP BY U1.an
+        ');  
+        } else {
+            $data['data'] = DB::select('
+                SELECT U1.acc_1102050101_304_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.recieve_no
+                    from acc_1102050101_304 U1
+                
+                    WHERE U1.nhso_docno <> ""
+                    GROUP BY U1.an
+            ');  
+        }      
+         return view('account_304.uprep_sss_304', $data,[
+            'startdate'     =>     $startdate,
+            'enddate'       =>     $enddate,
+         ]);
+     }
+     public function uprep_sss_304edit(Request $request,$id)
+     {
+         $data_show = Acc_1102050101_304::find($id);
+         return response()->json([
+             'status'               => '200', 
+             'data_show'            =>  $data_show,
+         ]);
+     }
+     public function uprep_sss_304_update(Request $request)
+     {
+         $id = $request->acc_1102050101_304_id;
+         $update = Acc_1102050101_304::find($id);
+         $update->recieve_true      = $request->recieve_true;
+         $update->difference        = $request->difference;
+         $update->recieve_no        = $request->recieve_no;
+         $update->recieve_date      = $request->recieve_date;
+         $update->recieve_user      = $request->user_id; 
+         $update->save();
+          
+         return response()->json([
+             'status'    => '200' 
+         ]); 
+     }
+
+     public function uprep_sss_307(Request $request)
+     { 
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+         $data['users'] = User::get(); 
+         if ($startdate != '') {
+            $data['data'] = DB::select('
+            SELECT U1.acc_1102050101_307_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.recieve_no
+                from acc_1102050101_307 U1
+            
+                WHERE U1.vstdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                GROUP BY U1.vn
+        ');   
+         } else {
+            $data['data'] = DB::select('
+            SELECT U1.acc_1102050101_307_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.recieve_no
+                from acc_1102050101_307 U1
+               
+                GROUP BY U1.vn
+        ');   
+         }
+        //  WHERE U1.pttype IN("ss","C4","C5") 
+        //  WHERE U1.nhso_docno <> ""      
+         return view('account_307.uprep_sss_307', $data,[
+            'startdate'     =>     $startdate,
+            'enddate'       =>     $enddate,
+         ]);
+     }
+     public function uprep_sss_307edit(Request $request,$id)
+     {
+         $data_show = Acc_1102050101_307::find($id);
+         return response()->json([
+             'status'               => '200', 
+             'data_show'            =>  $data_show,
+         ]);
+     }
+     public function uprep_sss_307_update(Request $request)
+     {
+         $id = $request->acc_1102050101_307_id;
+         $update = Acc_1102050101_307::find($id);
+         $update->recieve_true      = $request->recieve_true;
+         $update->difference        = $request->difference;
+         $update->recieve_no        = $request->recieve_no;
+         $update->recieve_date      = $request->recieve_date;
+         $update->recieve_user      = $request->user_id; 
+         $update->save();
+          
+         return response()->json([
+             'status'    => '200' 
+         ]); 
+     }
+     public function uprep_sss_308(Request $request)
+     { 
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+         $data['users'] = User::get(); 
+            if ($startdate != '') {
+                $data['data'] = DB::select('
+                    SELECT U1.acc_1102050101_308_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.recieve_no
+                        from acc_1102050101_308 U1 
+                        WHERE U1.dchdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                        GROUP BY U1.an
+                ');  
+            } else {
+                $data['data'] = DB::select('
+                    SELECT U1.acc_1102050101_308_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.recieve_no
+                        from acc_1102050101_308 U1
+                    
+                        WHERE U1.nhso_docno <> ""
+                        GROUP BY U1.an
+                ');  
+            }      
+          
+         return view('account_308.uprep_sss_308', $data,[
+            'startdate'     =>     $startdate,
+            'enddate'       =>     $enddate,
+         ]);
+     }
+     public function uprep_sss_308edit(Request $request,$id)
+     {
+         $data_show = Acc_1102050101_308::find($id);
+         return response()->json([
+             'status'               => '200', 
+             'data_show'            =>  $data_show,
+         ]);
+     }
+     public function uprep_sss_308_update(Request $request)
+     {
+         $id = $request->acc_1102050101_308_id;
+         $update = Acc_1102050101_308::find($id);
+         $update->recieve_true      = $request->recieve_true;
+         $update->difference        = $request->difference;
+         $update->recieve_no        = $request->recieve_no;
+         $update->recieve_date      = $request->recieve_date;
+         $update->recieve_user      = $request->user_id; 
+         $update->save();
+          
+         return response()->json([
+             'status'    => '200' 
+         ]); 
+     }
+     public function uprep_sss_309(Request $request)
+     { 
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+         $data['users'] = User::get(); 
+            if ($startdate != '') {
+                $data['data'] = DB::select('
+                    SELECT U1.acc_1102050101_309_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.recieve_no
+                        from acc_1102050101_309 U1 
+                        WHERE U1.vstdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                        GROUP BY U1.vn
+                ');  
+            } else {
+                $data['data'] = DB::select('
+                    SELECT U1.acc_1102050101_309_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.recieve_no
+                        from acc_1102050101_309 U1
+                    
+                        WHERE U1.nhso_docno <> ""
+                        GROUP BY U1.vn
+                ');  
+            } 
+          
+         return view('account_309.uprep_sss_309', $data,[
+            'startdate'     =>     $startdate,
+            'enddate'       =>     $enddate,
+         ]);
+     }
+     public function uprep_sss_all(Request $request)
+     { 
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+         $data['users'] = User::get(); 
+            if ($startdate != '') {
+                $data['data'] = DB::select('                  
+                        SELECT U1.acc_1102050101_304_id as id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.dchdate,U1.pttype,U1.debit_total,U1.account_code,U1.nhso_docno,U1.recieve_no,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U1.recieve_user
+                        from acc_1102050101_304 U1 
+                        WHERE U1.dchdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                        AND U1.nhso_docno <> "" AND U1.nhso_ownright_pid <> ""
+
+                        UNION 
+                        
+                        SELECT U2.acc_1102050101_307_id as id,U2.an,U2.vn,U2.hn,U2.cid,U2.ptname,U2.vstdate,U2.dchdate,U2.pttype,U2.debit_total,U2.account_code,U2.nhso_docno,U2.recieve_no,U2.nhso_ownright_pid,U2.recieve_true,U2.difference,U2.recieve_no,U2.recieve_date,U2.recieve_user
+                        from acc_1102050101_307 U2 
+                        WHERE U2.vstdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                        
+                        
+                        UNION 
+                        
+                        SELECT U3.acc_1102050101_308_id as id,U3.an,U3.vn,U3.hn,U3.cid,U3.ptname,U3.vstdate,U3.dchdate,U3.pttype,U3.debit_total,U3.account_code,U3.nhso_docno,U3.recieve_no,U3.nhso_ownright_pid,U3.recieve_true,U3.difference,U3.recieve_no,U3.recieve_date,U3.recieve_user
+                        from acc_1102050101_308 U3 
+                        WHERE U3.dchdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                        AND U3.nhso_docno <> "" AND U3.nhso_ownright_pid <> ""
+
+                        UNION 
+                        
+                        SELECT U4.acc_1102050101_309_id as id,U4.an,U4.vn,U4.hn,U4.cid,U4.ptname,U4.vstdate,U4.dchdate,U4.pttype,U4.debit_total,U4.account_code,U4.nhso_docno,U4.recieve_no,U4.nhso_ownright_pid,U4.recieve_true,U4.difference,U4.recieve_no,U4.recieve_date,U4.recieve_user
+                        from acc_1102050101_309 U4 
+                        WHERE U4.vstdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                        AND U4.nhso_docno <> "" AND U4.nhso_ownright_pid <> ""
+                ');  
+                // AND U2.nhso_ownright_pid <> ""
+                // AND U2.nhso_docno <> ""
+            } else {
+                $data['data'] = DB::select('
+                        SELECT U1.acc_1102050101_304_id as id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.dchdate,U1.pttype,U1.debit_total,U1.account_code,U1.nhso_docno,U1.recieve_no,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U1.recieve_user
+                        from acc_1102050101_304 U1 
+                        WHERE U1.nhso_docno <> "" AND U1.nhso_ownright_pid <> ""
+
+                        UNION 
+                        
+                        SELECT U2.acc_1102050101_307_id as id,U2.an,U2.vn,U2.hn,U2.cid,U2.ptname,U2.vstdate,U2.dchdate,U2.pttype,U2.debit_total,U2.account_code,U2.nhso_docno,U2.recieve_no,U2.nhso_ownright_pid,U2.recieve_true,U2.difference,U2.recieve_no,U2.recieve_date,U2.recieve_user
+                        from acc_1102050101_307 U2 
+                        
+                        
+                        UNION 
+                        
+                        SELECT U3.acc_1102050101_308_id as id,U3.an,U3.vn,U3.hn,U3.cid,U3.ptname,U3.vstdate,U3.dchdate,U3.pttype,U3.debit_total,U3.account_code,U3.nhso_docno,U3.recieve_no,U3.nhso_ownright_pid,U3.recieve_true,U3.difference,U3.recieve_no,U3.recieve_date,U3.recieve_user
+                        from acc_1102050101_308 U3 
+                        WHERE U3.nhso_docno <> "" AND U3.nhso_ownright_pid <> ""
+
+                        UNION 
+                        
+                        SELECT U4.acc_1102050101_309_id as id,U4.an,U4.vn,U4.hn,U4.cid,U4.ptname,U4.vstdate,U4.dchdate,U4.pttype,U4.debit_total,U4.account_code,U4.nhso_docno,U4.recieve_no,U4.nhso_ownright_pid,U4.recieve_true,U4.difference,U4.recieve_no,U4.recieve_date,U4.recieve_user
+                        from acc_1102050101_309 U4 
+                        WHERE U4.nhso_docno <> "" AND U4.nhso_ownright_pid <> ""
+ 
+                ');  
+            } 
+            // WHERE U2.nhso_ownright_pid <> ""
+            // U2.nhso_docno <> "" AND 
+         return view('account_stm.uprep_sss_all', $data,[
+            'startdate'     =>     $startdate,
+            'enddate'       =>     $enddate,
+         ]);
+     }
+     public function uprep_sss_alleditpage(Request $request,$account,$id)
+     { 
+        // dd($account);
+        if ($account == '1102050101.304') {
+            $data_show = Acc_1102050101_304::where('acc_1102050101_304_id',$id)->first();
+
+        } elseif ($account == '1102050101.307') {
+            $data_show = Acc_1102050101_307::where('acc_1102050101_307_id',$id)->first();
+          
+        } elseif ($account == '1102050101.308') {
+            $data_show = Acc_1102050101_308::where('acc_1102050101_308_id',$id)->first();
+
+        } elseif ($account == '1102050101.309') {
+            $data_show = Acc_1102050101_309::where('acc_1102050101_309_id',$id)->first();
+
+        } else {
+            # code...
+        }
+         
+        // dd($data_show->acc_1102050101_307_id);
+        // dd($account);
+         return view('account_stm.uprep_sss_alleditpage',[
+            'data_show'     =>     $data_show ,
+            'id'            =>     $id,
+            'account'       =>     $account
+         ]);
+     }
+     public function uprep_sss_all_update(Request $request)
+     {
+            $account = $request->account_code;
+            $id = $request->id;
+            $recieve_true = $request->recieve_true;
+            $difference = $request->difference;
+            $recieve_no = $request->recieve_no;
+            $recieve_date = $request->recieve_date;
+            $user_id = $request->user_id; 
+            // dd($recieve_true);
+            if ($account == '1102050101.304') { 
+                $update = Acc_1102050101_304::find($id);
+                $update->recieve_true      = $recieve_true;
+                $update->difference        = $difference;
+                $update->recieve_no        = $recieve_no;
+                $update->recieve_date      = $recieve_date;
+                $update->recieve_user      = $user_id; 
+                $update->save();
+
+            } elseif ($account == '1102050101.307') {
+                $update2 = Acc_1102050101_307::find($id);
+                $update2->recieve_true      = $recieve_true;
+                $update2->difference        = $difference;
+                $update2->recieve_no        = $recieve_no;
+                $update2->recieve_date      = $recieve_date;
+                $update2->recieve_user      = $user_id; 
+                $update2->save();
+            //     $data_show = Acc_1102050101_307::where('acc_1102050101_307_id',$id)->first();
+            
+            // } elseif ($account = '1102050101.308') {
+            //     $data_show = Acc_1102050101_308::where('acc_1102050101_308_id',$id)->first();
+
+            // } elseif ($account = '1102050101.309') {
+            //     $data_show = Acc_1102050101_309::where('acc_1102050101_309_id',$id)->first();
+
+            } else {
+                # code...
+            }
+            
+           
+            
+            return response()->json([
+                'status'    => '200' 
+            ]); 
+     }
+
+     public function uprep_sss_alledit(Request $request,$id)
+     {
+        dd($id);
+
+         $data_show = Acc_1102050101_309::find($id);
+         return response()->json([
+             'status'               => '200', 
+             'data_show'            =>  $data_show,
+         ]);
+     }
+
+
+     public function uprep_sss_309edit(Request $request,$id)
+     {
+         $data_show = Acc_1102050101_309::find($id);
+         return response()->json([
+             'status'               => '200', 
+             'data_show'            =>  $data_show,
+         ]);
+     }
+     public function uprep_sss_309_update(Request $request)
+     {
+         $id = $request->acc_1102050101_309_id;
+         $update = Acc_1102050101_309::find($id);
+         $update->recieve_true      = $request->recieve_true;
+         $update->difference        = $request->difference;
+         $update->recieve_no        = $request->recieve_no;
+         $update->recieve_date      = $request->recieve_date;
+         $update->recieve_user      = $request->user_id; 
+         $update->save();
+          
+         return response()->json([
+             'status'    => '200' 
+         ]); 
+     }
     // ***************           **************
     public function import_stm(Request $request)
     { 
@@ -659,6 +1019,187 @@ class UpstmController extends Controller
                 // }
                                                    
         return redirect()->back();
+    }
+    public function uprep_money_plb(Request $request)
+    {
+        $datenow = date('Y-m-d');
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $date = date('Y-m-d');
+        $y = date('Y') + 543;
+        $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+        $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
+        $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+
+        if ($startdate != '') {
+            $datashow = DB::select(' 
+                SELECT U1.acc_1102050102_602_id,U2.req_no,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+                ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U2.money_billno,U2.payprice
+                from acc_1102050102_602 U1 
+                LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
+                WHERE U1.vstdate = "'.$startdate.'" AND year(U1.vstdate) = "'.$enddate.'"           
+                GROUP BY U1.vn
+            ');
+        } else {
+            $datashow = DB::select(' 
+                SELECT U1.acc_1102050102_602_id,U2.req_no,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+                ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U2.money_billno,U2.payprice
+                from acc_1102050102_602 U1 
+                LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
+                WHERE U1.vstdate = "'.$start.'" AND year(U1.vstdate) = "'.$end.'"           
+                GROUP BY U1.vn
+            '); 
+        }
+        
+
+        
+       
+        return view('upstm.uprep_money_plb', [ 
+            'datashow'      =>  $datashow,
+            'startdate'     =>     $startdate,
+            'enddate'       =>     $enddate
+        ]);
+            
+         
+    }
+    public function uprep_money_plbhn(Request $request)
+    { 
+        $startdate = $request->datepicker;
+        $enddate = $request->datepicker2;
+        $date = date('Y-m-d');
+        $y = date('Y') + 543; 
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+        $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 1 เดือน 
+        if ($startdate != '') {
+            $patient = DB::connection('mysql2')->select('
+                SELECT v.vn,p.hn,p.cid,concat(p.pname,p.fname," ",p.lname) as ptname,v.vstdate,v.income
+                from patient p 
+                LEFT JOIN vn_stat v ON p.hn = v.hn
+                WHERE v.vstdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                AND p.death = "N" AND v.income <> 0
+                AND v.pttype IN("31","36","37","38","39")
+            ');
+        } else {
+            $patient = DB::connection('mysql2')->select('
+                SELECT v.vn,p.hn,p.cid,concat(p.pname,p.fname," ",p.lname) as ptname,v.vstdate,v.income
+                from patient p 
+                LEFT JOIN vn_stat v ON p.hn = v.hn
+                WHERE v.vstdate BETWEEN "'.$newDate.'" AND "'.$date.'"
+                AND p.death = "N" AND v.income <> 0
+                AND v.pttype IN("31","36","37","38","39")
+            ');
+        }
+        
+       
+       
+         
+        return view('upstm.uprep_money_plbhn', [  
+            'patient'       =>  $patient,
+            'startdate'     =>  $startdate,
+            'enddate'       =>  $enddate
+        ]);
+            
+         
+    }
+    public function uprep_money_plbop(Request $request)
+    { 
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $date = date('Y-m-d');
+        $y = date('Y') + 543; 
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+
+        if ($startdate != '') {
+            $datashow = DB::select('  
+                SELECT U1.acc_1102050102_602_id,U2.req_no,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+                ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U2.money_billno,U2.payprice
+                from acc_1102050102_602 U1 
+                LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
+                WHERE U1.vstdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"     
+                GROUP BY U1.vn
+            ');
+        } else {
+            $datashow = DB::select(' 
+                SELECT U1.acc_1102050102_602_id,U2.req_no,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+                    ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U2.money_billno,U2.payprice
+                    from acc_1102050102_602 U1 
+                    LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id 
+                    WHERE U1.vstdate BETWEEN "'.$start.'" AND "'.$end.'"            
+                    GROUP BY U1.vn 
+            '); 
+        }
+             $patient = DB::connection('mysql2')->select('
+                SELECT p.hn,concat(p.pname,p.fname," ",p.lname) as ptname
+                from patient p 
+                LEFT JOIN vn_stat v ON p.hn = v.hn
+                WHERE vstdate BETWEEN "2023-09-01" AND "2023-09-28"
+                AND p.death = "N" 
+            ');
+         
+        return view('upstm.uprep_money_plbop', [ 
+            'datashow'      =>  $datashow,
+            'patient'       =>  $patient,
+            'startdate'     =>  $startdate,
+            'enddate'       =>  $enddate
+        ]);
+            
+         
+    }
+    public function uprep_money_plbip(Request $request)
+    {
+        $datenow = date('Y-m-d');
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $date = date('Y-m-d');
+        $y = date('Y') + 543;
+        $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
+        $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
+        $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+
+        if ($startdate != '') {
+            $datashow = DB::select(' 
+                SELECT U1.acc_1102050102_602_id,U2.req_no,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+                ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U2.money_billno,U2.payprice
+                from acc_1102050102_602 U1 
+                LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
+                WHERE U1.vstdate = "'.$startdate.'" AND year(U1.vstdate) = "'.$enddate.'"           
+                GROUP BY U1.vn
+            ');
+        } else {
+            $datashow = DB::select(' 
+                SELECT U1.acc_1102050102_602_id,U2.req_no,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+                ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U2.money_billno,U2.payprice
+                from acc_1102050102_602 U1 
+                LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
+                WHERE U1.vstdate = "'.$start.'" AND year(U1.vstdate) = "'.$end.'"           
+                GROUP BY U1.vn
+            '); 
+        }
+        
+
+        
+       
+        return view('upstm.uprep_money_plbip', [ 
+            'datashow'      =>  $datashow,
+            'startdate'     =>     $startdate,
+            'enddate'       =>     $enddate
+        ]);
+            
+         
     }
 
    

@@ -307,7 +307,7 @@ class EnvController extends Controller
         $data_loob = Env_water_sub::where('water_id','=',$waterid)->get();
         // $name = User::where('id','=',$iduser)->first();
         $data_users = User::where('id','=',$request->water_user)->first();
-        $name = $data_users->fname.' '.$data_users->lname;
+        $name = $data_users->fname.''.$data_users->lname;
 
         $mMessage = array();
         foreach ($data_loob as $key => $value) { 
@@ -319,8 +319,8 @@ class EnvController extends Controller
                 ];   
             }   
        
-            // $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
-            $linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
+            $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
+            //$linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
            
             // $smessage = [];
             $header = "ข้อมูลตรวจน้ำ";
@@ -334,7 +334,7 @@ class EnvController extends Controller
                 $qt_mesage           = $smes['water_qty'];
                 $status_mesage       = $smes['status'];
 
-                $message.="\n"."รายการพารามิเตอร์ : ". $na_mesage .
+                $message.="\n"."รายการพารามิเตอร์" . $na_mesage .
                           "\n"."ผลการวิเคราะห์ : " . $qt_mesage . 
                           "\n"."สถานะ : "       . $status_mesage;  
             } 

@@ -86,9 +86,7 @@ date_default_timezone_set("Asia/Bangkok");
 
 
 class Account304Controller extends Controller
- { 
-    
-
+ {     
     public function account_304_dash(Request $request)
     {
         $datenow = date('Y-m-d');
@@ -103,7 +101,11 @@ class Account304Controller extends Controller
         $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
         $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
         $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
-
+        $yearnew = date('Y');
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
+        // dd($yearnew );
     
         // $data_trimart = DB::table('acc_trimart')->limit(3)->orderBy('acc_trimart_id','desc')->get();
         if ($acc_trimart_id == '') {
@@ -114,12 +116,48 @@ class Account304Controller extends Controller
             $data_trimart = DB::table('acc_trimart')->where('acc_trimart_id','=',$acc_trimart_id)->orderBy('acc_trimart_id','desc')->get();
             $trimart = DB::table('acc_trimart')->orderBy('acc_trimart_id','desc')->get();
         }
+
+        if ($startdate == '') {
+            $datashow = DB::select('
+                    SELECT month(a.dchdate) as months,year(a.dchdate) as year,l.MONTH_NAME
+                    ,count(distinct a.hn) as hn
+                    ,count(distinct a.vn) as vn
+                    ,count(distinct a.an) as an
+                    ,sum(a.income) as income
+                    ,sum(a.paid_money) as paid_money
+                    ,sum(a.income)-sum(a.discount_money)-sum(a.rcpt_money) as total
+                    ,sum(a.debit) as debit
+                    FROM acc_debtor a
+                    left outer join leave_month l on l.MONTH_ID = month(a.dchdate)
+                    WHERE a.dchdate between "'.$start.'" and "'.$end.'"
+                    and account_code="1102050101.304"
+                    group by month(a.dchdate) order by a.dchdate desc limit 6;
+            ');
+            // and stamp = "N"
+        } else {
+            $datashow = DB::select('
+                    SELECT month(a.dchdate) as months,year(a.dchdate) as year,l.MONTH_NAME
+                    ,count(distinct a.hn) as hn
+                    ,count(distinct a.vn) as vn
+                    ,count(distinct a.an) as an
+                    ,sum(a.income) as income
+                    ,sum(a.paid_money) as paid_money
+                    ,sum(a.income)-sum(a.discount_money)-sum(a.rcpt_money) as total
+                    ,sum(a.debit) as debit
+                    FROM acc_debtor a
+                    left outer join leave_month l on l.MONTH_ID = month(a.dchdate)
+                    WHERE a.dchdate between "'.$startdate.'" and "'.$enddate.'"
+                    and account_code="1102050101.304"
+                  
+            ');
+        }
         return view('account_304.account_304_dash',[
             'startdate'        =>     $startdate,
             'enddate'          =>     $enddate,
             'trimart'          => $trimart,
             'leave_month_year' =>  $leave_month_year,
             'data_trimart'     =>  $data_trimart,
+            'datashow'         =>  $datashow,
         ]);
     }
     public function account_304_pull(Request $request)
@@ -134,10 +172,10 @@ class Account304Controller extends Controller
             // $acc_debtor = Acc_debtor::where('stamp','=','N')->whereBetween('dchdate', [$datenow, $datenow])->get();
             $acc_debtor = DB::select('
                 SELECT a.*,c.subinscl from acc_debtor a
-                left outer join check_sit_auto c on c.an = a.an 
+                left join checksit_hos c on c.an = a.an
                 WHERE a.account_code="1102050101.304"
                 AND a.stamp = "N"
-                order by a.dchdate asc;
+                order by a.dchdate desc;
 
             ');
             // and month(a.dchdate) = "'.$months.'" and year(a.dchdate) = "'.$year.'"
@@ -158,67 +196,103 @@ class Account304Controller extends Controller
         $startdate = $request->datepicker;
         $enddate = $request->datepicker2;
         // Acc_opitemrece::truncate();
-            $acc_debtor = DB::connection('mysql3')->select('
-                SELECT a.vn,a.an,a.hn,pt.cid,concat(pt.pname,pt.fname," ",pt.lname) fullname
-                ,a.regdate as admdate,a.dchdate as dchdate,v.vstdate,op.income as income_group
-                ,a.pttype,ptt.max_debt_money,ec.code,ec.ar_ipd as account_code
-                ,ec.name as account_name,ifnull(ec.ar_ipd,"") pang_debit
-                ,a.income as income ,a.uc_money,a.rcpt_money as cash_money,a.discount_money
-                ,a.income-a.rcpt_money-a.discount_money as debit
-                
-                ,sum(if(op.icode ="3010058",sum_price,0)) as fokliad
-                ,sum(if(op.income="02",sum_price,0)) as debit_instument
-                ,sum(if(op.icode IN("1560016","1540073","1530005","1540048","1620015","1600012","1600015"),sum_price,0)) as debit_drug
-                ,sum(if(op.icode IN ("3001412","3001417"),sum_price,0)) as debit_toa
-                ,sum(if(op.icode IN ("3010829","3010726 "),sum_price,0)) as debit_refer
-                from ipt ip
-                LEFT JOIN hos.an_stat a ON ip.an = a.an
-                LEFT JOIN patient pt on pt.hn=a.hn
-                LEFT JOIN pttype ptt on a.pttype=ptt.pttype
-                LEFT JOIN pttype_eclaim ec on ec.code=ptt.pttype_eclaim_id
-                LEFT JOIN hos.ipt_pttype ipt ON ipt.an = a.an
-                LEFT JOIN hos.opitemrece op ON ip.an = op.an
-                LEFT JOIN hos.vn_stat v on v.vn = a.vn
-                WHERE a.dchdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"
-                AND a.pttype = "s7"
-                GROUP BY a.an;
+            $acc_debtor = DB::connection('mysql2')->select('                 
+                SELECT a.vn,a.an,a.hn,pt.cid,concat(pt.pname,pt.fname," ",pt.lname) ptname
+                    ,a.regdate as admdate,a.dchdate as dchdate,v.vstdate,op.income as income_group
+                    ,ipt.pttype 
+                    ,"1102050101.304" as account_code
+                    ,"ประกันสังคม นอกเครือข่าย" as account_name 
+                    ,a.income as income ,a.uc_money,a.rcpt_money,a.discount_money
+                    ,a.income-a.rcpt_money-a.discount_money as debit
+                    
+                    ,ipt.nhso_ownright_pid as looknee
+                    ,sum(if(op.icode ="3010058",sum_price,0)) as fokliad
+                    ,sum(if(op.income="02",sum_price,0)) as debit_instument
+                    ,sum(if(op.icode IN("1560016","1540073","1530005","1540048","1620015","1600012","1600015"),sum_price,0)) as debit_drug
+                    ,sum(if(op.icode IN ("3001412","3001417"),sum_price,0)) as debit_toa
+                    ,sum(if(op.icode IN ("3010829","3010726 "),sum_price,0)) as debit_refer
+                    from hos.ipt ip
+                    LEFT JOIN hos.an_stat a ON ip.an = a.an
+                    LEFT JOIN hos.patient pt on pt.hn=a.hn
+                    LEFT JOIN hos.pttype ptt on a.pttype=ptt.pttype 
+                    LEFT JOIN hos.ipt_pttype ipt ON ipt.an = a.an
+                    LEFT JOIN hos.opitemrece op ON ip.an = op.an
+                    LEFT JOIN hos.vn_stat v on v.vn = a.vn
+                    WHERE a.dchdate BETWEEN "' . $startdate . '" AND "' . $enddate . '" 
+                    AND ipt.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.304"))
+                    GROUP BY a.an;
             ');
-
+            // AND ipt.pttype = "s7"
+            // ,ipt.max_debt_amount as looknee
             foreach ($acc_debtor as $key => $value) {
                     $check = Acc_debtor::where('an', $value->an)->where('account_code','1102050101.304')->whereBetween('dchdate', [$startdate, $enddate])->count();
+                    
                     if ($check == 0) {
-                        Acc_debtor::insert([
-                            'hn'                 => $value->hn,
-                            'an'                 => $value->an,
-                            'vn'                 => $value->vn,
-                            'cid'                => $value->cid,
-                            'ptname'             => $value->fullname,
-                            'pttype'             => $value->pttype,
-                            'vstdate'            => $value->vstdate,
-                            'regdate'            => $value->admdate,
-                            'dchdate'            => $value->dchdate,
-                            'acc_code'           => $value->code,
-                            'account_code'       => $value->account_code,
-                            'account_name'       => $value->account_name,
-                            'income_group'       => $value->income_group,
-                            'income'             => $value->income,
-                            'uc_money'           => $value->uc_money,
-                            'discount_money'     => $value->discount_money,
-                            'paid_money'         => $value->cash_money,
-                            'rcpt_money'         => $value->cash_money,
-                            'debit'              => $value->debit,
-                            'debit_drug'         => $value->debit_drug,
-                            'debit_instument'    => $value->debit_instument,
-                            'debit_toa'          => $value->debit_toa,
-                            'debit_refer'        => $value->debit_refer,
-                            'fokliad'            => $value->fokliad,
-                            'debit_total'        => $value->debit,
-                            'max_debt_amount'    => $value->max_debt_money,
-                            'acc_debtor_userid'  => Auth::user()->id
-                        ]);
+                        if ($value->looknee == '') {
+                                // Acc_debtor::insert([
+                                //     'hn'                 => $value->hn,
+                                //     'an'                 => $value->an,
+                                //     'vn'                 => $value->vn,
+                                //     'cid'                => $value->cid,
+                                //     'ptname'             => $value->ptname,
+                                //     'pttype'             => $value->pttype,
+                                //     'vstdate'            => $value->vstdate,
+                                //     'regdate'            => $value->admdate,
+                                //     'dchdate'            => $value->dchdate, 
+                                //     'account_code'       => $value->account_code,
+                                //     'account_name'       => $value->account_name,
+                                //     'income_group'       => $value->income_group,
+                                //     'income'             => $value->income,
+                                //     'uc_money'           => $value->uc_money,
+                                //     'discount_money'     => $value->discount_money,
+                                //     'paid_money'         => $value->rcpt_money,
+                                //     'rcpt_money'         => $value->rcpt_money,
+                                //     'debit'              => $value->debit,
+                                //     'debit_drug'         => $value->debit_drug,
+                                //     'debit_instument'    => $value->debit_instument,
+                                //     'debit_toa'          => $value->debit_toa,
+                                //     'debit_refer'        => $value->debit_refer,
+                                //     'fokliad'            => $value->fokliad,
+                                //     'debit_total'        => '0',
+                                //     'max_debt_amount'    => $value->looknee,
+                                //     'acc_debtor_userid'  => Auth::user()->id
+                                // ]);  
+                        } else {
+                            Acc_debtor::insert([
+                                'hn'                 => $value->hn,
+                                'an'                 => $value->an,
+                                'vn'                 => $value->vn,
+                                'cid'                => $value->cid,
+                                'ptname'             => $value->ptname,
+                                'pttype'             => $value->pttype,
+                                'vstdate'            => $value->vstdate,
+                                'regdate'            => $value->admdate,
+                                'dchdate'            => $value->dchdate,
+                                // 'acc_code'           => $value->code,
+                                'account_code'       => $value->account_code,
+                                'account_name'       => $value->account_name,
+                                'income_group'       => $value->income_group,
+                                'income'             => $value->income,
+                                'uc_money'           => $value->uc_money,
+                                'discount_money'     => $value->discount_money,
+                                'paid_money'         => $value->rcpt_money,
+                                'rcpt_money'         => $value->rcpt_money,
+                                'debit'              => $value->debit,
+                                'debit_drug'         => $value->debit_drug,
+                                'debit_instument'    => $value->debit_instument,
+                                'debit_toa'          => $value->debit_toa,
+                                'debit_refer'        => $value->debit_refer,
+                                'fokliad'            => $value->fokliad,
+                                'debit_total'        => $value->looknee,
+                                'max_debt_amount'    => $value->looknee,
+                                'acc_debtor_userid'  => Auth::user()->id
+                            ]);
+                        }
+                        
                     }
- 
+  
             }
+           
             return response()->json([
 
                 'status'    => '200'
@@ -263,7 +337,7 @@ class Account304Controller extends Controller
                             'debit_instument'   => $value->debit_instument,
                             'debit_refer'       => $value->debit_refer,
                             'debit_toa'         => $value->debit_toa,
-                            'debit_total'       => $value->debit,
+                            'debit_total'       => $value->debit_total,
                             'max_debt_amount'   => $value->max_debt_amount,
                             'acc_debtor_userid' => $iduser
                     ]);
@@ -275,27 +349,92 @@ class Account304Controller extends Controller
         ]);
     }
 
-    public function account_304_detail(Request $request,$startdate,$enddate)
+    public function account_304_detail(Request $request,$months,$year)
     {
         $datenow = date('Y-m-d');
-        // $startdate = $request->startdate;
-        // $enddate = $request->enddate;
-        // dd($id);
+        
         $data['users'] = User::get();
 
         $data = DB::select('
-            SELECT U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+            SELECT U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date
                 from acc_1102050101_304 U1
             
-                WHERE U1.dchdate BETWEEN "'.$startdate.'" and "'.$enddate.'"
+                WHERE month(U1.dchdate) = "'.$months.'" AND year(U1.dchdate) = "'.$year.'"
                 GROUP BY U1.an
         ');
-        // WHERE month(U1.vstdate) = "'.$months.'" and year(U1.vstdate) = "'.$year.'"
+       
         return view('account_304.account_304_detail', $data, [ 
             'data'          =>     $data,
-            'startdate'     =>     $startdate,
-            'enddate'       =>     $enddate
+            'months'        =>     $months,
+            'year'          =>     $year
         ]);
+    }
+    public function account_304_stm(Request $request,$months,$year)
+    {
+        $datenow = date('Y-m-d');
+        
+        $data['users'] = User::get();
+
+        $data = DB::select('
+            SELECT U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.dchdate,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date
+                from acc_1102050101_304 U1
+            
+                WHERE month(U1.dchdate) = "'.$months.'" AND year(U1.dchdate) = "'.$year.'"
+                AND U1.recieve_true is not null
+                GROUP BY U1.an
+        ');
+       
+        return view('account_304.account_304_stm', $data, [ 
+            'data'          =>     $data,
+            'months'        =>     $months,
+            'year'          =>     $year
+        ]);
+    }
+
+    public function account_304_sync(Request $request)
+    {
+        $an = $request->an;
+        $sync = DB::connection('mysql3')->select('
+                SELECT an,nhso_docno 
+                from ipt_pttype
+                WHERE an = "' . $an . '" 
+                
+            ');
+        
+        return response()->json([
+            'status'    => '200'
+        ]);
+    }
+
+    public function account_304_syncall(Request $request)
+    {
+        $months = $request->months;
+        $year = $request->year;
+        $sync = DB::connection('mysql')->select(' 
+                SELECT ac.acc_1102050101_304_id,a.an,ip.pttype,ip.nhso_ownright_pid,ip.nhso_docno 
+                FROM hos.an_stat a
+                LEFT JOIN hos.ipt_pttype ip ON ip.an = a.an
+                LEFT JOIN pkbackoffice.acc_1102050101_304 ac ON ac.an = a.an
+                WHERE month(a.dchdate) = "'.$months.'" 
+                AND year(a.dchdate) = "'.$year.'" 
+                AND ip.nhso_ownright_pid  <> "" 
+                AND ip.nhso_docno  <> "" 
+                AND ac.acc_1102050101_304_id <> ""
+                and ip.pttype ="s7"
+                
+            ');
+            foreach ($sync as $key => $value) {                     
+                    Acc_1102050101_304::where('an',$value->an) 
+                        ->update([ 
+                            'nhso_docno'           => $value->nhso_docno ,
+                            'nhso_ownright_pid'    => $value->nhso_ownright_pid
+                    ]);
+            }
+            return response()->json([
+                'status'    => '200'
+            ]);
+        
+        
     }
 
 
