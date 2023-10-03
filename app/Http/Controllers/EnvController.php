@@ -298,7 +298,7 @@ class EnvController extends Controller
                     }
                     
                     $add_sub->status                         = $status;
-                    $add_sub->water_parameter_short_name            = $water_parameter_short_name[$count];
+                    $add_sub->water_parameter_short_name     = $water_parameter_short_name[$count];
                     $add_sub->save();        
                 }
         } 
@@ -736,7 +736,75 @@ class EnvController extends Controller
                 // $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
                 $add_sub->save(); 
             }
-        } 
+        }
+        
+        $data_loob = Env_trash_sub::where('trash_id','=',$trash_id)->get();
+        // $name = User::where('id','=',$iduser)->first();
+        $data_users = User::where('id','=',$request->trash_user)->first();
+        $name = $data_users->fname.''.$data_users->lname;
+
+        $mMessage = array();
+        foreach ($data_loob as $key => $value) { 
+
+               $mMessage[] = [
+                    'trash_sub_name'    => $value->trash_sub_name,
+                    'trash_sub_qty'     => $value->trash_sub_qty, 
+                    'unit'              => $value->trash_sub_unit,           
+                ];   
+            }   
+       
+            $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
+            //$linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
+           
+            // $smessage = [];
+            $header = "ข้อมูลขยะ";
+            $message =  $header. 
+                    "\n"."วันที่บันทึก : "      . $request->input('trash_date'). 
+                   "\n"."ผู้บันทึก  : "        . $name . 
+                   "\n"."เวลา : "           . $request->input('trash_time'); 
+ 
+            foreach ($mMessage as $key => $smes) {
+                $na_mesage           = $smes['trash_sub_name'];
+                $qt_mesage           = $smes['trash_sub_qty'];
+                $unit_mesage         = $smes['trash_sub_unit'];
+
+                $message.="\n"."ประเภทขยะ" . $na_mesage .
+                          "\n"."ปริมาณ : " . $qt_mesage . 
+                          "\n"."หน่วย : "   . $unit_mesage;  
+            } 
+              
+
+                if($linetoken == null){
+                    $send_line ='';
+                }else{
+                    $send_line = $linetoken;
+                }  
+                if($send_line !== '' && $send_line !== null){ 
+
+                    // function notify_message($smessage,$linetoken)
+                    // {
+                        $chOne = curl_init();
+                        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
+                        curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
+                        curl_setopt( $chOne, CURLOPT_POST, 1);
+                        // curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
+                        curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
+                        curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
+                        $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$linetoken.'', );
+                        curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
+                        $result = curl_exec($chOne);
+                        if (curl_error($chOne)) {echo 'error:' . curl_error($chOne);} else { $result_ = json_decode($result, true);
+                            echo "status : " . $result_['status'];
+                            echo "message : " . $result_['message'];}
+                        curl_close($chOne);
+                    // } 
+                    // foreach ($mMessage as $linetoken) {
+                    //     notify_message($linetoken,$smessage);
+                    // } 
+
+                }              
         return redirect()->route('env.env_trash');
         // return redirect()->route('env.env_trash');
     }
