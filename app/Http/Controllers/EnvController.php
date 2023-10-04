@@ -699,112 +699,124 @@ class EnvController extends Controller
 
     public function env_trash_save (Request $request)
     {
+        // dd($request->trash_parameter_id);
         date_default_timezone_set("Asia/Bangkok");
         $datenow = date('Y-m-d H:i:s');
         $iduser = Auth::user()->id;
         $trash_parameter = DB::table('env_trash_parameter')->get();
 
-        $add = new Env_trash();
-        $add->trash_bill_on = $request->input('trash_bill_on');
-        $add->trash_date    = $request->input('trash_date'); 
-        $add->trash_time    = $request->input('trash_time'); 
-        $add->trash_user    = $request->input('trash_user'); 
-        $add->trash_sub     = $request->input('trash_sub'); 
-        $add->save();
+        $count = Env_trash::where('trash_bill_on',$request->trash_bill_on)->count();
+        if ($count > 0) {
+            # code...
+        } else {
+                  
         
-        $trash_id =  Env_trash::max('trash_id');
+                $add = new Env_trash();
+                $add->trash_bill_on = $request->input('trash_bill_on');
+                $add->trash_date    = $request->input('trash_date'); 
+                $add->trash_time    = $request->input('trash_time'); 
+                $add->trash_user    = $request->input('trash_user'); 
+                $add->trash_sub     = $request->input('trash_sub'); 
+                $add->save();
+                
+                $trash_id =  Env_trash::max('trash_id');
 
-        if($request->trash_parameter_id != '' || $request->trash_parameter_id != null){
+                if($request->trash_parameter_id != '' || $request->trash_parameter_id != null){
 
-        $trash_parameter_id         = $request->trash_parameter_id;
-        $trash_sub_qty              = $request->trash_sub_qty;
-        $trash_sub_unit             = $request->trash_sub_unit;
-        $trash_parameter_unit       = $request->trash_parameter_unit;
+                $trashparameter_id         = $request->trash_parameter_id;
+                $trash_sub_qty              = $request->trash_sub_qty;
+                $trash_sub_unit             = $request->trash_sub_unit;
+                // $trash_parameter_unit       = $request->trash_parameter_unit;
                             
-        $number =count($trash_parameter_id);
-        $count = 0;
-            for($count = 0; $count< $number; $count++)
-            { 
-                $idtrash = Env_trash_parameter::where('trash_parameter_id','=',$trash_parameter_id[$count])->first();
+                $number =count($trashparameter_id);
+                $count = 0;
+                    for($count = 0; $count< $number; $count++)
+                    { 
+                        $idtrash = Env_trash_parameter::where('trash_parameter_id','=',$trashparameter_id[$count])->first();
 
-                $add_sub = new Env_trash_sub();
-                $add_sub->trash_id                = $trash_id;
-                $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
-                $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
-                $add_sub->trash_sub_qty           = $trash_sub_qty[$count];
-                $add_sub->trash_sub_unit          = $trash_parameter_unit[$count];                 
-                // $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
-                $add_sub->save(); 
-            }
-        }
+                        $add_sub = new Env_trash_sub();
+                        $add_sub->trash_id                = $trash_id;
+                        $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
+                        $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
+                        $add_sub->trash_sub_unit          = $idtrash->trash_parameter_unit; 
+
+                        $add_sub->trash_sub_qty           = $trash_sub_qty[$count];
+                        // $add_sub->trash_sub_unit          = $trash_parameter_unit[$count];                 
+                                                
+                        $add_sub->save(); 
+                    }
+                }
+                
+                $data_loob = Env_trash_sub::where('trash_id','=',$trash_id)->get();
+                // $name = User::where('id','=',$iduser)->first();
+                $data_users = User::where('id','=',$request->trash_user)->first();
+                $name = $data_users->fname.''.$data_users->lname;
+
+                $mMessage = array();
+                foreach ($data_loob as $key => $value) { 
+
+                    $mMessage[] = [
+                            'trash_sub_name'    => $value->trash_sub_name,
+                            'trash_sub_qty'     => $value->trash_sub_qty, 
+                            'unit'              => $value->trash_sub_unit,           
+                        ];   
+                    }   
+            
+                    $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
+                    //$linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
+                
+                    // $smessage = [];
+                    $header = "ข้อมูลขยะ";
+                    $message =  $header. 
+                            "\n"."วันที่บันทึก : "      . $request->input('trash_date'). 
+                        "\n"."ผู้บันทึก  : "        . $name . 
+                        "\n"."เวลา : "           . $request->input('trash_time'); 
         
-        $data_loob = Env_trash_sub::where('trash_id','=',$trash_id)->get();
-        // $name = User::where('id','=',$iduser)->first();
-        $data_users = User::where('id','=',$request->trash_user)->first();
-        $name = $data_users->fname.''.$data_users->lname;
+                    foreach ($mMessage as $key => $smes) {
+                        $na_mesage           = $smes['trash_sub_name'];
+                        $qt_mesage           = $smes['trash_sub_qty'];
+                        $unit_mesage         = $smes['unit'];
 
-        $mMessage = array();
-        foreach ($data_loob as $key => $value) { 
+                        $message.="\n"."ประเภทขยะ" . $na_mesage .
+                                "\n"."ปริมาณ : " . $qt_mesage . " ". $unit_mesage;
+                                // "\n"."หน่วย : "   . $unit_mesage;
+                                  
+                    } 
+                    
 
-               $mMessage[] = [
-                    'trash_sub_name'    => $value->trash_sub_name,
-                    'trash_sub_qty'     => $value->trash_sub_qty, 
-                    'unit'              => $value->trash_sub_unit,           
-                ];   
-            }   
-       
-            $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
-            //$linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
-           
-            // $smessage = [];
-            $header = "ข้อมูลขยะ";
-            $message =  $header. 
-                    "\n"."วันที่บันทึก : "      . $request->input('trash_date'). 
-                   "\n"."ผู้บันทึก  : "        . $name . 
-                   "\n"."เวลา : "           . $request->input('trash_time'); 
- 
-            foreach ($mMessage as $key => $smes) {
-                $na_mesage           = $smes['trash_sub_name'];
-                $qt_mesage           = $smes['trash_sub_qty'];
-                $unit_mesage         = $smes['trash_sub_unit'];
+                        if($linetoken == null){
+                            $send_line ='';
+                        }else{
+                            $send_line = $linetoken;
+                        }  
+                        if($send_line !== '' && $send_line !== null){ 
 
-                $message.="\n"."ประเภทขยะ" . $na_mesage .
-                          "\n"."ปริมาณ : " . $qt_mesage . 
-                          "\n"."หน่วย : "   . $unit_mesage;  
-            } 
-              
+                            // function notify_message($smessage,$linetoken)
+                            // {
+                                $chOne = curl_init();
+                                curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
+                                curl_setopt( $chOne, CURLOPT_POST, 1);
+                                // curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
+                                curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
+                                curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
+                                $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$linetoken.'', );
+                                curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+                                curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
+                                $result = curl_exec($chOne);
+                                if (curl_error($chOne)) {echo 'error:' . curl_error($chOne);} else { $result_ = json_decode($result, true);
+                                    echo "status : " . $result_['status'];
+                                    echo "message : " . $result_['message'];}
+                                curl_close($chOne);
+                            // } 
+                            // foreach ($mMessage as $linetoken) {
+                            //     notify_message($linetoken,$smessage);
+                            // } 
 
-                if($linetoken == null){
-                    $send_line ='';
-                }else{
-                    $send_line = $linetoken;
-                }  
-                if($send_line !== '' && $send_line !== null){ 
+                        } 
+        }   
 
-                    // function notify_message($smessage,$linetoken)
-                    // {
-                        $chOne = curl_init();
-                        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
-                        curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
-                        curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
-                        curl_setopt( $chOne, CURLOPT_POST, 1);
-                        // curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
-                        curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
-                        curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
-                        $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$linetoken.'', );
-                        curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
-                        curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
-                        $result = curl_exec($chOne);
-                        if (curl_error($chOne)) {echo 'error:' . curl_error($chOne);} else { $result_ = json_decode($result, true);
-                            echo "status : " . $result_['status'];
-                            echo "message : " . $result_['message'];}
-                        curl_close($chOne);
-                    // } 
-                    // foreach ($mMessage as $linetoken) {
-                    //     notify_message($linetoken,$smessage);
-                    // } 
-
-                }              
         return redirect()->route('env.env_trash');
         // return redirect()->route('env.env_trash');
     }
