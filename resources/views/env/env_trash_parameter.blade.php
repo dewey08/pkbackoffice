@@ -104,7 +104,7 @@ if (Auth::check()) {
                                     <thead>
                                         <tr>
                                             <th class="text-center">ลำดับ</th> 
-                                            <th class="text-center">ประเภทขยะติดเชื้อ</th>
+                                            <th class="text-center">ประเภทขยะ</th>
                                             <th class="text-center">หน่วย</th>
                                             <th class="text-center">ตั้งค่า</th> 
                                         </tr>
