@@ -17,8 +17,8 @@ class Env_trash_parameter extends Authenticatable
     // public $timestamps = false;  
     protected $fillable = [
         'trash_parameter_name',
-        'trash_parameter_unit'
-        // 'parameter_list_normal',
+        'trash_parameter_unit',
+        'trash_parameter_active'
         // 'parameter_list_user_analysis_results'
     ];
 

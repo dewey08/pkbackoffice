@@ -513,8 +513,8 @@ class EnvController extends Controller
          
 
         return view('env.env_water_parameter_add', $data,[
-            'startdate'        => $datestart,
-            'enddate'          => $dateend, 
+            'startdate'              => $datestart,
+            'enddate'                => $dateend, 
             'data_water_parameter'   => $data_water_parameter, 
         ]);
     }
@@ -538,7 +538,7 @@ class EnvController extends Controller
             'startdate'        => $datestart,
             'enddate'          => $dateend,
             'water_parameter'  => $water_parameter, 
-            // 'data_edit'        => $data_edit, 
+            //'data_edit'        => $data_edit, 
         ]);
     }
 
@@ -571,7 +571,7 @@ class EnvController extends Controller
             'water_parameter_name'                   => $request->water_parameter_name,
             'water_parameter_short_name'             => $request->water_parameter_short_name,
             'water_parameter_unit'                   => $request->water_parameter_unit,
-            // 'water_parameter_icon'                   => $request->env_water_icon,
+            //'water_parameter_icon'                 => $request->env_water_icon,
             'water_parameter_normal'                 => $request->water_parameter_normal,
             'water_parameter_results'                => $request->water_parameter_results, 
             'updated_at'                             => $datenow
@@ -664,7 +664,7 @@ class EnvController extends Controller
         ');        
 
         $data_parameter = DB::table('env_trash')->get();
-        $trash_parameter = DB::table('env_trash_parameter')->get();
+        $trash_parameter = DB::table('env_trash_parameter')->where('trash_parameter_active','=',true)->get();
         $data_trash_sub = DB::table('env_trash_sub')->get();
         $data_trash_type = DB::table('env_trash_type')->get();
         $data['products_vendor'] = Products_vendor::get();
@@ -1001,6 +1001,14 @@ class EnvController extends Controller
         // return view('env.env_water_parameter',[ 
         //     'dataparameterlist' => $data_parameter_list, 
         // ]);
+    }
+
+    function env_trash_parameter_switchactive(Request $request)
+    {  
+        $id = $request->idfunc; 
+        $active = Env_trash_parameter::find($id);
+        $active->trash_parameter_active = $request->onoff;
+        $active->save();
     }
 
     public function env_trash_parameter_delete (Request $request,$id)

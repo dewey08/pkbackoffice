@@ -2349,6 +2349,7 @@ Route::match(['get','post'],'env_trash_parameter_save',[App\Http\Controllers\Env
 Route::match(['get','post'],'env_trash_parameter_edit/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_edit'])->name('env.env_trash_parameter_edit');//แก้ไข
 Route::match(['get','post'],'env_trash_parameter_update',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_update'])->name('env.env_trash_parameter_update');//อัพเดท
 Route::match(['get','post'],'env_trash_parameter_delete/{id}',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_delete'])->name('env.env_trash_parameter_delete');//ลบข้อมูล
+Route::match(['get','post'],'env_trash_parameter_switchactive',[App\Http\Controllers\EnvController::class, 'env_trash_parameter_switchactive'])->name('env.env_trash_parameter_switchactive');//สถานะ
 
 //ตั่งค่าตัวแทนจำหน่าย
 Route::match(['get','post'],'env_vendor',[App\Http\Controllers\EnvController::class, 'env_vendor'])->name('env.env_vendor');//หน้าหลักแสดงข้อมูล
