@@ -15,6 +15,8 @@ use App\Models\Plan_strategic;
 use App\Models\Plan_taget;
 use App\Models\Plan_kpi;
 use App\Models\Department_sub_sub;
+use App\Models\Plan_control_type;
+use App\Models\Plan_control;
 use PDF;
 use setasign\Fpdi\Fpdi;
 use App\Models\Budget_year;
@@ -46,6 +48,64 @@ class PlanController extends Controller
         return view('plan.plan_project_add', $data);
     }
 
+    public function plan_control(Request $request)
+    {
+        $data['startdate'] = $request->startdate;
+        $data['enddate'] = $request->enddate;
+        $data['com_tec'] = DB::table('com_tec')->get();
+        $data['users'] = User::get();
+        $data['department_sub_sub'] = Department_sub_sub::get();
+        $data['plan_control_type'] = Plan_control_type::get();
+        $data['plan_control'] = Plan_control::get();
+        
+        return view('plan.plan_control', $data);
+    }
+    public function plan_control_add(Request $request)
+    {
+        $data['startdate'] = $request->startdate;
+        $data['enddate'] = $request->enddate;
+        $data['com_tec'] = DB::table('com_tec')->get();
+        $data['users'] = User::get();
+
+        return view('plan.plan_control_add', $data);
+    }
+    public static function refnumber()
+    {
+        $year = date('Y');
+        $maxnumber = DB::table('plan_control')->max('plan_control_id');
+        if ($maxnumber != '' ||  $maxnumber != null) {
+            $refmax = DB::table('plan_control')->where('plan_control_id', '=', $maxnumber)->first();
+            if ($refmax->billno != '' ||  $refmax->billno != null) {
+                $maxref = substr($refmax->billno, -4) + 1;
+            } else {
+                $maxref = 1;
+            }
+            $ref = str_pad($maxref, 5, "0", STR_PAD_LEFT);
+        } else {
+            $ref = '00001';
+        }
+        $ye = date('Y') + 543;
+        $y = substr($ye, -2);
+        $refnumber = 'PL' . '-' . $ref;
+        return $refnumber;
+    }
+    public function plan_control_save(Request $request)
+    {
+        $add = new Plan_control();
+        $add->billno            = $request->input('billno');
+        $add->plan_name         = $request->input('plan_name');
+        $add->plan_starttime    = $request->input('datepicker1');
+        $add->plan_endtime      = $request->input('datepicker2');
+        $add->plan_price        = $request->input('plan_price');
+        $add->department        = $request->input('department');
+        $add->plan_type         = $request->input('plan_type');
+        $add->user_id           = $request->input('user_id'); 
+        $add->save();
+
+        return response()->json([
+            'status'     => '200',
+        ]);
+    }
 
 
 

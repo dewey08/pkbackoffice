@@ -30,7 +30,7 @@ use App\Models\Acc_1102050101_4011;
 use App\Models\Acc_1102050101_3099;
 use App\Models\Acc_1102050101_401;
 use App\Models\Acc_1102050101_402;
-use App\Models\acc_1102050102_801;
+use App\Models\Acc_1102050102_801;
 use App\Models\Acc_1102050102_802;
 use App\Models\Acc_1102050102_803;
 use App\Models\Acc_1102050102_804;
@@ -96,7 +96,7 @@ class Account801Controller extends Controller
         $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
         $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
         $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
-        $yearnew = date('Y');
+        $yearnew = date('Y')+1;
         $yearold = date('Y')-1;
         $start = (''.$yearold.'-10-01');
         $end = (''.$yearnew.'-09-30'); 
@@ -259,11 +259,11 @@ class Account801Controller extends Controller
                     ]);
         foreach ($data as $key => $value) {
                 $date = date('Y-m-d H:m:s');
-             $check = acc_1102050102_801::where('vn', $value->vn)->count(); 
+             $check = Acc_1102050102_801::where('vn', $value->vn)->count(); 
                 if ($check > 0) {
                 # code...
                 } else {
-                    acc_1102050102_801::insert([
+                    Acc_1102050102_801::insert([
                             'vn'                => $value->vn,
                             'hn'                => $value->hn,
                             'an'                => $value->an,

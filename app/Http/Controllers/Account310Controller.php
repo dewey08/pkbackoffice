@@ -103,7 +103,7 @@ class Account310Controller extends Controller
             $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
             $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
             $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
-            $yearnew = date('Y');
+            $yearnew = date('Y')+1;
             $yearold = date('Y')-1;
             $start = (''.$yearold.'-10-01');
             $end = (''.$yearnew.'-09-30'); 
@@ -163,13 +163,17 @@ class Account310Controller extends Controller
         if ($startdate == '') {
             // $acc_debtor = Acc_debtor::where('stamp','=','N')->whereBetween('dchdate', [$datenow, $datenow])->get();
             $acc_debtor = DB::select('
-                SELECT a.*,c.subinscl from acc_debtor a
+                 
+                SELECT a.acc_debtor_id,a.vn,a.an,a.hn,a.cid,a.ptname,a.vstdate,a.pttype,a.debit_total,c.subinscl 
+              
+                from acc_debtor a
                 left join checksit_hos c on c.an = a.an
                 WHERE a.account_code="1102050101.310"
                 AND a.stamp = "N"
                 order by a.dchdate desc;
 
             ');
+            // a.*,c.subinscl 
             // and month(a.dchdate) = "'.$months.'" and year(a.dchdate) = "'.$year.'"
         } else {
             // $acc_debtor = Acc_debtor::where('stamp','=','N')->whereBetween('dchdate', [$startdate, $enddate])->get();
@@ -197,12 +201,12 @@ class Account310Controller extends Controller
                     ,a.income as income ,a.uc_money,a.rcpt_money as cash_money,a.discount_money
                     ,a.income-a.rcpt_money-a.discount_money as debit
                     ,sum(if(op.icode IN ("3001758"),sum_price,0)) as tr
-				    ,sum(if(op.icode IN ("3001758"),n.ipd_price3,0)) as looknee
+				    ,sum(if(op.icode IN ("3001758"),"1000",0)) as looknee
                     ,sum(if(op.icode ="3010058",sum_price,0)) as fokliad
                     ,sum(if(op.income="02",sum_price,0)) as debit_instument
                     ,sum(if(op.icode IN("1560016","1540073","1530005","1540048","1620015","1600012","1600015"),sum_price,0)) as debit_drug
-                    ,sum(if(op.icode IN ("3001412","3001417"),sum_price,0)) as debit_toa
-                    ,sum(if(op.icode IN ("3010829","3010726 "),sum_price,0)) as debit_refer
+                    ,sum(if(op.icode IN("3001412","3001417"),sum_price,0)) as debit_toa
+                    ,sum(if(op.icode IN("3010829","3011068","3010864","3010861","3010862","3010863","3011069","3011012","3011070"),sum_price,0)) as debit_refer
 
                     from hos.ipt ip
                     LEFT JOIN hos.an_stat a ON ip.an = a.an
@@ -215,11 +219,13 @@ class Account310Controller extends Controller
                     LEFT JOIN hos.iptoprt io on io.an = ip.an
                     LEFT JOIN hos.vn_stat v on v.vn = a.vn
                     WHERE a.dchdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"
-                    AND ipt.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.310" AND opdipd ="IPD"))
+                    AND ipt.pttype IN("A7","15")
                     AND v.hospmain = "10702"
                     and io.icd9 like "%6632%"
                 GROUP BY a.an; 
             ');
+            // AND ipt.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.310" AND opdipd ="IPD"))
+            // ,sum(if(op.icode IN ("3001758"),"1000",0)) as looknee
             // AND ipt.pttype IN("A7","15")
             foreach ($acc_debtor as $key => $value) { 
                 $check =  Acc_debtor::where('an', $value->an)->where('account_code','1102050101.310')->whereBetween('dchdate', [$startdate, $enddate])->count();   

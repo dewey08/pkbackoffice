@@ -64,16 +64,13 @@ if (Auth::check()) {
     $newweek = date('Y-m-d', strtotime($datenow . ' -1 week')); //ย้อนหลัง 1 สัปดาห์  
     $newDate = date('Y-m-d', strtotime($datenow . ' -1 months')); //ย้อนหลัง 1 เดือน 
 ?>
- <div class="tabs-animation">
-    
-    <div class="row text-center">  
-        <div id="overlay">
-            <div class="cv-spinner">
-              <span class="spinner"></span>
+<div class="tabs-animation">
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner">
             </div>
-          </div>
-          
-    </div> 
+        </div>
+    </div>
         <div class="row mt-3">
             <div class="col-xl-12">
                 <div class="card">   

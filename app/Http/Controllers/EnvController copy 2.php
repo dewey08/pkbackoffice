@@ -42,7 +42,7 @@ use App\Models\Leave_leader_sub;
 use App\Models\Book_type;
 use App\Models\Book_import_fam;
 use App\Models\Book_signature;
-use App\Models\Bookrep;
+use App\Models\Env_pond;
 use App\Models\Book_objective;
 use App\Models\Book_senddep;
 use App\Models\Book_senddep_sub;
@@ -110,36 +110,37 @@ class EnvController extends Controller
         $datestart = $request->startdate;
         $dateend = $request->enddate;
         $iduser = Auth::user()->id;
-        $data['users'] = User::get();
-        $data['leave_month'] = DB::table('leave_month')->get();
-        $data['users_group'] = DB::table('users_group')->get();
-        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
-        
+        // $data['users'] = User::get();
+        // $data['leave_month'] = DB::table('leave_month')->get();
+        // $data['users_group'] = DB::table('users_group')->get();
+        // $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
+         
+        // $acc_debtors = DB::select('
+        //     SELECT count(*) as I from users u
+        //     left join p4p_workload l on l.p4p_workload_user=u.id
+        //     group by u.dep_subsubtrueid;
+        // ');
 
-        $acc_debtors = DB::select('
-            SELECT count(*) as I from users u
-            left join p4p_workload l on l.p4p_workload_user=u.id
-            group by u.dep_subsubtrueid;
-        ');
-
-        $water = DB::table('env_water')
-            ->leftjoin('users','env_water.water_user','=','users.id')
-            ->leftjoin('env_water_sub','env_water.water_id','=','env_water_sub.water_id')->get(); 
+        // $water = DB::table('env_water')
+        //     ->leftjoin('users','env_water.water_user','=','users.id')
+        //     ->leftjoin('env_water_sub','env_water.water_id','=','env_water_sub.water_id')
+        //     ->orderByRaw('env_water.water_id DESC')
+        //     ->limit(10); 
         
         $datashow = DB::connection('mysql')->select('
             SELECT DISTINCT(w.water_id),w.water_date,w.water_location,water_group_excample,w.water_comment,CONCAT(u.fname," ",u.lname) as water_user
             from env_water w
             LEFT JOIN env_water_sub ws on ws.water_id = w.water_id
             LEFT JOIN users u on u.id = w.water_user 
-            ORDER BY w.water_id DESC;
-            ');
+            ORDER BY w.water_id DESC limit 10
+        ');
          
 
-        return view('env.env_water', $data,[
+        return view('env.env_water',[
             'startdate' => $datestart,
             'enddate'   => $dateend, 
             'datashow'  => $datashow,
-            'water'     => $water,
+            // 'water'     => $water,
         ]);
     }
 
@@ -149,6 +150,7 @@ class EnvController extends Controller
         $enddate = $request->enddate;
         $iduser = Auth::user()->id;
         $data['users'] = User::get();
+        $data['env_pond'] = DB::table('env_pond')->get();
         $data['leave_month'] = DB::table('leave_month')->get();
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
@@ -186,14 +188,19 @@ class EnvController extends Controller
             SELECT count(*) as I from users u
             left join p4p_workload l on l.p4p_workload_user=u.id
             group by u.dep_subsubtrueid;
-        ');        
+        ');      
+        
+        $idpon =  $request->env_pond;
+        $namepond = Env_pond::where('pond_id','=', $idpon)->first();
        
         $add = new Env_water();
         $add->water_date            = $request->input('water_date');
         $add->water_user            = $request->input('water_user');
-        $add->water_location        = $request->input('water_location');
+        $add->pond_id               = $namepond->pond_id;
+        $add->water_location        = $namepond->pond_name; 
         $add->water_group_excample  = $request->input('water_group_excample');
         $add->water_comment         = $request->input('water_comment');
+       
         $add->save();        
 
         $waterid =  Env_water::max('water_id');        
@@ -296,9 +303,30 @@ class EnvController extends Controller
                     } else {
                         $status = 'ปกติ';
                     }
-                    
+                    $water_ = Env_water_parameter::where('water_parameter_id','=',$water_parameter_id[$count])->first();
+                    if ($water_->water_parameter_id == 16 && $water_qty[$count]  == 0.5 ) {
+                        $status = 'ปกติ';
+                    }elseif($water_->water_parameter_id == 16 && $water_qty[$count]  == 0.6 ) {
+                        $status = 'ปกติ';
+                    }elseif($water_->water_parameter_id == 16 && $water_qty[$count]  == 0.7 ) {
+                        $status = 'ปกติ';
+                    }elseif($water_->water_parameter_id == 16 && $water_qty[$count]  == 0.8 ) {
+                        $status = 'ปกติ';
+                    }elseif($water_->water_parameter_id == 16 && $water_qty[$count]  == 0.9 ) {
+                        $status = 'ปกติ';
+                    }elseif($water_->water_parameter_id == 16 && $water_qty[$count]  == 1.0 ) {
+                        $status = 'ปกติ';
+                    } else {
+                        $status = 'ผิดปกติ';
+                    }
+                    // if ($water_->water_parameter_id == 16 && $water_qty[$count]  == 0.5 || $water_qty[$count]  == 0.6 || $water_qty[$count]  == 0.7 || $water_qty[$count]  == 0.8 || $water_qty[$count]  == 0.9 || $water_qty[$count]  == 1.0 ) {
+                    //     $status = 'ผิดปกติ';
+                    // } else {
+                    //     $status = 'ปกติ';
+                    // }
+
                     $add_sub->status                         = $status;
-                    $add_sub->water_parameter_short_name            = $water_parameter_short_name[$count];
+                    $add_sub->water_parameter_short_name     = $water_parameter_short_name[$count];
                     $add_sub->save();        
                 }
         } 
@@ -307,7 +335,7 @@ class EnvController extends Controller
         $data_loob = Env_water_sub::where('water_id','=',$waterid)->get();
         // $name = User::where('id','=',$iduser)->first();
         $data_users = User::where('id','=',$request->water_user)->first();
-        $name = $data_users->fname.''.$data_users->lname;
+        $name = $data_users->fname.' '.$data_users->lname;
 
         $mMessage = array();
         foreach ($data_loob as $key => $value) { 
@@ -319,22 +347,22 @@ class EnvController extends Controller
                 ];   
             }   
        
-            // $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
-            $linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
+            $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
+            //$linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
            
             // $smessage = [];
             $header = "ข้อมูลตรวจน้ำ";
             $message =  $header. 
                     "\n"."วันที่บันทึก : "      . $request->input('water_date'). 
                    "\n"."ผู้บันทึก  : "        . $name . 
-                   "\n"."สถานที่เก็บตัวอย่าง : " . $request->input('water_location'); 
+                   "\n"."สถานที่เก็บตัวอย่าง : " . $namepond->pond_name; 
  
             foreach ($mMessage as $key => $smes) {
                 $na_mesage           = $smes['water_parameter_short_name'];
                 $qt_mesage           = $smes['water_qty'];
                 $status_mesage       = $smes['status'];
 
-                $message.="\n"."รายการพารามิเตอร์" . $na_mesage .
+                $message.="\n"."รายการพารามิเตอร์  : " . $na_mesage .
                           "\n"."ผลการวิเคราะห์ : " . $qt_mesage . 
                           "\n"."สถานะ : "       . $status_mesage;  
             } 
@@ -384,12 +412,17 @@ class EnvController extends Controller
         $dateend = $request->enddate;
         $iduser = Auth::user()->id;
         $data['users'] = User::get();
+
+        $data['env_pond'] = DB::table('env_pond')->get();
+
         $data['leave_month'] = DB::table('leave_month')->get();
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
  
-        $water = DB::table('env_water')->where('water_id','=',$id)->first();
-
+        $water = DB::table('env_water')
+        ->leftJoin('env_pond','env_pond.pond_id','=','env_water.pond_id')
+        ->where('water_id','=',$id)->first();
+        // pond_id
         $data['env_water_sub']  = DB::table('env_water_sub')->where('water_id','=',$id)->get();
   
         $data['water_parameter']  = DB::table('env_water_parameter')->get();
@@ -411,12 +444,16 @@ class EnvController extends Controller
         // $ff = $request->trash_bill_on;
         // dd($ff);
         $update = Env_water::find($id);
+        $idpon =  $request->env_pond;
+        $namepond = Env_pond::where('pond_id','=', $idpon)->first();
         
         $update->water_date             = $request->water_date;
         $update->water_user             = $request->water_user; 
-        $update->water_location         = $request->water_location; 
+        $update->pond_id                = $namepond->pond_id;
+        $update->water_location         = $namepond->pond_name; 
         $update->water_group_excample   = $request->water_group_excample; 
         $update->water_comment          = $request->water_comment; 
+       
         $update->save();
         
         Env_water_sub::where('water_id','=',$id)->delete();
@@ -513,8 +550,8 @@ class EnvController extends Controller
          
 
         return view('env.env_water_parameter_add', $data,[
-            'startdate'        => $datestart,
-            'enddate'          => $dateend, 
+            'startdate'              => $datestart,
+            'enddate'                => $dateend, 
             'data_water_parameter'   => $data_water_parameter, 
         ]);
     }
@@ -538,7 +575,7 @@ class EnvController extends Controller
             'startdate'        => $datestart,
             'enddate'          => $dateend,
             'water_parameter'  => $water_parameter, 
-            // 'data_edit'        => $data_edit, 
+            //'data_edit'        => $data_edit, 
         ]);
     }
 
@@ -571,7 +608,7 @@ class EnvController extends Controller
             'water_parameter_name'                   => $request->water_parameter_name,
             'water_parameter_short_name'             => $request->water_parameter_short_name,
             'water_parameter_unit'                   => $request->water_parameter_unit,
-            // 'water_parameter_icon'                   => $request->env_water_icon,
+            //'water_parameter_icon'                 => $request->env_water_icon,
             'water_parameter_normal'                 => $request->water_parameter_normal,
             'water_parameter_results'                => $request->water_parameter_results, 
             'updated_at'                             => $datenow
@@ -664,7 +701,7 @@ class EnvController extends Controller
         ');        
 
         $data_parameter = DB::table('env_trash')->get();
-        $trash_parameter = DB::table('env_trash_parameter')->get();
+        $trash_parameter = DB::table('env_trash_parameter')->where('trash_parameter_active','=',true)->get();
         $data_trash_sub = DB::table('env_trash_sub')->get();
         $data_trash_type = DB::table('env_trash_type')->get();
         $data['products_vendor'] = Products_vendor::get();
@@ -674,7 +711,7 @@ class EnvController extends Controller
          $refmax = Env_trash::where('trash_bill_on','=',$maxnum)->first();
 
          if($refmax->trash_bill_on != '' ||  $refmax->trash_bill_on != null){
-         $maxpo = substr($refmax->trash_bill_on, -2)+1;
+         $maxpo = substr($refmax->trash_bill_on, 4)+1;
          }else{
          $maxref = 1;
          }
@@ -699,44 +736,124 @@ class EnvController extends Controller
 
     public function env_trash_save (Request $request)
     {
+        // dd($request->trash_bill_on);
         date_default_timezone_set("Asia/Bangkok");
         $datenow = date('Y-m-d H:i:s');
         $iduser = Auth::user()->id;
         $trash_parameter = DB::table('env_trash_parameter')->get();
 
-        $add = new Env_trash();
-        $add->trash_bill_on = $request->input('trash_bill_on');
-        $add->trash_date    = $request->input('trash_date'); 
-        $add->trash_time    = $request->input('trash_time'); 
-        $add->trash_user    = $request->input('trash_user'); 
-        $add->trash_sub     = $request->input('trash_sub'); 
-        $add->save();
+        $count = Env_trash::where('trash_bill_on',$request->trash_bill_on)->count();
+        if ($count > 0) {
+            # code...
+        } else {
+                  
         
-        $trash_id =  Env_trash::max('trash_id');
+                $add = new Env_trash();
+                $add->trash_bill_on = $request->input('trash_bill_on');
+                $add->trash_date    = $request->input('trash_date'); 
+                $add->trash_time    = $request->input('trash_time'); 
+                $add->trash_user    = $request->input('trash_user'); 
+                $add->trash_sub     = $request->input('trash_sub'); 
+                $add->save();
+                
+                $trash_id =  Env_trash::max('trash_id');
 
-        if($request->trash_parameter_id != '' || $request->trash_parameter_id != null){
+                if($request->trash_parameter_id != '' || $request->trash_parameter_id != null){
 
-        $trash_parameter_id         = $request->trash_parameter_id;
-        $trash_sub_qty              = $request->trash_sub_qty;
-        $trash_sub_unit             = $request->trash_sub_unit;
-        $trash_parameter_unit       = $request->trash_parameter_unit;
+                $trashparameter_id         = $request->trash_parameter_id;
+                $trash_sub_qty              = $request->trash_sub_qty;
+                $trash_sub_unit             = $request->trash_sub_unit;
+                // $trash_parameter_unit       = $request->trash_parameter_unit;
                             
-        $number =count($trash_parameter_id);
-        $count = 0;
-            for($count = 0; $count< $number; $count++)
-            { 
-                $idtrash = Env_trash_parameter::where('trash_parameter_id','=',$trash_parameter_id[$count])->first();
+                $number =count($trashparameter_id);
+                $count = 0;
+                    for($count = 0; $count< $number; $count++)
+                    { 
+                        $idtrash = Env_trash_parameter::where('trash_parameter_id','=',$trashparameter_id[$count])->first();
 
-                $add_sub = new Env_trash_sub();
-                $add_sub->trash_id                = $trash_id;
-                $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
-                $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
-                $add_sub->trash_sub_qty           = $trash_sub_qty[$count];
-                $add_sub->trash_sub_unit          = $trash_parameter_unit[$count];                 
-                // $add_sub->trash_sub_unit          = $trash_sub_unit[$count];                          
-                $add_sub->save(); 
-            }
-        } 
+                        $add_sub = new Env_trash_sub();
+                        $add_sub->trash_id                = $trash_id;
+                        $add_sub->trash_sub_idd           = $idtrash->trash_parameter_id;  
+                        $add_sub->trash_sub_name          = $idtrash->trash_parameter_name; 
+                        $add_sub->trash_sub_unit          = $idtrash->trash_parameter_unit; 
+
+                        $add_sub->trash_sub_qty           = $trash_sub_qty[$count];
+                        // $add_sub->trash_sub_unit          = $trash_parameter_unit[$count];                 
+                                                
+                        $add_sub->save(); 
+                    }
+                }
+                
+                $data_loob = Env_trash_sub::where('trash_id','=',$trash_id)->get();
+                // $name = User::where('id','=',$iduser)->first();
+                $data_users = User::where('id','=',$request->trash_user)->first();
+                $name = $data_users->fname.' '.$data_users->lname;
+
+                $mMessage = array();
+                foreach ($data_loob as $key => $value) { 
+
+                    $mMessage[] = [
+                            'trash_sub_name'    => $value->trash_sub_name,
+                            'trash_sub_qty'     => $value->trash_sub_qty, 
+                            'unit'              => $value->trash_sub_unit,           
+                        ];   
+                    }   
+            
+                    $linetoken = "q2PXmPgx0iC5IZXjtkeZUFiNwtmEkSGjRp1PsxFUaYe"; //ใส่ token line ENV แล้ว    
+                    //$linetoken = "DVWB9QFYmafdjEl9rvwB0qdPgCdsD59NHoWV7WhqbN4"; //ใส่ token line ENV แล้ว       
+                
+                    // $smessage = [];
+                    $header = "ข้อมูลขยะ";
+                    $message =  $header. 
+                            "\n"."วันที่บันทึก : "      . $request->input('trash_date'). 
+                        "\n"."ผู้บันทึก  : "        . $name . 
+                        "\n"."เวลา : "           . $request->input('trash_time'); 
+        
+                    foreach ($mMessage as $key => $smes) {
+                        $na_mesage           = $smes['trash_sub_name'];
+                        $qt_mesage           = $smes['trash_sub_qty'];
+                        $unit_mesage         = $smes['unit'];
+
+                        $message.="\n"."ประเภทขยะ : " . $na_mesage .
+                                "\n"."ปริมาณ : " . $qt_mesage . " ". $unit_mesage;
+                                // "\n"."หน่วย : "   . $unit_mesage;
+                                  
+                    } 
+                    
+
+                        if($linetoken == null){
+                            $send_line ='';
+                        }else{
+                            $send_line = $linetoken;
+                        }  
+                        if($send_line !== '' && $send_line !== null){ 
+
+                            // function notify_message($smessage,$linetoken)
+                            // {
+                                $chOne = curl_init();
+                                curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
+                                curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
+                                curl_setopt( $chOne, CURLOPT_POST, 1);
+                                // curl_setopt( $chOne, CURLOPT_POSTFIELDS, $message);
+                                curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=$message");
+                                curl_setopt( $chOne, CURLOPT_FOLLOWLOCATION, 1);
+                                $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$linetoken.'', );
+                                curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+                                curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
+                                $result = curl_exec($chOne);
+                                if (curl_error($chOne)) {echo 'error:' . curl_error($chOne);} else { $result_ = json_decode($result, true);
+                                    echo "status : " . $result_['status'];
+                                    echo "message : " . $result_['message'];}
+                                curl_close($chOne);
+                            // } 
+                            // foreach ($mMessage as $linetoken) {
+                            //     notify_message($linetoken,$smessage);
+                            // } 
+
+                        } 
+        }   
+
         return redirect()->route('env.env_trash');
         // return redirect()->route('env.env_trash');
     }
@@ -921,6 +1038,14 @@ class EnvController extends Controller
         // return view('env.env_water_parameter',[ 
         //     'dataparameterlist' => $data_parameter_list, 
         // ]);
+    }
+
+    function env_trash_parameter_switchactive(Request $request)
+    {  
+        $id = $request->idfunc; 
+        $active = Env_trash_parameter::find($id);
+        $active->trash_parameter_active = $request->onoff;
+        $active->save();
     }
 
     public function env_trash_parameter_delete (Request $request,$id)

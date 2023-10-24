@@ -191,7 +191,7 @@
                 {{-- <div data-simplebar class="h-100 nom6"> --}}
                 <!--- Sidemenu -->
                 <div id="sidebar-menu">
-                    <ul class="metismenu list-unstyled" id="side-menu">
+                    <ul class="metismenu list-unstyled mb-5" id="side-menu">
 
                         <li class="menu-title">Menu</li>
                         <li>
@@ -199,6 +199,12 @@
                                 <i class="fa-solid fa-gauge-high text-danger"></i>
                                 <span>Dashboard</span>
                                 {{-- <span style="color: white">Dashboard</span> --}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('fdh_data') }}"> 
+                                <i class="fa-solid fa-notes-medical text-primary"></i>
+                                <span>FDH</span> 
                             </a>
                         </li>
                         <li>
@@ -217,9 +223,22 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="{{ url('ucep24') }}">UCEP 24</a></li>
-                                <li><a href="{{ url('imc') }}">IMC</a></li>
-                                <li><a href="{{ url('ofc') }}">OFC 401</a></li>
-
+                                <li><a href="{{ url('ucep24_claim') }}">UCEP 24-Claim</a></li> 
+                                {{-- <li><a href="{{ url('imc') }}">IMC</a></li> --}}
+                                {{-- <li><a href="{{ url('ofc') }}">OFC 401</a></li> --}}
+                                <li><a href="javascript: void(0);" class="has-arrow">OFC</a>
+                                    <ul class="sub-menu" aria-expanded="true"> 
+                                        <li><a href="{{ url('ofc_401') }}">OFC-401 </a></li>
+                                        {{-- <li><a href="{{ url('ktb_spawn') }}">การตรวจหลังคลอด ANC</a></li> --}}
+                                        {{-- <li><a href="{{ url('ktb_ferrofolic') }}">บริการยาเสริมธาตุเหล็ก </a></li> --}}
+                                        {{-- <li><a href="{{ url('ktb_kids_glasses') }}">แว่นตาเด็ก </a></li> --}}
+                                    </ul>
+                                </li>
+                                <li><a href="javascript: void(0);" class="has-arrow">LGO</a>
+                                    <ul class="sub-menu" aria-expanded="true"> 
+                                        <li><a href="{{ url('lgo_801') }}">LGO-801 </a></li> 
+                                    </ul>
+                                </li>
                                 {{-- <li><a href="{{ url('six') }}">ส่งออก 16 แฟ้ม</a></li> --}}
                                 <li><a href="javascript: void(0);" class="has-arrow">KTB</a>
                                     <ul class="sub-menu" aria-expanded="true">
@@ -231,15 +250,18 @@
                                     </ul>
                                 </li>
                                 <li><a href="{{ url('ssop') }}">SSOP</a></li>
-                                <li><a href="{{ url('ssop_recheck') }}">SSOP RECHECK</a></li>
+                                {{-- <li><a href="{{ url('ssop_recheck') }}">SSOP RECHECK</a></li> --}}
                                 <li><a href="{{ url('aipn') }}">AIPN</a></li>
-                                <li><a href="{{ url('aipn_plb') }}">AIPN พรบ</a></li>
-                                <li><a href="{{ url('aipn_disability') }}">AIPN ทุภพพลภาพ </a></li>
-                                <li><a href="{{ url('aipn_equipdev') }}">SSIP-Equipdev</a></li>
+                                {{-- <li><a href="{{ url('aipn_plb') }}">AIPN พรบ</a></li> --}}
+                                {{-- <li><a href="{{ url('aipn_disability') }}">AIPN ทุภพพลภาพ </a></li> --}}
+                                {{-- <li><a href="{{ url('aipn_equipdev') }}">SSIP-Equipdev</a></li> --}}
                                 {{-- <li><a href="{{ url('free_schedule') }}">PPFS-Fre Schedule</a></li> --}}
-                                <li><a href="javascript: void(0);" class="has-arrow">PPFS-Fre Schedule</a>
+                                <li><a href="javascript: void(0);" class="has-arrow">PPFS-66</a>
                                     <ul class="sub-menu" aria-expanded="true">
-                                        <li><a href="{{ url('prb_repipd') }}">sss</a></li>
+                                        <li><a href="{{ url('ppfs_12001') }}">12001-คัดกรองสุขภาพจิต 15-34ปี</a></li>
+                                        <li><a href="{{ url('ppfs_12002') }}">12002-คัดกรองสุขภาพจิต 35-59ปี</a></li>
+                                        <li><a href="{{ url('ppfs_12003') }}">12003-เจาะเลือดจากหลอดเลือดดำ 35-59ปี</a></li>
+                                        <li><a href="{{ url('ppfs_12004') }}">12004-เจาะเลือดจากหลอดเลือดดำ 45-59ปี</a></li>
                                         {{-- <li><a href="{{ url('prb_repipdpay') }}">ผู้ป่วยใน พรบ.ที่จำหน่าย(ชำระเงิน)</a></li> --}}
                                         {{-- <li><a href="{{ url('prb_repipdover') }}">Admit อยู่แต่วงเงินเกิน 30000</a></li> --}}
                                     </ul>
@@ -248,12 +270,12 @@
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="javascript: void(0);" class="has-arrow">ANC-หญิงตั้งครรภ์</a>
                                     <ul class="sub-menu" aria-expanded="true">
-                                        <li><a href="{{ url('anc_dent') }}">ตรวจฟัน+ขัดฟัน</a></li>
-                                        <li><a href="{{ url('anc_14001') }}">บริการยาเม็ดเสริมธาตุเหล็ก</a></li>
+                                        <li><a href="{{ url('ppfs_30011') }}">บริการดูแลและฝากครรภ์</a></li>
+                                        {{-- <li><a href="{{ url('anc_dent') }}">ตรวจฟัน+ขัดฟัน</a></li> --}}
+                                        {{-- <li><a href="{{ url('anc_14001') }}">บริการยาเม็ดเสริมธาตุเหล็ก</a></li> --}}
                                     </ul>
                                 </li>
-                            </ul>
-
+                            </ul> 
                         </li>
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -456,16 +478,44 @@
                                 <li><a href="{{ url('opdtoipd') }}">ตรวจสอบ</a></li>
                             </ul>
                         </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="fa-solid fa-chart-column text-success"></i>
+                                <span>รายงาน</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                {{-- <li><a href="{{ url('prb_cpo') }}">คปอ</a></li> --}}
+                                {{-- <li><a href="{{ url('prb_repopd') }}">OPD</a></li>  --}}
+                                <li><a href="javascript: void(0);" class="has-arrow">วัณโรค</a>
+                                    <ul class="sub-menu" aria-expanded="true">
+                                        <li><a href="{{ url('phthisis_opd') }}">OPD </a></li>
+                                        <li><a href="{{ url('phthisis_ipd') }}">IPD</a></li>
+                                        {{-- <li><a href="{{ url('prb_repipdover') }}">Admit อยู่แต่วงเงินเกิน 30000</a> --}}
+                                        </li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect"> 
+                                <i class="fa-solid fa-cloud-arrow-up text-primary"></i>
+                                <span>Up-rep New-Eclaim</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ url('uprep_eclaim') }}">Up Rep</a></li>
+                            </ul>
+                        </li>
 
 
 
                     </ul>
-                </div>
+                </div >
                 <!-- Sidebar -->
             </div>
         </div>
         <!-- Left Sidebar End -->
-
+ 
 
 
         <!-- ============================================================== -->
@@ -588,6 +638,19 @@
             $('#example3').DataTable();
             $('#example4').DataTable();
             $('#example5').DataTable();
+            $('#example6').DataTable();
+            $('#example7').DataTable();
+            $('#example8').DataTable();
+            $('#example9').DataTable();
+            $('#example10').DataTable();
+            $('#example11').DataTable();
+            $('#example12').DataTable();
+            $('#example13').DataTable();
+            $('#example14').DataTable();
+            $('#example15').DataTable();
+            $('#example16').DataTable();
+            $('#example17').DataTable();
+            $('#example18').DataTable();
             $('#example_user').DataTable();
 
             $.ajaxSetup({

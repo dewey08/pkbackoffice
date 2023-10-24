@@ -99,7 +99,7 @@ class Account401Controller extends Controller
         $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
         $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
         $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
-        $yearnew = date('Y');
+        $yearnew = date('Y')+1;
         $yearold = date('Y')-1;
         $start = (''.$yearold.'-10-01');
         $end = (''.$yearnew.'-09-30'); 
@@ -153,17 +153,23 @@ class Account401Controller extends Controller
         // dd($year);
         $startdate = $request->startdate;
         $enddate = $request->enddate;
-        if ($startdate == '') {
-            // $acc_debtor = Acc_debtor::where('stamp','=','N')->whereBetween('dchdate', [$datenow, $datenow])->get();
-            $acc_debtor = DB::select('
-                SELECT a.*,c.subinscl from acc_debtor a
-                left join checksit_hos c on c.vn = a.vn  
-                WHERE a.account_code="1102050101.401"
-                AND a.stamp = "N"
-                group by a.vn
-                order by a.vstdate asc;
+        if ($startdate == '') { 
+            // $data_vn = DB::select(' SELECT vn FROM acc_debtor WHERE account_code="1102050101.401" AND stamp = "N"');
+            // foreach ($data_vn as $key => $value) {
+                $acc_debtor = DB::select(' 
+                        SELECT a.acc_debtor_id,a.vn,a.an,a.hn,a.cid,a.ptname,a.vstdate,a.pttype,a.debit_total,c.subinscl 
+                   
+                    from acc_debtor a
+                    left join checksit_hos c on c.vn = a.vn  
+                    WHERE a.account_code="1102050101.401"
+                    AND a.stamp = "N"
+                    GROUP BY a.vn
+                    order by a.vstdate asc;
 
-            ');
+                ');
+            // }
+            // a.*,c.subinscl 
+            
             // and month(a.dchdate) = "'.$months.'" and year(a.dchdate) = "'.$year.'"
         } else {
             // $acc_debtor = Acc_debtor::where('stamp','=','N')->whereBetween('dchdate', [$startdate, $enddate])->get();
@@ -195,8 +201,8 @@ class Account401Controller extends Controller
                 ,if(op.icode IN ("3010058"),sum_price,0) as fokliad
                 ,sum(if(op.income="02",sum_price,0)) as debit_instument
                 ,sum(if(op.icode IN("1560016","1540073","1530005","1540048","1620015","1600012","1600015"),sum_price,0)) as debit_drug
-                ,sum(if(op.icode IN ("3001412","3001417"),sum_price,0)) as debit_toa
-                ,sum(if(op.icode IN ("3010829","3010726 "),sum_price,0)) as debit_refer
+                ,sum(if(op.icode IN("3001412","3001417"),sum_price,0)) as debit_toa
+                ,sum(if(op.icode IN("3010829","3011068","3010864","3010861","3010862","3010863","3011069","3011012","3011070"),sum_price,0)) as debit_refer
                 ,ptt.max_debt_money
                 from ovst o
                 left join vn_stat v on v.vn=o.vn
@@ -206,12 +212,13 @@ class Account401Controller extends Controller
                 LEFT JOIN pttype_eclaim e on e.code=ptt.pttype_eclaim_id
                 LEFT JOIN opitemrece op ON op.vn = o.vn
                 WHERE o.vstdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"
-                AND vp.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.401"))
                
+                AND vp.pttype IN("O1","O2","O3","O4","O5")
                 AND v.income <> 0
                 and (o.an="" or o.an is null)
                 GROUP BY v.vn
         ');
+        // AND vp.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.401"))
         // AND vp.pttype IN("O1","O2","O3","O4","O5")
         // ,e.ar_opd as account_code
         // ,e.name as account_name

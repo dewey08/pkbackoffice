@@ -107,39 +107,35 @@ class EnvController extends Controller
 
     public function env_water (Request $request)
     {
-        $datestart = $request->startdate;
-        $dateend = $request->enddate;
-        $iduser = Auth::user()->id;
-        $data['users'] = User::get();
-        $data['leave_month'] = DB::table('leave_month')->get();
-        $data['users_group'] = DB::table('users_group')->get();
-        $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
-        
-
-        $acc_debtors = DB::select('
-            SELECT count(*) as I from users u
-            left join p4p_workload l on l.p4p_workload_user=u.id
-            group by u.dep_subsubtrueid;
-        ');
-
-        $water = DB::table('env_water')
-            ->leftjoin('users','env_water.water_user','=','users.id')
-            ->leftjoin('env_water_sub','env_water.water_id','=','env_water_sub.water_id')->get(); 
-        
-        $datashow = DB::connection('mysql')->select('
-            SELECT DISTINCT(w.water_id),w.water_date,w.water_location,water_group_excample,w.water_comment,CONCAT(u.fname," ",u.lname) as water_user
-            from env_water w
-            LEFT JOIN env_water_sub ws on ws.water_id = w.water_id
-            LEFT JOIN users u on u.id = w.water_user 
-            ORDER BY w.water_id DESC;
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $iduser = Auth::user()->id; 
+        // dd( $datestart);
+        if ($startdate == '') {
+                $datashow = DB::connection('mysql')->select('
+                    SELECT DISTINCT(w.water_id),w.water_date,w.water_location,water_group_excample,w.water_comment,CONCAT(u.fname," ",u.lname) as water_user
+                    from env_water w
+                    LEFT JOIN env_water_sub ws on ws.water_id = w.water_id
+                    LEFT JOIN users u on u.id = w.water_user 
+                    ORDER BY w.water_id DESC limit 10
+                ');
+        } else {
+            $datashow = DB::connection('mysql')->select('
+                SELECT DISTINCT(w.water_id),w.water_date,w.water_location,water_group_excample,w.water_comment,CONCAT(u.fname," ",u.lname) as water_user
+                from env_water w
+                LEFT JOIN env_water_sub ws on ws.water_id = w.water_id
+                LEFT JOIN users u on u.id = w.water_user 
+                WHERE w.water_date BETWEEN "'.$startdate.'" AND "'.$enddate.'"
+                ORDER BY w.water_id DESC  
             ');
+        }
+        
+        
          
-
-        return view('env.env_water', $data,[
-            'startdate' => $datestart,
-            'enddate'   => $dateend, 
-            'datashow'  => $datashow,
-            'water'     => $water,
+        return view('env.env_water',[
+            'startdate' => $startdate,
+            'enddate'   => $enddate, 
+            'datashow'  => $datashow, 
         ]);
     }
 
@@ -154,11 +150,11 @@ class EnvController extends Controller
         $data['users_group'] = DB::table('users_group')->get();
         $data['p4p_workgroupset'] = P4p_workgroupset::where('p4p_workgroupset_user','=',$iduser)->get();
 
-        $acc_debtors = DB::select('
-            SELECT count(*) as I from users u
-            left join p4p_workload l on l.p4p_workload_user=u.id
-            group by u.dep_subsubtrueid;
-        ');
+        // $acc_debtors = DB::select('
+        //     SELECT count(*) as I from users u
+        //     left join p4p_workload l on l.p4p_workload_user=u.id
+        //     group by u.dep_subsubtrueid;
+        // ');
 
 
         $data_parameter = DB::table('env_water_parameter')->where('water_parameter_active','=','TRUE')->get();
@@ -226,87 +222,54 @@ class EnvController extends Controller
                     $add_sub->water_list_unit                       = $water_parameter_unit[$count]; 
                     $add_sub->water_qty                             = $water_qty[$count];
                     $add_sub->water_results                         = $idwater->water_parameter_icon.''.$idwater->water_parameter_normal;
+                    $add_sub->use_analysis_results                  = $idwater->water_parameter_icon_end.''.$idwater->water_parameter_normal_end;
 
-                    if ($idwater->water_parameter_id == 1 || $water_qty[$count]  <= 20) {
-                        $status = 'ผิดปกติ';
+                    $qty = $water_qty[$count];
+                    // dd($qty);
+                    // dd($idwater->water_parameter_id);
+                    // dd($water_qty[$count].' '.$idwater->water_parameter_icon.' '.$idwater->water_parameter_normal);
+                    
+                    // if ($idwater->water_parameter_id == 7 && $water_qty[$count].' '.$idwater->water_parameter_icon.' '.$idwater->water_parameter_normal) {
+                    //     $status = 'ปกติ';
+                    // } else {
+                    //     $status = 'ผิดปกติ';
+                    // }
+                    if ($idwater->water_parameter_id == '1' && $qty <= '20' ) {
+                        $status = 'ปกติ';                    
+                    }elseif($idwater->water_parameter_id == '2' && $qty <= '120' ) {
+                        $status = 'ปกติ';                         
+                    }elseif($idwater->water_parameter_id == '3' && $qty <= '500' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '4' && $qty <= '30' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '5' && $qty <= '0.5' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '6' && $qty <= '35' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '7' && $qty >= '4.9' && $idwater->water_parameter_id == '7' && $qty <= '9') {
+                        $status = 'ปกติ';                     
+                    }elseif($idwater->water_parameter_id == '8' && $qty <= '1.0' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '9' && $qty <= '20' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '10' && $qty <= '5000' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '11' && $qty <= '1000' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '12' && $qty <= '1' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '13' && $qty <= '1000' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '14' && $qty >= '2' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '15' && $qty >= '400' ) {
+                        $status = 'ปกติ'; 
+                    }elseif($idwater->water_parameter_id == '16' && $qty >= '0.5' && $idwater->water_parameter_id == '16' && $qty <= '1') {
+                        $status = 'ปกติ'; 
                     } else {
-                        $status = 'ปกติ';
+                        $status = 'ผิดปกติ';
                     }
-                    if ($idwater->water_parameter_id == 2 || $water_qty[$count]  <= 120) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 3 || $water_qty[$count]  <= 500) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 4 || $water_qty[$count]  <= 30) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 5 || $water_qty[$count]  <= 0.5) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 6 || $water_qty[$count]  <= 35) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }  
-                    if ($idwater->water_parameter_id == 7 || $water_qty[$count]  == 5 || $water_qty[$count]  == 6 || $water_qty[$count]  == 7 || $water_qty[$count]  == 8 || $water_qty[$count]  == 9 ) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 8 || $water_qty[$count]  <= 1.0) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 9 || $water_qty[$count]  <= 20) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 10 || $water_qty[$count]  <= 5000) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 11 || $water_qty[$count]  <= 1000) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 12 || $water_qty[$count]  <= 1) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 13 || $water_qty[$count]  <= 1000) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 14 || $water_qty[$count]  >= 5) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 15 || $water_qty[$count]  >= 400) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
-                    if ($idwater->water_parameter_id == 16 || $water_qty[$count]  == 0.5 || $water_qty[$count]  == 0.6 || $water_qty[$count]  == 0.7 || $water_qty[$count]  == 0.8 || $water_qty[$count]  == 0.9 || $water_qty[$count]  == 1.0 ) {
-                        $status = 'ผิดปกติ';
-                    } else {
-                        $status = 'ปกติ';
-                    }
+                    // dd($status); 
 
                     $add_sub->status                         = $status;
                     $add_sub->water_parameter_short_name     = $water_parameter_short_name[$count];

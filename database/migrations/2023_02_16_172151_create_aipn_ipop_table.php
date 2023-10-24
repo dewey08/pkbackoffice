@@ -15,7 +15,7 @@ return new class extends Migration
     { 
         if (!Schema::hasTable('aipn_ipop'))
         {
-            Schema::connection('mysql7')->create('aipn_ipop', function (Blueprint $table) {
+            Schema::connection('mysql')->create('aipn_ipop', function (Blueprint $table) {
                 $table->bigIncrements('aipn_ipop_id'); 
                 $table->string('an')->nullable();//   
                 $table->string('sequence')->nullable();//   
@@ -24,9 +24,7 @@ return new class extends Migration
                 $table->string('Procterm')->nullable();//  
                 $table->string('DR')->nullable();// 
                 $table->string('DateIn')->nullable();// 
-                $table->string('DateOut')->nullable();// 
-                // $table->dateTime('DateIn')->nullable();// 
-                // $table->dateTime('DateOut')->nullable();// 
+                $table->string('DateOut')->nullable();//  
                 $table->string('Location')->nullable();// 
                 $table->timestamps();
             });

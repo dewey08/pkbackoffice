@@ -38,7 +38,7 @@ use App\Models\Acc_1102050101_4022;
 use App\Models\Acc_1102050102_602;
 use App\Models\Acc_1102050102_603;
 use App\Models\Acc_stm_prb;
-use App\Models\Acc_stm_ti_totalhead;
+use App\Models\Orginfo;
 use App\Models\Acc_stm_ti_excel;
 use App\Models\Acc_stm_ofc;
 use App\Models\acc_stm_ofcexcel;
@@ -100,8 +100,8 @@ class Account602Controller extends Controller
         $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
         $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
         $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
-        $yearnew = date('Y');
-        $yearold = date('Y')-1;
+        $yearnew = date('Y')+1;
+        $yearold = date('Y');
         $start = (''.$yearold.'-10-01');
         $end = (''.$yearnew.'-09-30'); 
 
@@ -119,7 +119,7 @@ class Account602Controller extends Controller
                     and account_code="1102050102.602"
                     and income <> 0
                     group by month(a.vstdate) 
-                    order by a.vstdate desc limit 3;
+                    order by a.vstdate desc limit 6;
             ');
 
         } else {
@@ -180,10 +180,12 @@ class Account602Controller extends Controller
 
     public function account_602_pulldata(Request $request)
     {
+        $db_ = Orginfo::where('orginfo_id','=','1')->first();
+        $db  = $db_->dbname;
         $datenow = date('Y-m-d');
         $startdate = $request->datepicker;
         $enddate = $request->datepicker2; 
-        $acc_debtor = DB::connection('mysql3')->select('
+        $acc_debtor = DB::connection('mysql2')->select('
             SELECT v.vn,ifnull(o.an,"") as an,o.hn,pt.cid
                 ,concat(pt.pname,pt.fname," ",pt.lname) as ptname
                 ,o.vstdate,o.vsttime 
@@ -191,26 +193,36 @@ class Account602Controller extends Controller
                 ,ptt.pttype_eclaim_id ,v.pttype 
                 ,e.code as acc_code ,e.ar_opd as account_code ,e.name as account_name
                 ,v.income,v.uc_money,v.discount_money,v.paid_money,v.rcpt_money
-                ,v.income-v.discount_money-v.rcpt_money as debit
+                
+                ,sum(if(d.name like "CT%",sum_price,0)) as CT
                 ,if(op.icode IN ("3010058"),sum_price,0) as fokliad 
                 ,sum(if(op.income="02",sum_price,0)) as debit_instument
                 ,sum(if(op.icode IN("1560016","1540073","1530005","1540048","1620015","1600012","1600015"),sum_price,0)) as debit_drug
                 ,sum(if(op.icode IN("3001412","3001417"),sum_price,0)) as debit_toa
                 ,sum(if(op.icode IN("3010829","3011068","3010864","3010861","3010862","3010863","3011069","3011012","3011070"),sum_price,0)) as debit_refer
                 ,ptt.max_debt_money
-            from vn_stat v
-            left join ovst o on v.vn=o.vn
-            left join patient pt on pt.hn=v.hn
-            LEFT JOIN visit_pttype vp on vp.vn = v.vn
-            LEFT JOIN pttype ptt on v.pttype=ptt.pttype
-            LEFT JOIN pttype_eclaim e on e.code=ptt.pttype_eclaim_id
-            LEFT JOIN opitemrece op ON op.vn = o.vn
+               
+                ,CASE 
+                    WHEN v.income-v.discount_money-v.rcpt_money < 30000 THEN v.income-v.discount_money-v.rcpt_money
+                    WHEN  vp.pttype_number ="1" AND vp.pttype IN ("31","36","37","38","39")  THEN vp.max_debt_amount  
+                    ELSE v.income-v.discount_money-v.rcpt_money  
+                    END as debit
+
+            from hos.vn_stat v
+            LEFT OUTER JOIN hos.ovst o on v.vn=o.vn
+            LEFT OUTER JOIN hos.patient pt on pt.hn=v.hn
+            LEFT OUTER JOIN hos.visit_pttype vp on vp.vn = v.vn
+            LEFT OUTER JOIN hos.pttype ptt on v.pttype=ptt.pttype
+            LEFT OUTER JOIN hos.pttype_eclaim e on e.code=ptt.pttype_eclaim_id
+            LEFT OUTER JOIN hos.opitemrece op ON op.vn = o.vn
+            LEFT OUTER JOIN hos.s_drugitems d on d.icode = op.icode 
             WHERE v.vstdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"        
             AND vp.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN(SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050102.602" AND opdipd ="OPD"))
+     
             and (o.an="" or o.an is null)
             GROUP BY v.vn
         ');
-
+        // ,v.income-v.discount_money-v.rcpt_money as debit
         foreach ($acc_debtor as $key => $value) {
                     $check = Acc_debtor::where('vn', $value->vn)->where('account_code','1102050102.602')->whereBetween('vstdate', [$startdate, $enddate])->count();
                     if ($check == 0) {
@@ -288,7 +300,7 @@ class Account602Controller extends Controller
                             'debit_instument'   => $value->debit_instument,
                             'debit_refer'       => $value->debit_refer,
                             'debit_toa'         => $value->debit_toa,
-                            'debit_total'       => $value->debit,
+                            'debit_total'       => $value->debit_total,
                             'max_debt_amount'   => $value->max_debt_amount,
                             'acc_debtor_userid' => $iduser
                     ]);
@@ -309,14 +321,14 @@ class Account602Controller extends Controller
 
         $data = DB::select('
        
-            SELECT U1.acc_1102050102_602_id,U2.req_no,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
-            ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U2.money_billno,U2.payprice
+            SELECT U1.acc_1102050102_602_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+            ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date 
             from acc_1102050102_602 U1 
-            LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
+           
             WHERE month(U1.vstdate) = "'.$months.'" AND year(U1.vstdate) = "'.$year.'"           
             GROUP BY U1.vn
         ');
-
+        // LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
         // $data = DB::select('
         // //     SELECT U1.acc_1102050102_602_id,U2.req_no,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U2.money_billno,U2.payprice
         // //         from acc_1102050102_602 U1
@@ -338,7 +350,10 @@ class Account602Controller extends Controller
         $acc602 = Acc_1102050102_602::find($id);
 
         // $acc602 = Acc_1102050102_602::LEFTJOIN('acc_stm_prb','acc_stm_prb.acc_1102050102_602_sid','=','acc_1102050102_602.acc_1102050102_602_id')
+        // ->where('acc_1102050102_602_id',$id)
+        // ->first();
         // ->find($id);
+        // $acc602->all();
 
         return response()->json([
             'status'      => '200',
@@ -347,58 +362,50 @@ class Account602Controller extends Controller
     }
     public function account_602_update(Request $request)
     {
+        $iduser = Auth::user()->id;
         $id = $request->acc_1102050102_602_id;
-
+        $sauntang_ = Acc_1102050102_602::where('acc_1102050102_602_id','=',$id)->first();
+        $sauntang  = $sauntang_->debit_total;
         Acc_1102050102_602::whereIn('acc_1102050102_602_id',explode(",",$id))
         ->update([
-            'status' => 'Y'
+            'status'           => 'Y',
+            'recieve_true'     => $request->payprice,
+            'recieve_no'       => $request->money_billno,
+            'recieve_date'     => $request->paydate,
+            'savedate'         => $request->savedate,
+            'difference'       => $sauntang - $request->payprice,
+            'comment'          => $request->comment,
+            'recieve_user'     => $iduser
+           
         ]);
 
-        Acc_stm_prb::whereIn('acc_1102050102_602_sid',explode(",",$id))->delete();
-
-        $add = new Acc_stm_prb();
-        $add->acc_1102050102_602_sid = $id;
-        $add->req_no           = $request->req_no;
-        $add->pid              = $request->cid;
-        $add->fullname           = $request->ptname;
-        $add->claim_no         = $request->claim_no;
-        $add->vendor           = $request->vendor;
-        $add->money_billno     = $request->money_billno;
-        $add->paytype          = $request->paytype;
-        $add->no               = $request->no;
-        $add->payprice         = $request->payprice;
-        $add->paydate          = $request->paydate;
-        $add->savedate         = $request->savedate;
-        $add->save();
+        // Acc_stm_prb::whereIn('acc_1102050102_602_sid',explode(",",$id))->delete();
+        $check = Acc_stm_prb::where('acc_1102050102_602_sid',$id)->count();
+        if ($check > 0) {
+            # code...
+        } else {
+            $add = new Acc_stm_prb();
+            $add->acc_1102050102_602_sid = $id;
+            $add->req_no           = $request->req_no;
+            $add->pid              = $request->cid;
+            $add->fullname           = $request->ptname;
+            $add->claim_no         = $request->claim_no;
+            $add->vendor           = $request->vendor;
+            $add->money_billno     = $request->money_billno;
+            $add->paytype          = $request->paytype;
+            $add->no               = $request->no;
+            $add->payprice         = $request->payprice;
+            $add->paydate          = $request->paydate;
+            $add->savedate         = $request->savedate;
+            $add->save();
+        }
+        
+       
         return response()->json([
             'status'      => '200'
         ]);
     }
-    // public function account_602_stmnull(Request $request,$months,$year)
-    // {
-    //     $datenow = date('Y-m-d');
-    //     $startdate = $request->startdate;
-    //     $enddate = $request->enddate;
-    //     // dd($id);
-    //     $data['users'] = User::get();
-
-    //     $datashow = DB::connection('mysql')->select('
-    //             SELECT U2.req_no,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U2.money_billno,U2.payprice
-    //             from acc_1102050102_602 U1
-    //             LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
-    //             WHERE month(U1.vstdate) = "'.$months.'" and year(U1.vstdate) = "'.$year.'"
-    //             AND U1.status ="N"
-    //         ');
-
-
-    //     return view('account_602.account_602_stmnull', $data, [
-    //         'startdate'         =>     $startdate,
-    //         'enddate'           =>     $enddate,
-    //         'datashow'          =>     $datashow,
-    //         'months'            =>     $months,
-    //         'year'              =>     $year,
-    //     ]);
-    // }
+    
     public function account_602_stmnull_all(Request $request,$months,$year)
     {
         $datenow = date('Y-m-d');
@@ -434,14 +441,15 @@ class Account602Controller extends Controller
         $data['users'] = User::get();
 
         $datashow = DB::select('
-        SELECT U2.req_no,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno
-        ,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date,U2.money_billno,U2.payprice
+        SELECT  U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno
+        ,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date 
             from acc_1102050102_602 U1
-            LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
+           
             WHERE month(U1.vstdate) = "'.$months.'"
             and year(U1.vstdate) = "'.$year.'"
-            AND U1.nhso_ownright_pid is not null
+            AND U1.recieve_true is not null
         ');
+        // LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
         return view('account_602.account_602_stm', $data, [
             'startdate'         =>     $startdate,
             'enddate'           =>     $enddate,
@@ -451,6 +459,7 @@ class Account602Controller extends Controller
 
         ]);
     }
+
     public function account_602_stmnull(Request $request,$months,$year)
     {
         $datenow = date('Y-m-d');
@@ -465,7 +474,7 @@ class Account602Controller extends Controller
         
                 WHERE month(U1.vstdate) = "'.$months.'"
                 and year(U1.vstdate) = "'.$year.'"
-                AND U1.nhso_ownright_pid is null
+                AND U1.recieve_true is null
         ');
         return view('account_602.account_602_stmnull', $data, [
             'startdate'         =>     $startdate,
@@ -494,7 +503,98 @@ class Account602Controller extends Controller
             ');
             foreach ($sync as $key => $value) { 
                      
-                    Acc_1102050102_602::where('vn',$value->vn) 
+                    Acc_1102050102_602::where('acc_1102050102_602_id',$value->acc_1102050102_602_id) 
+                        ->update([ 
+                            'nhso_docno'           => $value->nhso_docno ,
+                            'nhso_ownright_pid'    => $value->nhso_ownright_pid
+                    ]);
+            }
+            return response()->json([
+                'status'    => '200'
+            ]);
+        
+        
+    }
+
+    public function account_602_detail_date(Request $request,$startdate,$enddate)
+    {
+     
+        $data['users'] = User::get();
+
+        $data = DB::select('
+       
+            SELECT U1.acc_1102050102_602_id,U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total
+            ,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date 
+            from acc_1102050102_602 U1 
+           
+            WHERE U1.vstdate BETWEEN "'.$startdate.'" AND  "'.$enddate.'"           
+            GROUP BY U1.vn
+        ');
+    
+        return view('account_602.account_602_detail_date', $data, [
+            'startdate'     =>     $startdate,
+            'enddate'       =>     $enddate,
+            'data'          =>     $data, 
+        ]);
+    }
+    public function account_602_stm_date(Request $request,$startdate,$enddate)
+    {
+    
+        // dd($id);
+        $data['users'] = User::get();
+
+        $datashow = DB::select('
+        SELECT  U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno
+        ,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date 
+            from acc_1102050102_602 U1
+           
+            WHERE U1.vstdate BETWEEN "'.$startdate.'" AND  "'.$enddate.'"      
+            AND U1.recieve_true is not null
+        ');
+        // LEFT JOIN acc_stm_prb U2 ON U2.acc_1102050102_602_sid = U1.acc_1102050102_602_id
+        return view('account_602.account_602_stm_date', $data, [
+            'startdate'         =>     $startdate,
+            'enddate'           =>     $enddate,
+            'datashow'          =>     $datashow, 
+        ]);
+    }
+    public function account_602_stmnull_date(Request $request,$startdate,$enddate)
+    { 
+        $data['users'] = User::get();
+
+        $datashow = DB::select('
+            SELECT U1.an,U1.vn,U1.hn,U1.cid,U1.ptname,U1.vstdate,U1.pttype,U1.debit_total,U1.nhso_docno,U1.nhso_ownright_pid,U1.recieve_true,U1.difference,U1.recieve_no,U1.recieve_date
+                from acc_1102050102_602 U1
+        
+                WHERE U1.vstdate BETWEEN "'.$startdate.'" AND  "'.$enddate.'"     
+                AND U1.recieve_true is null
+        ');
+        return view('account_602.account_602_stmnull_date', $data, [
+            'startdate'         =>     $startdate,
+            'enddate'           =>     $enddate,
+            'datashow'          =>     $datashow, 
+        ]);
+    }
+
+    public function account_602_syncall_date(Request $request)
+    {
+        $startdate = $request->startdate;
+        $enddate = $request->enddate;
+        $sync = DB::connection('mysql')->select('   
+                SELECT ac.acc_1102050102_602_id,o.an,o.hn,v.vn,ac.vstdate,v.pttype,v.nhso_ownright_pid,v.nhso_docno 
+                from hos.visit_pttype v
+                LEFT JOIN hos.ovst o ON o.vn = v.vn
+                LEFT JOIN pkbackoffice.acc_1102050102_602 ac ON ac.vn = v.vn                   
+                WHERE o.vstdate BETWEEN "'.$startdate.'" 
+                AND  "'.$enddate.'"
+                AND v.nhso_docno  <> ""
+                AND ac.acc_1102050102_602_id <> ""
+                GROUP BY v.vn
+
+            ');
+            foreach ($sync as $key => $value) { 
+                     
+                    Acc_1102050102_602::where('acc_1102050102_602_id',$value->acc_1102050102_602_id) 
                         ->update([ 
                             'nhso_docno'           => $value->nhso_docno ,
                             'nhso_ownright_pid'    => $value->nhso_ownright_pid

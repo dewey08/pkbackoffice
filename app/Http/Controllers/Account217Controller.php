@@ -102,10 +102,11 @@ class Account217Controller extends Controller
                 left join checksit_hos c on c.an = a.an
                 WHERE a.account_code="1102050101.217"
                 AND a.stamp = "N"
-                AND a.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.202"))
+               
                 group by a.an
                 order by a.vstdate desc;
             ');
+            // AND a.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.202"))
             // AND a.dchdate BETWEEN "'.$startdate.'" AND "'.$enddate.'"
 
             // SELECT a.*,c.subinscl from acc_debtor a
@@ -120,7 +121,7 @@ class Account217Controller extends Controller
                 left join checksit_hos c on c.an = a.an
                 WHERE a.account_code="1102050101.217"
                 AND a.stamp = "N"
-                AND a.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.202"))
+                
                 group by a.an
                 order by a.vstdate desc;
             ');
@@ -182,19 +183,24 @@ class Account217Controller extends Controller
                 ,sum(if(op.icode IN("3001412","3001417"),sum_price,0)) as debit_toa
                 ,sum(if(op.icode IN("3010829","3011068","3010864","3010861","3010862","3010863","3011069","3011012","3011070"),sum_price,0)) as debit_refer
                 from hos.ipt ip
-                LEFT JOIN hos.an_stat a ON ip.an = a.an
-                LEFT JOIN hos.patient pt on pt.hn=a.hn
-                LEFT JOIN hos.pttype ptt on a.pttype=ptt.pttype
-                LEFT JOIN hos.pttype_eclaim ec on ec.code=ptt.pttype_eclaim_id
-                LEFT JOIN hos.ipt_pttype ipt ON ipt.an = a.an
-                LEFT JOIN hos.opitemrece op ON ip.an = op.an
-                LEFT JOIN hos.vn_stat v on v.vn = ip.vn
+                LEFT OUTER JOIN hos.an_stat a ON ip.an = a.an
+                LEFT OUTER JOIN hos.patient pt on pt.hn=a.hn
+                LEFT OUTER JOIN hos.pttype ptt on a.pttype=ptt.pttype
+                LEFT OUTER JOIN hos.pttype_eclaim ec on ec.code=ptt.pttype_eclaim_id
+                LEFT OUTER JOIN hos.ipt_pttype ipt ON ipt.an = a.an
+                LEFT OUTER JOIN hos.opitemrece op ON ip.an = op.an
+                LEFT OUTER JOIN s_drugitems s on s.icode = op.icode
+                LEFT OUTER JOIN hos.vn_stat v on v.vn = ip.vn
                 WHERE ip.dchdate BETWEEN "' . $startdate . '" AND "' . $enddate . '"
                 AND ipt.pttype IN(SELECT pttype from pkbackoffice.acc_setpang_type WHERE pttype IN (SELECT pttype FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.202"))
-                AND op.icode NOT IN("3003661","3003662","3010272","3003663","3002896","3002897","3002898","3002910","3002911","3002912","3002913","3002914","3002915","3002916","3002917","3002918","3009702","3010348")
+                
+                AND s.name NOT like "CT%"
+                AND op.icode NOT IN("3003661","3003662","3003336","3002896","3002897","3002898","3002910","3002911","3002912","3002913","3002914","3002915","3002916","3002917","3002918","3003608","3010102","3010353","3009703","3010348")
                 GROUP BY ip.an;
                 
         ');
+        // AND op.icode NOT IN("3001","3002")
+        // AND op.icode NOT IN("3003661","3003662","3010272","3003663","3002896","3002897","3002898","3002910","3002911","3002912","3002913","3002914","3002915","3002916","3002917","3002918","3009702","3010348")
         // AND op.icode IN(SELECT icode from pkbackoffice.acc_setpang_type WHERE icode IN(SELECT icode FROM pkbackoffice.acc_setpang_type WHERE pang ="1102050101.217"))
         foreach ($acc_debtor as $key => $value) {
             if ($value->debit >0) {
@@ -361,7 +367,10 @@ class Account217Controller extends Controller
         $newweek = date('Y-m-d', strtotime($date . ' -1 week')); //ย้อนหลัง 1 สัปดาห์
         $newDate = date('Y-m-d', strtotime($date . ' -5 months')); //ย้อนหลัง 5 เดือน
         $newyear = date('Y-m-d', strtotime($date . ' -1 year')); //ย้อนหลัง 1 ปี
-
+        $yearnew = date('Y')+1;
+        $yearold = date('Y')-1;
+        $start = (''.$yearold.'-10-01');
+        $end = (''.$yearnew.'-09-30'); 
         if ($startdate == '') {
             $datashow = DB::select('
                     SELECT month(a.dchdate) as months,year(a.dchdate) as year,l.MONTH_NAME
@@ -374,7 +383,7 @@ class Account217Controller extends Controller
                     ,sum(a.debit) as debit
                     FROM acc_debtor a
                     left outer join leave_month l on l.MONTH_ID = month(a.dchdate)
-                    WHERE a.dchdate between "'.$newyear.'" and "'.$date.'"
+                    WHERE a.dchdate between "'.$start.'" and "'.$end.'"
                     and account_code="1102050101.217"
                     group by month(a.dchdate) order by month(a.dchdate) desc limit 3;
             ');
@@ -455,7 +464,7 @@ class Account217Controller extends Controller
     {
         $id = $request->ids;
         $iduser = Auth::user()->id;
-        Acc_1102050101_217_stam::truncate();
+        // Acc_1102050101_217_stam::truncate();
         $data = Acc_debtor::whereIn('acc_debtor_id',explode(",",$id))->get();
             Acc_debtor::whereIn('acc_debtor_id',explode(",",$id))
                     ->update([
@@ -464,17 +473,17 @@ class Account217Controller extends Controller
 
         foreach ($data as $key => $value) {
             Acc_1102050101_217::insert([
-                'vn'                => $value->vn,
-                'hn'                => $value->hn,
-                'an'                => $value->an,
-                'cid'               => $value->cid,
-                'ptname'            => $value->ptname,
-                'vstdate'           => $value->vstdate,
-                'regdate'           => $value->regdate,
-                'dchdate'           => $value->dchdate,
-                'pttype'            => $value->pttype,
-                'income_group'      => $value->income_group,
-                'account_code'      => $value->account_code,
+                'vn'                 => $value->vn,
+                'hn'                 => $value->hn,
+                'an'                 => $value->an,
+                'cid'                => $value->cid,
+                'ptname'             => $value->ptname,
+                'vstdate'            => $value->vstdate,
+                'regdate'            => $value->regdate,
+                'dchdate'            => $value->dchdate,
+                'pttype'             => $value->pttype,
+                'income_group'       => $value->income_group,
+                'account_code'       => $value->account_code,
                 'rw'                 => $value->rw,
                 'adjrw'              => $value->adjrw,
                 'total_adjrw_income' => $value->total_adjrw_income,
@@ -482,9 +491,13 @@ class Account217Controller extends Controller
                 'debit_instument'    => $value->debit_instument,
                 'debit_toa'          => $value->debit_toa,
                 'debit_refer'        => $value->debit_refer,
-                'debit'             => $value->debit,
-                'debit_total'       => $value->debit_total,
-                'acc_debtor_userid' => $value->acc_debtor_userid
+                'income'             => $value->income,
+                'uc_money'           => $value->uc_money,
+                'discount_money'     => $value->discount_money,
+                'rcpt_money'         => $value->rcpt_money,
+                'debit'              => $value->debit,
+                'debit_total'        => $value->debit_total,
+                'acc_debtor_userid'  => $value->acc_debtor_userid
             ]);
         }
         // $acc_217_stam = DB::connection('mysql')->select('

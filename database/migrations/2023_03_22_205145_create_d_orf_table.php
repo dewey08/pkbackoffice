@@ -21,8 +21,9 @@ return new class extends Migration
                 $table->string('HN')->nullable();// 
                 $table->string('DATEOPD')->nullable();//
                 $table->string('CLINIC')->nullable();//  
-                $table->string('REFER')->nullable(); //             
+                $table->string('REFER')->nullable(); //     
                 $table->string('REFERTYPE')->nullable(); //  
+                $table->string('REFERDATE')->nullable(); //  
                 $table->string('SEQ')->nullable(); //  
                 $table->string('d_anaconda_id')->nullable(); // 
                 $table->string('user_id')->nullable(); //  

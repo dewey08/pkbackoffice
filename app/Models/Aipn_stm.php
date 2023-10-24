@@ -12,7 +12,7 @@ class Aipn_stm extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     
-    protected $connection = 'mysql7';
+    protected $connection = 'mysql';
     protected $table = 'aipn_stm';
     protected $primaryKey = 'aipn_stm_id';
     protected $fillable = [  
